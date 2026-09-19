@@ -1,0 +1,34 @@
+name: Bug report
+description: Report a reproducible LidPilot problem without private data.
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For security-sensitive reports, follow SECURITY.md and use the maintainer's private channel.
+        Do not attach keys, raw recovery journals, usernames, or workload data.
+        Never run an intrusive power test just to fill in this form.
+  - type: input
+    id: version
+    attributes:
+      label: LidPilot version and build
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Test environment
+      description: Mac model, macOS version, battery or charger, lid state, connected displays, and helper approval status.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: What happened?
+      description: Steps, expected result, observed result, and whether another keep-awake utility was active.
+    validations:
+      required: true
+  - type: textarea
+    id: diagnostics
+    attributes:
+      label: Redacted status
+      description: Optional relevant lines from Settings → Diagnostics → Preview Export. Review before sharing.

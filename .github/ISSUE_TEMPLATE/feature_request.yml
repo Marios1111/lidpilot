@@ -1,0 +1,15 @@
+name: Feature request
+description: Describe a workflow and the smallest useful improvement.
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to do?
+      description: Describe the workflow and where LidPilot gets in the way.
+    validations:
+      required: true
+  - type: textarea
+    id: improvement
+    attributes:
+      label: Suggested improvement
+      description: Keep V1 lightweight, native, local, and privacy-conscious. Check README for its current scope.
