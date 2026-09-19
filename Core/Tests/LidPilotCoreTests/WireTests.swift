@@ -70,11 +70,21 @@ final class WireTests: CoreTestCase {
             leaseActive: true,
             message: "healthy",
             success: true,
-            sample: snapshot(sleepDisabled: .on)
+            sample: snapshot(sleepDisabled: .on),
+            health: HelperHealth(journalHealthy: true, powerStateReadable: true, watchdogAvailable: true)
         )
 
         let decoded = try WireReply.decode(try WireReply.encode(reply))
         XCTAssertEqual(decoded, reply)
+    }
+
+    func testTypedErrorRoundTripsWithoutInventingObservedState() throws {
+        let reply = WireReply(helperBuild: "1", message: "Busy", failureCode: .busy)
+        let decoded = try WireReply.decode(reply.encoded())
+        XCTAssertEqual(decoded.failureCode, .busy)
+        XCTAssertEqual(decoded.flag, .unknown)
+        XCTAssertFalse(decoded.success)
+        XCTAssertNil(decoded.health)
     }
 
     private func deadline() throws -> SessionDeadline {

@@ -161,6 +161,21 @@ public struct WireRequest: Codable, Equatable, Sendable {
     }
 }
 
+public enum WireFailureCode: String, Codable, Sendable {
+    case busy, invalidRequest, unauthorized, operationFailed, recoveryRequired, unavailable
+}
+
+public struct HelperHealth: Codable, Equatable, Sendable {
+    public var journalHealthy: Bool
+    public var powerStateReadable: Bool
+    public var watchdogAvailable: Bool
+    public init(journalHealthy: Bool, powerStateReadable: Bool, watchdogAvailable: Bool) {
+        self.journalHealthy = journalHealthy
+        self.powerStateReadable = powerStateReadable
+        self.watchdogAvailable = watchdogAvailable
+    }
+}
+
 public struct WireReply: Codable, Equatable, Sendable {
     public static let protocolVersion = 1
     public static let maximumEncodedSize = 16 * 1024
@@ -174,6 +189,8 @@ public struct WireReply: Codable, Equatable, Sendable {
     public var message: String
     public var success: Bool
     public var sample: PowerSnapshot?
+    public var failureCode: WireFailureCode?
+    public var health: HelperHealth?
 
     public init(
         protocolVersion: Int = WireReply.protocolVersion,
@@ -184,7 +201,9 @@ public struct WireReply: Codable, Equatable, Sendable {
         leaseActive: Bool = false,
         message: String = "",
         success: Bool = false,
-        sample: PowerSnapshot? = nil
+        sample: PowerSnapshot? = nil,
+        failureCode: WireFailureCode? = nil,
+        health: HelperHealth? = nil
     ) {
         self.protocolVersion = protocolVersion
         self.helperBuild = helperBuild
@@ -195,6 +214,8 @@ public struct WireReply: Codable, Equatable, Sendable {
         self.message = message
         self.success = success
         self.sample = sample
+        self.failureCode = failureCode
+        self.health = health
     }
 
     public func validate() throws {
@@ -245,6 +266,8 @@ public struct WireReply: Codable, Equatable, Sendable {
         self.message = try container.decode(String.self, forKey: .message)
         self.success = try container.decode(Bool.self, forKey: .success)
         self.sample = try container.decodeIfPresent(PowerSnapshot.self, forKey: .sample)
+        self.failureCode = try container.decodeIfPresent(WireFailureCode.self, forKey: .failureCode)
+        self.health = try container.decodeIfPresent(HelperHealth.self, forKey: .health)
         try validate()
     }
 
@@ -258,5 +281,7 @@ public struct WireReply: Codable, Equatable, Sendable {
         case message
         case success
         case sample
+        case failureCode
+        case health
     }
 }
