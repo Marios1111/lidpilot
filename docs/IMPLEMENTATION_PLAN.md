@@ -1,6 +1,6 @@
 # LidPilot V1 implementation plan
 
-Status: the user delegated final design to Astra Max and prefers Mode Cards with its compact timer. Native implementation is underway. User-facing labels are Follow Lid, Keep Screen On, and Keep Mac Running; internal mode semantics remain smart/display/closed. No hardware power tests or privileged installation are authorized by this plan.
+Status: implementation and safe automated/native smoke checks are complete. The user delegated final design to Astra Max, retaining Mode Cards and the compact timer. User-facing labels are Follow Lid, Keep Screen On, and Keep Mac Running; internal semantics remain smart/display/closed. Live native interaction/accessibility verification is blocked by the locked Mac. Hardware, signed XPC, notarized upgrades, and performance measurements remain explicit release gates. No hardware power tests or privileged installation are authorized by this plan. See `VERIFICATION.md` for evidence and the exact resume point.
 
 ## Outcome and fixed decisions
 
@@ -35,11 +35,11 @@ Proof: deterministic tests for boundaries, sleep/wake/deadline behavior, all mod
 
 ## 3. Protocol, helper, and recovery
 
-Define minimal versioned XPC DTOs and allowed operations (`inspect`, `acquire`, `renew`, `release`, `health`) with bounded payloads and structured errors. Authenticate expected application/helper identity and signing team using supported peer requirements, never PID alone. Validate session/generation ownership, replay, protocol/build compatibility, and console-user identity.
+Define minimal versioned XPC DTOs and allowed operations (`inspect` (including health), `acquire`, `renew`, `release`, `recover`) with bounded payloads and structured errors. Authenticate expected application/helper identity and signing team using supported peer requirements, never PID alone. Validate session/generation ownership, replay, protocol/build compatibility, and console-user identity.
 
 Implement a fixed-path pmset adapter with only allowlisted read/write operations and a bounded child process. Serialize mutations, prevent late/orphaned enable operations from landing after restoration, and keep watchdog scheduling independent of child completion. The helper samples essential safety independently.
 
-Use an atomic root-owned journal written before mutation with restricted permissions and no client-controlled paths or symlink traversal. Recover before accepting new leases; use boot identity for persisted timing interpretation. Target 15s heartbeats, 60s maximum renewable leases, and 10s watchdog checks, bounded by the session hard deadline. Retain recovery pending on uncertain/failed restoration, with conservative retry and explicit ambiguous-state recovery.
+Use an atomic root-owned journal written before mutation with restricted permissions and no client-controlled paths or symlink traversal. Recover before accepting new leases; use boot identity for persisted timing interpretation. Target 15s heartbeats, 60s maximum renewable leases (expiry detection plus bounded restoration, not exact physical timing), and 10s watchdog checks, bounded by the session hard deadline. Retain recovery pending on uncertain/failed restoration, with conservative retry and explicit ambiguous-state recovery.
 
 Proof: mock fault injection for expired/frozen clients, restarted helper, corrupt journal, failed write/read-back, child timeout, replay/wrong peer/oversized request, unexpected flag drift, and interrupted mutation. Inspect authentication and file permissions separately; real signed XPC/launchd fault tests remain hardware gates.
 
