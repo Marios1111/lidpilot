@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Four interactive, local design directions for the native LidPilot menu-bar app.">
+  <title>LidPilot — Design directions</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='5' y='6' width='22' height='17' rx='3' fill='none' stroke='%233f70c9' stroke-width='2'/%3E%3Cpath d='M2 26h28M16 11v7m-3-4 3-3 3 3' fill='none' stroke='%233f70c9' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+  <script src="preview.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#directions">Skip to previews</a>
+  <header class="site-header">
+    <a class="wordmark" href="#" aria-label="LidPilot design gallery"><span class="brand-symbol" data-icon="pilot"></span>LidPilot<span class="wordmark-note">DESIGN STUDY / 01</span></a>
+    <button type="button" class="theme-button" id="appearance" aria-pressed="false"><span data-icon="moon"></span><span id="appearance-label">Dark preview</span></button>
+  </header>
+  <main>
+    <section class="intro" aria-labelledby="intro-title">
+      <div><p class="eyebrow">A SMALL UTILITY. YOUR EVERYDAY COMPANION.</p><h1 id="intro-title">LidPilot, four ways.</h1></div>
+      <div class="intro-detail"><p>Same capabilities. Four different feels.<br>Try the controls, then open a direction to explore its settings.</p><p class="prototype-note"><span data-icon="cursor"></span>Interactive concepts · all system states are simulated</p></div>
+    </section>
+    <div class="preview-toolbar" aria-label="Shared preview controls">
+      <div class="toolbar-lead"><span class="live-dot"></span>Compare the same moment</div>
+      <div class="toolbar-controls">
+        <label class="toolbar-field">State <select id="preview-state"><option value="off">Off</option><option value="active">Active</option><option value="starting">Starting</option><option value="paused">Paused · battery</option><option value="unverified">Unverified</option><option value="recovery">Recovery required</option></select></label>
+        <label class="toolbar-field">Lid <select id="preview-lid"><option value="open">Open</option><option value="closed">Closed</option></select></label>
+        <button type="button" id="reset" class="text-button"><span data-icon="reset"></span>Reset</button>
+      </div>
+    </div>
+    <section id="directions" class="directions" aria-label="Four design directions"></section>
+    <section class="decision-note" aria-labelledby="decision-title"><span class="decision-symbol" data-icon="layers"></span><div><h2 id="decision-title">You can mix what you like.</h2><p>For example: “Quiet Glass, with the timer from Session Focus.” Tell Codex your favourite number and any changes. This gallery does not change your Mac’s power settings.</p></div></section>
+  </main>
+  <footer class="site-footer"><span>Designed for native macOS · Apple Silicon · macOS 15+</span><span>White Soft Glass / original interpretations</span></footer>
+  <dialog id="detail" aria-labelledby="detail-title">
+    <div class="detail-shell">
+      <header class="detail-header"><div><span class="eyebrow" id="detail-number"></span><h2 id="detail-title"></h2></div><button type="button" class="icon-button close-detail" aria-label="Close expanded preview" data-icon="close"></button></header>
+      <div class="detail-tabs" role="group" aria-label="Preview surface"><button type="button" data-surface="popover" aria-pressed="true">Menu-bar popover</button><button type="button" data-surface="settings" aria-pressed="false">Settings window</button></div>
+      <div id="detail-body" class="detail-body"></div>
+      <footer class="detail-footer"><button type="button" id="previous" class="text-button"><span data-icon="left"></span>Previous</button><p id="detail-counter"></p><button type="button" id="next" class="text-button">Next<span data-icon="right"></span></button></footer>
+    </div>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <span class="sr-only" id="announcer" role="status" aria-live="polite"></span>
+  <noscript><p class="noscript">Enable JavaScript to use the interactive previews. This page runs entirely locally and has no external dependencies.</p></noscript>
+</body>
+</html>

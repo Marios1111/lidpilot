@@ -1,6 +1,6 @@
 # LidPilot V1 implementation plan
 
-Status: requirements inspected; interactive design comparison in progress. Native application implementation is pending the user's design choice. No hardware power tests or privileged installation are authorized by this plan.
+Status: requirements inspected; repository guidance and interactive design comparison are complete. Native application implementation is pending the user's design choice from `design/index.html`. No hardware power tests or privileged installation are authorized by this plan.
 
 ## Outcome and fixed decisions
 
