@@ -17,6 +17,13 @@ final class TestPlatform: RuntimeClock, PowerSampling, SleepFlagControlling, Rec
     var sampleLatency: Double = 0
     var writes: [Bool] = []
     var onWrite: ((Bool) -> Void)?
+    var onFence: (() -> Void)?
+    var failFence = false
+    func withMutationFence<T>(_ operation: () throws -> T) throws -> T {
+        if failFence { throw RuntimeFailure.unavailable("fence is busy") }
+        onFence?()
+        return try operation()
+    }
     func now() -> ClockSample { ClockSample(continuousSeconds: time, wallDate: Date(timeIntervalSince1970: time), bootID: "boot") }
     func sample(flag: FlagState) -> PowerSnapshot {
         time += sampleLatency
@@ -162,6 +169,88 @@ struct HelperEngineTests {
             engine.watchdog()
             #expect(platform.flag == .off)
         }
+    }
+
+    @Test func transientFenceTimeoutDoesNotLatchFalseRecovery() {
+        for phase in [RecoveryPhase?.none, .some(.prepared), .some(.enableInFlight)] {
+            let platform = TestPlatform(); let engine = platform.engine()
+            if let phase { platform.record = RecoveryRecord(sessionID: UUID(), generation: 1, bootID: "boot", phase: phase) }
+            platform.failFence = true
+            engine.watchdog()
+            platform.failFence = false
+            let result = engine.handle(WireRequest(operation: .inspect, sessionID: UUID(), generation: 1), client: UUID())
+            #expect(result.success && !result.recoveryPending && platform.record == nil)
+            #expect(platform.writes.isEmpty)
+        }
+    }
+
+    @Test func idleFenceTimeoutDoesNotInventOwnedRecovery() {
+        let platform = TestPlatform(); let engine = platform.engine()
+        engine.watchdog()
+        platform.failFence = true; engine.watchdog()
+        platform.failFence = false; engine.watchdog()
+        let result = engine.handle(WireRequest(operation: .inspect, sessionID: UUID(), generation: 1), client: UUID())
+        #expect(result.success && !result.recoveryPending && platform.writes.isEmpty)
+    }
+
+    @Test func ownedRestorationRetriesAfterFenceBecomesAvailable() throws {
+        let platform = TestPlatform(); let engine = platform.engine()
+        #expect(engine.handle(try platform.acquire(), client: UUID()).success)
+        platform.time += 61; platform.failFence = true
+        engine.watchdog()
+        #expect(platform.flag == .on && platform.record != nil)
+        platform.failFence = false
+        engine.watchdog()
+        #expect(platform.flag == .off && platform.record == nil)
+    }
+
+    @Test func inspectChecksExpiredLeaseBeforeAnswering() throws {
+        let platform = TestPlatform(); let engine = platform.engine(); let client = UUID()
+        let request = try platform.acquire()
+        #expect(engine.handle(request, client: client).success)
+        platform.time += 61
+        let reply = engine.handle(WireRequest(operation: .inspect, sessionID: UUID(), generation: 1), client: client)
+        #expect(reply.flag == .off && !reply.leaseActive)
+        #expect(reply.health?.watchdogAvailable == true)
+    }
+
+    @Test func incompleteJournalPhasesNeverClaimAnUnownedOverride() {
+        for phase in [RecoveryPhase.prepared, .enableInFlight] {
+            for flag in [FlagState.off, .on, .unknown] {
+                let platform = TestPlatform(); platform.flag = flag
+                platform.record = RecoveryRecord(sessionID: UUID(), generation: 1, bootID: "boot", phase: phase)
+                let reply = platform.engine().handle(WireRequest(operation: .inspect, sessionID: UUID(), generation: 1), client: UUID())
+                #expect(platform.writes.isEmpty)
+                #expect(!reply.ownsOverride)
+                #expect(reply.recoveryPending == (flag != .off))
+                #expect((platform.record == nil) == (flag == .off))
+            }
+        }
+    }
+
+    @Test func oldChildSettlesBeforeRestartReadsOrRestores() {
+        for phase in [RecoveryPhase.enableInFlight, .enabledVerified] {
+            let platform = TestPlatform()
+            platform.record = RecoveryRecord(sessionID: UUID(), generation: 1, bootID: "boot", phase: phase)
+            platform.onFence = { platform.flag = .on }
+            let result = platform.engine().handle(WireRequest(operation: .inspect, sessionID: UUID(), generation: 1), client: UUID())
+            if phase == .enabledVerified {
+                #expect(result.flag == .off && !result.recoveryPending)
+                #expect(platform.writes == [false])
+            } else {
+                #expect(result.recoveryPending && platform.record != nil)
+                #expect(platform.writes.isEmpty)
+            }
+        }
+    }
+
+    @Test func enableHasDurableInFlightAndVerifiedPhases() throws {
+        let platform = TestPlatform()
+        platform.onWrite = { enabled in
+            if enabled { #expect(platform.record?.phase == .enableInFlight) }
+        }
+        #expect(platform.engine().handle(try platform.acquire(), client: UUID()).success)
+        #expect(platform.record?.phase == .enabledVerified)
     }
 
     @Test func differentClientCannotReleaseOrRenewLease() throws {

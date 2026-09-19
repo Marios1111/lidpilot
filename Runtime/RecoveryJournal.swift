@@ -1,16 +1,25 @@
 import Foundation
 import Darwin
 
+public enum RecoveryPhase: String, Codable, Sendable {
+    case prepared
+    case enableInFlight
+    case enabledVerified
+    case restoreAuthorized
+}
+
 public struct RecoveryRecord: Codable, Equatable, Sendable {
     public let version: Int
     public let sessionID: UUID
     public let generation: UInt64
     public let bootID: String
-    public init(sessionID: UUID, generation: UInt64, bootID: String) {
-        version = 1
+    public let phase: RecoveryPhase
+    public init(sessionID: UUID, generation: UInt64, bootID: String, phase: RecoveryPhase = .enabledVerified) {
+        version = 2
         self.sessionID = sessionID
         self.generation = generation
         self.bootID = bootID
+        self.phase = phase
     }
 }
 
@@ -53,6 +62,10 @@ public final class RecoveryJournal: RecoveryStoring, @unchecked Sendable {
 
     deinit { close(directory) }
 
+    public func makePowerDriver() throws -> PMSetDriver {
+        try PMSetDriver(fence: CommandFence(directoryDescriptor: directory, owner: owner))
+    }
+
     public func load() throws -> RecoveryRecord? {
         let file = openat(directory, filename, O_RDONLY | O_NOFOLLOW | O_CLOEXEC | O_NONBLOCK)
         if file < 0, errno == ENOENT { return nil }
@@ -68,7 +81,7 @@ public final class RecoveryJournal: RecoveryStoring, @unchecked Sendable {
         let count = bytes.withUnsafeMutableBytes { Darwin.read(file, $0.baseAddress, $0.count) }
         guard count == bytes.count else { throw Self.failure("read record") }
         let record = try JSONDecoder().decode(RecoveryRecord.self, from: Data(bytes))
-        guard record.version == 1, record.generation > 0, !record.bootID.isEmpty else {
+        guard record.version == 2, record.generation > 0, !record.bootID.isEmpty else {
             throw RuntimeFailure.unavailable("Recovery record version or identity is invalid.")
         }
         return record

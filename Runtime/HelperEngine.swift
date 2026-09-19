@@ -16,13 +16,14 @@ public final class HelperEngine {
     private let sampler: any PowerSampling
     private let journal: any RecoveryStoring
     private let clock: any RuntimeClock
-    private let build: String
+    public let build: String
     private var lease: Lease?
     private var initialized = false
     private var owns = false
     private var recoveryPending = false
     private var lastGeneration: [UUID: UInt64] = [:]
     private var lastMessage = "Off"
+    private var journalHealthy = true
 
     public init(driver: any SleepFlagControlling, sampler: any PowerSampling,
                 journal: any RecoveryStoring, clock: any RuntimeClock, build: String) {
@@ -31,7 +32,18 @@ public final class HelperEngine {
     }
 
     public func handle(_ request: WireRequest, client: UUID) -> WireReply {
+        do {
+            return try driver.withMutationFence { handleFenced(request, client: client) }
+        } catch {
+            return WireReply(helperBuild: build, recoveryPending: true,
+                             message: error.localizedDescription, failureCode: .unavailable)
+        }
+    }
+
+    private func handleFenced(_ request: WireRequest, client: UUID) -> WireReply {
         bootstrap()
+        // Admission never queues a second client request ahead of this check.
+        watchdogFenced()
         do {
             try request.validate()
             if request.operation == .inspect { return reply(success: !recoveryPending) }
@@ -66,7 +78,7 @@ public final class HelperEngine {
                 lastGeneration[client] = request.generation
                 // This endpoint is used only after an explicit ambiguity warning in the app.
                 try journal.save(RecoveryRecord(sessionID: request.sessionID, generation: request.generation,
-                                                bootID: clock.now().bootID))
+                                                bootID: clock.now().bootID, phase: .restoreAuthorized))
                 owns = true
                 try restore()
             }
@@ -78,7 +90,15 @@ public final class HelperEngine {
     }
 
     public func watchdog() {
-        bootstrap()
+        do {
+            try driver.withMutationFence { bootstrap(); watchdogFenced() }
+        } catch {
+            lastMessage = error.localizedDescription
+            if owns || !initialized { recoveryPending = true }
+        }
+    }
+
+    private func watchdogFenced() {
         if recoveryPending, owns {
             do { try restore() } catch { lastMessage = error.localizedDescription }
             return
@@ -100,8 +120,14 @@ public final class HelperEngine {
     }
 
     public func disconnected(client: UUID) {
-        if lease?.client == client {
-            do { try restore() } catch { lastMessage = error.localizedDescription }
+        do {
+            try driver.withMutationFence {
+                bootstrap()
+                if lease?.client == client { try restore() }
+            }
+        } catch {
+            lastMessage = error.localizedDescription
+            if owns || !initialized { recoveryPending = true }
         }
         lastGeneration.removeValue(forKey: client)
     }
@@ -110,12 +136,29 @@ public final class HelperEngine {
         guard !initialized else { return }
         initialized = true
         do {
-            if try journal.load() != nil {
+            guard let record = try journal.load() else {
+                owns = false; recoveryPending = false; journalHealthy = true
+                return
+            }
+            switch record.phase {
+            case .enabledVerified, .restoreAuthorized:
                 owns = true
                 try restore()
                 lastMessage = "Recovered an interrupted LidPilot session."
+            case .prepared, .enableInFlight:
+                // The cross-process fence has settled every earlier child before this read.
+                // Intent alone cannot distinguish our write from another controller's write.
+                if try driver.read() == .off {
+                    try journal.clear()
+                    owns = false; recoveryPending = false; journalHealthy = true
+                    lastMessage = "Interrupted activation is off; recovery is verified."
+                } else {
+                    recoveryPending = true
+                    lastMessage = "Recovery required: interrupted activation ownership is ambiguous."
+                }
             }
         } catch {
+            journalHealthy = false
             recoveryPending = true
             lastMessage = "Recovery required: \(error.localizedDescription)"
         }
@@ -136,10 +179,13 @@ public final class HelperEngine {
         if let reason = policy.evaluate(snapshot: snapshot, mode: mode, clock: now, requireOpenLid: true) {
             throw failure("Cannot start: \(reason.rawValue).")
         }
-        try journal.save(RecoveryRecord(sessionID: request.sessionID, generation: request.generation, bootID: now.bootID))
-        owns = true
+        try journal.save(RecoveryRecord(sessionID: request.sessionID, generation: request.generation,
+                                        bootID: now.bootID, phase: .prepared))
         recoveryPending = true
         do {
+            try journal.save(RecoveryRecord(sessionID: request.sessionID, generation: request.generation,
+                                            bootID: now.bootID, phase: .enableInFlight))
+            owns = true
             try driver.setDisabled(true)
             let verifiedFlag = try driver.read()
             let verifiedSnapshot = sampler.sample(flag: verifiedFlag)
@@ -148,6 +194,8 @@ public final class HelperEngine {
                   policy.evaluate(snapshot: verifiedSnapshot, mode: mode, clock: verifiedTime) == nil else {
                 throw failure("Activation could not be verified within the session's safety limits.")
             }
+            try journal.save(RecoveryRecord(sessionID: request.sessionID, generation: request.generation,
+                                            bootID: now.bootID, phase: .enabledVerified))
             lease = Lease(client: client, session: request.sessionID, generation: request.generation,
                           deadline: deadline, policy: policy, mode: mode,
                           expires: min(now.continuousSeconds + 60, verifiedTime.continuousSeconds + (deadline.remaining(at: verifiedTime) ?? 60)))
@@ -166,7 +214,7 @@ public final class HelperEngine {
               request.policy == current.policy, request.mode == current.mode else {
             throw failure("Lease identity or immutable session parameters do not match.")
         }
-        watchdog()
+        watchdogFenced()
         guard lease != nil else { throw failure("The lease expired or safety requires a new session.") }
         let now = clock.now()
         lease?.expires = min(now.continuousSeconds + 60,
@@ -186,6 +234,7 @@ public final class HelperEngine {
         try driver.setDisabled(false)
         guard try driver.read() == .off else { throw failure("Normal sleep policy could not be verified.") }
         try journal.clear()
+        journalHealthy = true
         owns = false
         recoveryPending = false
         lastMessage = "LidPilot's sleep override is off and cleanup is verified."
@@ -195,7 +244,10 @@ public final class HelperEngine {
         let flag = (try? driver.read()) ?? .unknown
         return WireReply(helperBuild: build, flag: flag, ownsOverride: owns, recoveryPending: recoveryPending,
                          leaseActive: lease != nil, message: lastMessage,
-                         success: success && flag != .unknown, sample: sampler.sample(flag: flag))
+                         success: success && flag != .unknown, sample: sampler.sample(flag: flag),
+                         failureCode: success && flag != .unknown ? nil : (recoveryPending ? .recoveryRequired : .operationFailed),
+                         health: HelperHealth(journalHealthy: journalHealthy, powerStateReadable: flag != .unknown,
+                                              watchdogAvailable: true))
     }
 
     private func failure(_ message: String) -> RuntimeFailure { .unavailable(message) }
