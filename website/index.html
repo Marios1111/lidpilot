@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="LidPilot is a native Mac menu-bar utility for lectures and long-running tasks. Free, open source, and built without analytics.">
+  <meta name="color-scheme" content="light dark">
+  <title>LidPilot — A little more time, on your Mac</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="nav wrap">
+    <a class="brand" href="#" aria-label="LidPilot home"><span class="mark" aria-hidden="true">↗</span>LidPilot</a>
+    <nav aria-label="Main navigation"><a href="#behaviors">How it works</a><a href="#setup">Get started</a></nav>
+  </header>
+  <main id="main">
+    <section class="hero wrap">
+      <div class="intro">
+        <p class="eyebrow"><span class="dot"></span> Native for Mac · V1 in development</p>
+        <h1>A little more time.<br><span>A little less interruption.</span></h1>
+        <p class="lede">Keep your screen ready for a lecture, or give a long task room to finish. Choose a behavior, set a timer, and keep control from your menu bar.</p>
+        <a class="button" href="#setup">Meet LidPilot <span aria-hidden="true">↗</span></a>
+        <p class="compat">Apple Silicon · macOS 15 or later · Free & open source</p>
+      </div>
+      <div class="preview" aria-label="Illustrative LidPilot interface, not a hardware status report">
+        <div class="preview-top"><strong>LidPilot</strong><span class="status">Off</span></div>
+        <p class="preview-caption">What would you like to keep available?</p>
+        <div class="mode selected"><span class="glyph" aria-hidden="true">↗</span><div><strong>Follow Lid</strong><small>Screen open. Work continues when closed.</small></div><span class="selected-dot" aria-hidden="true"></span></div>
+        <div class="mode"><span class="glyph" aria-hidden="true">▱</span><div><strong>Keep Screen On</strong><small>For lectures and reading along.</small></div></div>
+        <div class="mode"><span class="glyph" aria-hidden="true">◒</span><div><strong>Keep Mac Running</strong><small>For builds, downloads, and long tasks.</small></div></div>
+        <div class="timer-label"><span>Session</span><span>Choose your own end time</span></div>
+        <div class="timers" aria-label="Example timer choices"><span>30 min</span><span class="chosen">1 hour</span><span>2 hours</span><span>4 hours</span></div>
+        <div class="preview-start">Start session</div>
+        <p class="preview-note">Illustration · LidPilot always launches Off</p>
+      </div>
+    </section>
+    <section id="behaviors" class="section wrap">
+      <div class="section-intro"><p class="eyebrow">One small utility, two everyday rhythms</p><h2>Choose what stays awake.</h2></div>
+      <div class="features">
+        <article><span class="number">01</span><h3>Follow Lid</h3><p>Keeps your Mac and screen available while open. When you close the lid, it releases the screen hold and keeps the Mac running. Reopening triggers a fresh safety check.</p></article>
+        <article><span class="number">02</span><h3>Keep Screen On</h3><p>A simple, helper-free screen session for a lecture or reading. Your brightness keys still work. The supported macOS display hold can also prevent inactivity dimming.</p></article>
+        <article><span class="number">03</span><h3>Keep Mac Running</h3><p>Uses an approved helper for closed-lid work. The screen follows macOS display policy. Physical internal-panel shutdown remains a release validation gate.</p></article>
+      </div>
+    </section>
+    <section class="quiet-band"><div class="wrap principles">
+      <div><h2>Useful controls.<br>Clear boundaries.</h2><p>Thirty minutes, an afternoon, a specific time, or until you stop.</p></div>
+      <ul><li>Battery cutoff and charger-aware policies</li><li>Thermal protection with an explicit restart</li><li>Verified cleanup and visible recovery status</li><li>Local diagnostics. No analytics. No account.</li></ul>
+    </div></section>
+    <section id="setup" class="section wrap setup">
+      <div><p class="eyebrow">Getting started</p><h2>Small by design.<br>Careful before release.</h2><p>A public signed download is not available yet. The repository includes the native app, tests, documentation, and a signing and notarization pipeline.</p><p class="note">Closed-lid panel behavior, recovery on real hardware, and the signed update lifecycle must pass the documented validation gates before public release.</p></div>
+      <div class="questions">
+        <details open><summary>How will installation work?</summary><p>Open the signed disk image, move LidPilot to Applications, and launch it. It starts Off. Keep Screen On works without the privileged helper; the other two behaviors guide you through macOS helper approval.</p></details>
+        <details><summary>Does it change brightness?</summary><p>LidPilot does not write brightness settings or simulate user input. Manual brightness stays available. Keeping a display awake with the public macOS API may also stop idle dimming; independent dimming behavior is still being validated.</p></details>
+        <details><summary>What happens when I stop?</summary><p>LidPilot releases its assertions and verifies its helper cleanup. If cleanup cannot be verified, it shows Recovery required. Stop & Sleep requests sleep only after cleanup succeeds.</p></details>
+        <details><summary>How do I remove it?</summary><p>Open the lid, turn LidPilot Off, and verify cleanup. In Settings → Helper & Recovery, remove the helper. Disable Launch at login, quit LidPilot, then remove the app. Resolve any recovery warning first.</p></details>
+        <details><summary>How will updates work?</summary><p>Signed Sparkle updates use GitHub Releases and a GitHub Pages feed. Checks may run during a session. Installation requires Off, an open lid, and verified helper cleanup; the updated app starts Off.</p></details>
+      </div>
+    </section>
+  </main>
+  <footer class="wrap footer"><a class="brand" href="#">LidPilot</a><p>Made for a quieter menu bar.</p><span>© 2026 LidPilot contributors · MIT</span></footer>
+</body>
+</html>
