@@ -3,7 +3,7 @@ import Observation
 import LidPilotCore
 
 public enum SessionPhase: String, Sendable {
-    case off, starting, active, stopping, paused, recovery, updating
+    case off, starting, active, stopping, paused, unverified, recovery, updating
 }
 
 @MainActor @Observable public final class SessionController {
@@ -59,11 +59,14 @@ public enum SessionPhase: String, Sendable {
                 }
                 helperMayOwn = response.ownsOverride || response.recoveryPending
                 if helperMayOwn { phase = .recovery; message = response.message }
-                else if phase == .recovery, cleanupVerified, assertions == .off { phase = .off; message = "Previous cleanup verified." }
+                else if phase == .recovery || phase == .unverified, cleanupVerified, assertions == .off {
+                    publish(.off, "LidPilot's controls are off.")
+                }
                 onOwnershipChange?(helperMayOwn)
             } catch {
                 guard generation == token else { return }
-                if helperMayOwn { phase = .recovery; message = error.localizedDescription }
+                if helperMayOwn { publish(.recovery, error.localizedDescription) }
+                else { publish(.unverified, "Helper status is unverified: \(error.localizedDescription) Keep Screen On remains available.") }
             }
         }
     }

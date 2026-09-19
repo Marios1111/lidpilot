@@ -27,10 +27,12 @@ import LidPilotCore
     var gate: CheckedContinuation<Void, Never>?
     var delayAcquire = false
     var delayRenew = false
+    var failInspect = false
     var requests: [WireRequest] = []
     init(_ platform: TestPlatform) { self.platform = platform; engine = platform.engine() }
     func send(_ request: WireRequest) async throws -> WireReply {
         requests.append(request)
+        if failInspect, request.operation == .inspect { throw RuntimeFailure.unavailable("status unavailable") }
         if (delayAcquire && request.operation == .acquire) || (delayRenew && request.operation == .renew) {
             await withCheckedContinuation { gate = $0 }
         }
@@ -55,6 +57,21 @@ import LidPilotCore
         #expect(transport.requests.isEmpty)
         await controller.stop()
         #expect(controller.phase == .off && power.state == .off)
+    }
+
+    @Test func failedStatusIsUnverifiedAndDisplayRemainsIndependent() async {
+        let (controller, _, power, transport) = setup()
+        transport.failInspect = true
+        await controller.refreshWhileOff()
+        #expect(controller.phase == .unverified && power.state == .off)
+        transport.failInspect = false
+        await controller.refreshWhileOff()
+        #expect(controller.phase == .off)
+        transport.failInspect = true
+        await controller.refreshWhileOff()
+        await controller.start(mode: .display, duration: .seconds(60), policy: SafetyPolicy())
+        #expect(controller.phase == .active && controller.effectiveMode == .display)
+        #expect(transport.requests.allSatisfy { $0.operation == .inspect })
     }
 
     @Test func smartCloseDropsDisplayReopenReverifiesLease() async {
