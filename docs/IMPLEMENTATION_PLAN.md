@@ -1,6 +1,6 @@
 # LidPilot V1 implementation plan
 
-Status: requirements inspected; repository guidance and interactive design comparison are complete. Native application implementation is pending the user's design choice from `design/index.html`. No hardware power tests or privileged installation are authorized by this plan.
+Status: the user delegated final design to Astra Max and prefers Mode Cards with its compact timer. Native implementation is underway. User-facing labels are Follow Lid, Keep Screen On, and Keep Mac Running; internal mode semantics remain smart/display/closed. No hardware power tests or privileged installation are authorized by this plan.
 
 ## Outcome and fixed decisions
 

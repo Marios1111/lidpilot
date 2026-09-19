@@ -16,7 +16,7 @@ Read these documents before implementation and consult their relevant sections w
 - `/Users/marios/Documents/👨🏼‍💻/coding mac/LidPilot/Planning/LidPilot_Product_Blueprint_Updated.pdf`
 - `/Users/marios/Documents/👨🏼‍💻/coding mac/LidPilot/Planning/LidPilot/LidPilot_Product_Specification_Updated.md`
 
-Planning edition 1.1 describes app V1.0; it does not authorize V1.1/V2 features. Written requirements override old concept-image wording. Concept art is inspiration, never a pixel-for-pixel implementation. The user must choose the design direction from the local HTML gallery before native UI implementation.
+Planning edition 1.1 describes app V1.0; it does not authorize V1.1/V2 features. Written requirements override old concept-image wording. Concept art is inspiration, never a pixel-for-pixel implementation. The user delegated final UI design to Astra Max, preferring Mode Cards and its compact timer. Keep the Soft Glass style, minimal controls, and stable mode cards. User-facing mode names are Follow Lid, Keep Screen On, and Keep Mac Running; internal smart/display/closed semantics stay unchanged.
 
 ## Product and architecture
 
