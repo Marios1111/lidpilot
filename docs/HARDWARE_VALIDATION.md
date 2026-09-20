@@ -35,10 +35,12 @@ Before a real-machine run:
 - Keep the lid open for setup and recovery. Save work and keep the documented
   recovery path visible.
 - Capture a read-only baseline of lid, power, thermal, display topology, and
-  the system sleep flag. A read-only `pmset -g` observation on the development
-  host reported `SleepDisabled=1`; preserve that pre-existing state. If the
+  the system sleep flag. If the
   flag is already active and unowned, stop the test. Do not write `0` merely to
-  make a baseline look clean.
+  make a baseline look clean. Ask the other controller to stop normally, then
+  independently verify the flag is `0` before LidPilot takes ownership. See
+  [the dated prerequisite record](validation/2026-09-21-prerequisites.md) for
+  the development host's initial state and its eventual clean read-back.
 - Confirm that no other sleep controller is active. Do not run two controllers
   and call the resulting flag a LidPilot result.
 - Use mock Core/Runtime tests for ordinary CI. Do not install/enable the helper
@@ -77,10 +79,15 @@ Opt-in procedure:
 5. Stop the session and confirm both assertions release and macOS preferences
    remain unchanged.
 
-Pass criteria require a public, repeatable path that delivers the specified
-   dim-without-off experience across the declared support boundary, with no
-   fake input or brightness manipulation. The current assertion path alone does
-   not pass G1; until evidence exists, document the behavior as unvalidated.
+Record two separate results: whether native dim-without-off is available, and
+whether the supported keep-screen-on behavior passes. The release-validation
+scope permits a measured limitation when a safe public mechanism cannot
+provide independent dimming. In that case acceptance requires working manual
+brightness, a recorded automatic-brightness observation, prevention of idle
+display-off, verified assertion cleanup, and clear product documentation of
+suppressed idle dimming. Do not mark dim-without-off as implemented or infer a
+hardware pass from the assertion alone. An unavailable topology/OS remains
+untested rather than inheriting another setup's result.
 
 ## G2 - physical internal-panel behavior
 
