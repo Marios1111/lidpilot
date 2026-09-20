@@ -3,7 +3,12 @@
 All notable LidPilot changes will be recorded here. This file describes the
 current development snapshot; it is not a release announcement.
 
-## Unreleased - development snapshot
+## 1.0.0 - release candidate validation
+
+This is a supervised release candidate, not a stable V1.0 release. Physical
+display, recovery, helper authentication, performance, and the signed update
+lifecycle are still being validated. Use on an open, ventilated desk and read
+the verification record before enabling closed-lid support.
 
 ### Added
 
