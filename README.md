@@ -67,8 +67,9 @@ Normal tests use mock clocks, samplers, assertions, helper transport, power
 drivers, and journals. They do not install or enable the helper and must not
 change this Mac's global power policy. During development, a read-only
 `pmset -g` inspection reported `SleepDisabled=1` on the host; that pre-existing
-state is preserved and is not treated as LidPilot ownership. The user confirmed another closed-lid controller is actively managing it. Do not run a write
-to reset it as part of ordinary tests.
+state is preserved and is not treated as LidPilot ownership. The user confirmed
+another closed-lid controller is actively managing it. Do not run a write to
+reset it as part of ordinary tests.
 
 The supported project wrappers are:
 

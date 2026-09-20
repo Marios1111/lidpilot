@@ -1,6 +1,6 @@
 # LidPilot V1 implementation plan
 
-Status: implementation and safe automated/native smoke checks are complete. The user delegated final design to Astra Max, retaining Mode Cards and the compact timer. User-facing labels are Follow Lid, Keep Screen On, and Keep Mac Running; internal semantics remain smart/display/closed. The September 21 native mock interaction and accessibility-tree pass is complete, including timer choices, settings, export, onboarding, and two verified UI fixes. Spoken VoiceOver, full keyboard navigation, and live accessibility/appearance variations remain open. Hardware, signed XPC, notarized upgrades, and performance measurements remain explicit release gates. No hardware power tests or privileged installation are authorized by this plan. See `VERIFICATION.md` for evidence and the exact resume point.
+Status: implementation and safe automated/native smoke checks are complete. The user delegated final design to Astra Max, retaining Mode Cards and the compact timer. User-facing labels are Follow Lid, Keep Screen On, and Keep Mac Running; internal semantics remain smart/display/closed. The September 21 native mock interaction and accessibility-tree pass is complete, including timer choices, settings, export, onboarding, and two verified UI fixes. The follow-up accessibility QA is complete: keyboard navigation, user-assisted VoiceOver speech confirmation, Light/Dark, Increase Contrast, Reduce Transparency, and Reduce Motion. macOS does not list LidPilot as supporting its preferred-reading-size control; that limitation is documented. Original system settings were restored. Hardware, signed XPC, notarized upgrades, and performance measurements remain explicit release gates. No hardware power tests or privileged installation are authorized by this plan. See `VERIFICATION.md` for evidence and the exact resume point.
 
 ## Outcome and fixed decisions
 
@@ -21,7 +21,7 @@ The Astra lead owns architecture, transition contracts, security decisions, inte
 
 Create the app/helper project and pure policy package, version/build configuration, project-local build/run entrypoint, and appropriate ignore rules. Record the initial empty repository and use `dev`. Keep release identities/configuration explicit and unconfigured until supplied.
 
-Inspect public assertion semantics and relevant compatibility sources. Document the supported baseline: no brightness writes or synthetic activity, release display holds on close, native panel handling first, no unvalidated blanket fallback. Prepare opt-in G1/G2 hardware experiments with distinct manual/ambient/inactivity/panel observations. Do not run intrusive experiments automatically.
+Review public assertion semantics and relevant compatibility sources for a narrow fixed `pmset` backend, launchd helper packaging, and Sparkle integration. Document the supported baseline: no brightness writes or synthetic activity, release display holds on close, native panel handling first, no unvalidated blanket fallback. Prepare opt-in G1/G2 hardware experiments with distinct manual/ambient/inactivity/panel observations. Do not run intrusive experiments automatically.
 
 Proof: minimal app builds; core tests run without root or global mutations; source-backed feasibility notes distinguish API constraints from physical findings.
 

@@ -21,7 +21,7 @@ or update lifecycle has passed validation.
 | Recovery | Durable journal, read-back, ownership ambiguity, explicit recovery | Mock/logic evidence; crash-window behavior on a real signed install is G3/G4 |
 | Updates | Sparkle 2 signed update path with an activation barrier | Configuration and coordinator logic exist; signed artifact/feed lifecycle is G5 |
 | Removal | Open-lid cleanup, verified helper unregistration, then app removal | Documented path; real installation cleanup is part of G5 |
-| Accessibility | Native SwiftUI/AppKit controls and labels | Native accessibility-tree labels and key shortcuts checked; spoken VoiceOver, full keyboard navigation, and appearance variations remain open |
+| Accessibility | Native SwiftUI/AppKit controls and labels | Keyboard flows, user-assisted VoiceOver speech, Light/Dark and contrast/transparency/motion settings checked; preferred-reading-size scaling is not claimed |
 | Diagnostics | Local, bounded, redacted diagnostics | Seven retention, redaction, storage, and malformed-input tests pass; native preview and local Save dialog export passed |
 | Privacy | No account, cloud service, analytics, AI-agent detection, CLI, or remote-control feature | V1 scope and source review; reassess every new dependency |
 

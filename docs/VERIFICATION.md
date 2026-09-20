@@ -14,7 +14,7 @@ focused context, with current source and builds as the final evidence.
 
 | Feature | Implementation | Remaining evidence |
 | --- | --- | --- |
-| Native arm64 macOS 15+ app | Swift 6 / SwiftUI / AppKit menu-bar app, original icon, adaptive Soft Glass mode cards | Stable supported OS and interactive accessibility pass |
+| Native arm64 macOS 15+ app | Swift 6 / SwiftUI / AppKit menu-bar app, original icon, adaptive Soft Glass mode cards | Stable supported OS and release-candidate accessibility repeat |
 | Follow Lid / Keep Screen On / Keep Mac Running / Off | Separate requested/effective/observed state, read-back, generation invalidation | G1/G2 physical behavior |
 | Sessions | 30m/1h/2h/4h/custom/until-time/indefinite; immutable hard deadlines; switch preserves deadline | Native preset/custom/until-time/indefinite interaction passed; physical timing remains gated |
 | Safety | Thermal protection, 10/20/30% battery cutoff, battery/LPM policies, charger/lid/display/wake observation, explicit restart after pause | Live sensor and workload continuity checks |
@@ -96,14 +96,14 @@ in Git. The unsigned packaging fixture is under
 
 ## Resume point and release gates
 
-1. Complete a spoken VoiceOver navigation pass, full keyboard navigation under
-   the release candidate's keyboard-access configuration, and live light/high-
-   contrast/reduced-transparency variations. The September 21 interaction and
-   accessibility-tree checks below passed; they do not establish these remaining
-   assistive-technology and appearance cases.
-2. Keep the user's running closed-lid controller and its observed `SleepDisabled=1`
-   intact. No helper registration, global write, real sleep request, closed-lid
-   test, or controller termination was performed in this implementation task.
+1. Repeat the accessibility checks below on each release candidate and supported
+   macOS version. This development-host pass is complete with user-assisted
+   VoiceOver speech confirmation and the documented preferred-reading-size
+   limitation; it is not a universal accessibility certification.
+2. Keep the user's running closed-lid controller and its observed
+   `SleepDisabled=1` state intact. No helper registration, global write, real
+   sleep request, closed-lid test, or controller termination was performed in
+   this implementation task.
 3. Obtain explicit opt-in for G1–G4 in `HARDWARE_VALIDATION.md`. Idle dimming
    while preventing display-off and actual internal-panel shutdown remain
    unresolved. No synthetic input, private brightness API, overlay, or blanket
@@ -117,9 +117,9 @@ in Git. The unsigned packaging fixture is under
    G5 from a prior signed build, including tamper rejection, active-session
    deferral, helper replacement, launch Off and uninstall.
 
-The next action is the remaining accessibility/appearance pass, followed by
-explicitly approved hardware validation. Public release remains a separate
-explicit approval after all applicable evidence has been retained.
+The next action is explicitly approved hardware validation on the documented
+G1–G5 matrix, followed by release credentials and signed lifecycle checks.
+Public release remains a separate explicit approval after all applicable evidence has been retained.
 
 ## Native follow-up — 2026-09-21
 
@@ -179,6 +179,48 @@ locked-use being enabled. The user unlocked it and testing resumed. Hardware,
 real helper authentication/recovery, signed updates, performance budgets, and
 macOS 15 runtime compatibility remain open; no claim was upgraded from mock
 or UI evidence to physical/release evidence.
+
+## Accessibility follow-up — 2026-09-21
+
+The Astra lead owned native testing and final review. GPT-5.6 Luna / Max
+performed a bounded source audit, implemented the Settings selection outline,
+and removed reference-only documentation at the owner's request. The outline
+adds a 1.5-point semantic foreground border only under Increase Contrast;
+normal appearance, layout, and selected accessibility traits stay unchanged.
+CodeGraph supplied focused source context.
+
+The user explicitly approved temporary system accessibility/appearance changes
+and their restoration. The actual Debug app used simulated power controls:
+
+| Check | Evidence and result |
+| --- | --- |
+| Keyboard navigation | With macOS Keyboard Navigation on, Tab/Shift-Tab reached mode cards, presets, duration menu, custom field/stepper, Start/Stop, footer and Settings; Space activated controls; arrow/Return chose a native menu item; Escape dismissed it. Settings sidebar, safety picker and switch were operable without pointer selection. |
+| Focus and selection | Focus rings were visible. Mode selection includes a checkmark and an accessibility selected trait. The Settings outline remained visible when keyboard focus moved to a different section; verified in Light and Dark. |
+| VoiceOver | Enabled the real VoiceOver service and completed its first-use dialog without changing the welcome preference. Native navigation was attempted, and the user confirmed “Yes, announcements are clear.” This is user-assisted speech evidence: the automation tool could not inspect the caption window or hear audio directly. It does not establish every VoiceOver rotor or navigation command. |
+| Increase Contrast | Native panel/control contrast strengthened. The selected Settings section now has an explicit outline independent of its pale tint. |
+| Reduce Transparency | Panel, Settings sidebar and onboarding were opaque. Native materials in Settings/onboarding honored the OS setting without an added fallback. |
+| Reduce Motion | Activation, mode changes and timer updates remained usable with Reduce Motion on. Source audit found no authored motion transitions; the visible timer uses a one-second update schedule. |
+| Light and Dark | Native panel, Settings and onboarding were inspected; controls and explanatory text remained readable. The final Settings outline was checked in both appearances and disappeared after Increase Contrast was restored Off. |
+| Preferred reading size | Inspected Accessibility → Display → Text Size. macOS lists supported apps and system features; LidPilot was not listed. Reading sizes remained unchanged. Automatic preferred-reading-size scaling is not claimed for LidPilot. |
+
+[Apple's caption-panel guide](https://support.apple.com/en-euro/guide/voiceover/unac078/mac)
+describes it as the spoken-output display. Apple also distinguishes
+[supported-app reading sizes](https://support.apple.com/en-lamr/guide/mac-help/mchld786f2cd/mac)
+from [SwiftUI Dynamic Type](https://developer.apple.com/documentation/swiftui/environmentvalues/dynamictypesize),
+which does not change text size on macOS. No iOS-only scaling workaround was added.
+
+Restoration was verified in native System Settings: Keyboard Navigation Off,
+VoiceOver Off, Increase Contrast Off, Reduce Transparency Off, Reduce Motion
+Off, and Dark appearance selected. The caption-panel preference was already
+on and was not changed. Reading sizes, brightness and power settings were not
+modified. The temporary Settings and VoiceOver Utility windows were closed.
+The other closed-lid controller remained running; hardware testing did not start.
+
+Debug and Release compile after the outline change, and the final mock app
+smoke verifies activation, cleanup, rendering and normal exit. The earlier
+72-test result still covers the unchanged Core/Runtime modules. Native checks
+are the regression evidence for this visual-only change. Build/smoke logs are
+`/private/tmp/lidpilot-accessibility-{debug,release,smoke}.log`.
 
 ## Incremental history
 
