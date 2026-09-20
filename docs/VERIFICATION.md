@@ -123,8 +123,8 @@ Public release remains a separate explicit approval after all applicable evidenc
 
 ## Native follow-up — 2026-09-21
 
-Owner and reviewer: Astra lead. Tested source: `a2ea6ed` (includes the
-accessibility fix `74f9710`). No additional reviewer or implementation agent
+Owner and reviewer: Astra lead. Tested source: `5507505` (includes the
+accessibility fix `e9b7b3e`). No additional reviewer or implementation agent
 was used for this focused pass. Environment remained macOS 27.2 (26B5086k),
 Xcode 27.0 (27A5252f), arm64.
 
@@ -132,7 +132,7 @@ The original temporary build was gone. An untracked `Runtime/PMSetDriver 2.swift
 was present on resume and differs from the tracked driver. It was preserved,
 excluded from commits, and excluded from validation by extracting `git archive`
 to a disposable directory and copying only the two reviewed UI edits there.
-The validated source matches the tracked application at `a2ea6ed`; this is not
+The validated source matches the tracked application at `5507505`; this is not
 proof that a direct build including that untracked duplicate succeeds.
 
 Live computer-use interaction and screenshots of the actual Debug app used
@@ -235,31 +235,45 @@ commit list; the final response records the reviewed repository revision.
 Implementation and product-documentation commits at this checkpoint:
 
 ```text
-7e692b3 docs: establish LidPilot scope and implementation plan
-04f109b feat(design): add interactive LidPilot concept gallery
-520bfee docs: record approved mode-card direction and implementation ownership
-5479358 feat(core): model modes and immutable session deadlines
-ee7e1aa feat(safety): enforce battery thermal and power policies
-4cff471 feat(helper): define bounded versioned XPC messages
-28c3294 feat(runtime): observe power state and persist secure recovery intent
-9659f76 feat(helper): enforce leases watchdog safety and durable recovery
-c40b115 feat(protocol): report typed helper failures and health
-deee022 feat(site): add accessible GitHub Pages landing page
-0836d0a fix(helper): fence and bound privileged child execution
-2944199 fix(recovery): distinguish mutation phases and retry settled commands
-c0fd263 feat(xpc): authenticate peers and bound helper request admission
-e31a33d feat(power): manage verified expiring app-scoped assertions
-ddae49b feat(sessions): reconcile modes with stop safety and update barriers
-5bce32e feat(design): add original native app icon assets
-a1108f2 fix(status): distinguish unverified helper reads from confirmed Off
-9f3bad9 feat(ui): add native mode cards timer settings and onboarding
-1c4ddab feat(updates): gate Sparkle installation on verified cleanup
-ab182ae feat(diagnostics): bound redact and expire local event logs
-5db7561 feat(app): wire native lifecycle approval notifications and safe quit
-05e7f3a build: add reproducible arm64 app helper project and CI
-34975d0 build(release): validate signed updates and notarized packaging stages
-56a44e8 docs: add product contributor and security guidance
+1e8afab docs: establish LidPilot scope and implementation plan
+57acecd feat(design): add interactive LidPilot concept gallery
+bdf11e6 docs: record approved mode-card direction and implementation ownership
+4fcc20f feat(core): model modes and immutable session deadlines
+d102a7f feat(safety): enforce battery thermal and power policies
+767ba7c feat(helper): define bounded versioned XPC messages
+7685010 feat(runtime): observe power state and persist secure recovery intent
+a189b06 feat(helper): enforce leases watchdog safety and durable recovery
+9225d2f feat(protocol): report typed helper failures and health
+08777f8 feat(site): add accessible GitHub Pages landing page
+1df2962 fix(helper): fence and bound privileged child execution
+ca19224 fix(recovery): distinguish mutation phases and retry settled commands
+047a144 feat(xpc): authenticate peers and bound helper request admission
+9147399 feat(power): manage verified expiring app-scoped assertions
+52e1a16 feat(sessions): reconcile modes with stop safety and update barriers
+94c8f74 feat(design): add original native app icon assets
+4a17ac6 fix(status): distinguish unverified helper reads from confirmed Off
+0f23db7 feat(ui): add native mode cards timer settings and onboarding
+29d046f feat(updates): gate Sparkle installation on verified cleanup
+f75a85c feat(diagnostics): bound redact and expire local event logs
+07844c2 feat(app): wire native lifecycle approval notifications and safe quit
+c52eac1 build: add reproducible arm64 app helper project and CI
+5533682 build(release): validate signed updates and notarized packaging stages
+98017dc docs: add product contributor and security guidance
 ```
 
 The final technical-documentation commit records this evidence without changing
 application source; its exact revision is reported in the task completion.
+
+## Local history maintenance — 2026-09-21
+
+At the owner's request, obsolete reference-only documentation was removed from
+all reachable local history, including Codex checkpoint refs. A disposable
+mirror proved preservation of all 30 commits, parent ordering, messages, author
+and committer metadata, and all paths except the four approved documentation
+files. The current tracked file tree was identical before and after rewriting.
+Historical commit identifiers above were refreshed to the rewritten identifiers.
+
+The lead applied the verified rewrite after saving a private rollback bundle
+outside the repository. Local recovery objects/reflogs were retained; no GitHub
+remote was configured and no remote history, publication, or force-push occurred.
+The pre-existing untracked source duplicate remained unchanged.
