@@ -16,7 +16,7 @@ class ValidationError < StandardError; end
 
 # Do not treat ordinary XML tags as placeholders. Only explicit template
 # markers and reserved/example hosts are rejected.
-PLACEHOLDER = /(example\.(com|org|net|test)|localhost|127\.0\.0\.1|\.invalid\b|YOUR[_-]?[A-Z0-9_-]*|CHANGE[_-]?ME|REPLACE[_-]?ME|<\s*(?:YOUR|CHANGE|REPLACE|PLACEHOLDER)[^>]*>)/i
+PLACEHOLDER = /(example\.(com|org|net|test)|localhost|127\.0\.0\.1|\.invalid\b|\bYOUR[_-][A-Z0-9_-]+\b|\b(?-i:YOUR[A-Z0-9]+)\b|\bCHANGE[_-]?ME\b|\bREPLACE[_-]?ME\b|<\s*(?:YOUR|CHANGE|REPLACE|PLACEHOLDER)(?:[_-][A-Z0-9_-]+)?\s*>)/i
 RELEASE_DEFAULTS_PATH = File.join(File.dirname($PROGRAM_NAME), "..", "Config", "ReleaseDefaults.json")
 
 def fail_validation(message)
@@ -400,6 +400,10 @@ def expect_equal(actual, expected, label)
 end
 
 def self_test
+  fail_validation("ordinary release prose was mistaken for a placeholder") if "Keep your settings during helper replacement.".match?(PLACEHOLDER)
+  %w[YOUR_TEAM YOURTEAM REPLACE_ME replaceme CHANGE-ME <PLACEHOLDER>].each do |marker|
+    fail_validation("placeholder detection missed #{marker}") unless marker.match?(PLACEHOLDER)
+  end
   Dir.mktmpdir("lidpilot-release-validator-") do |dir|
     stable_config = release_configuration("1.0.0", { "LIDPILOT_RELEASE_CHANNEL" => "stable", "LIDPILOT_RC_NUMBER" => "7", "LIDPILOT_RC_TESTING_APPROVED" => "1" })
     expect_equal(stable_config.fetch("releaseLabel"), "1.0.0", "stable release label")
