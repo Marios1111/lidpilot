@@ -26,6 +26,8 @@ current development snapshot; it is not a release announcement.
 
 ### Fixed
 
+- Give the selected Settings section a stronger outline with Increase Contrast.
+
 - Keep status field names in the accessibility text of grouped Settings rows.
 - Size onboarding to its content so introduction and safety text remain visible.
 

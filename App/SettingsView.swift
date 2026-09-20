@@ -12,6 +12,7 @@ private enum SettingsSection: String, CaseIterable, Identifiable {
 
 struct SettingsView: View {
     @Bindable var model: AppModel
+    @Environment(\.colorSchemeContrast) private var contrast
     @State private var section: SettingsSection = .general
     @State private var showingExport = false
     @State private var removingHelper = false
@@ -26,6 +27,12 @@ struct SettingsView: View {
                         Label(item.rawValue, systemImage: item.icon).font(.system(size: 12, weight: .medium))
                             .frame(maxWidth: .infinity, alignment: .leading).padding(.vertical, 10).padding(.horizontal, 10)
                             .background(section == item ? Color.accentColor.opacity(0.12) : .clear, in: RoundedRectangle(cornerRadius: 8))
+                            .overlay {
+                                if section == item && contrast == .increased {
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .strokeBorder(Color.primary.opacity(0.75), lineWidth: 1.5)
+                                }
+                            }
                     }.buttonStyle(.plain).accessibilityAddTraits(section == item ? .isSelected : [])
                 }
                 Spacer()
