@@ -6,10 +6,10 @@ capable than a general root command runner. Treat any path that could make an
 unowned helper mutate power policy, bypass peer authentication, or conceal
 failed restoration as high priority.
 
-This checkout is an unreleased development snapshot. It has no public security
-contact URL or release feed configured. Do not invent one, and do not disclose
-an unverified issue in a public issue tracker. Use the private reporting route
-provided by the maintainer or the repository host once that route is supplied.
+LidPilot is currently in release-candidate validation. Report vulnerabilities
+privately using [GitHub private reporting](https://github.com/Marios1111/lidpilot/security/advisories/new).
+Private reporting is enabled for the public repository. Do not disclose an
+unverified security issue in a public issue tracker.
 
 ## Boundary and invariants
 
