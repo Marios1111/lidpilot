@@ -1,7 +1,12 @@
 # V1 implementation checkpoint
 
-Initial checkpoint: 2026-09-19; native follow-up: 2026-09-21. Source and local development builds are implemented; public
-release is blocked by the gates below. No remote publication or push occurred.
+Initial checkpoint: 2026-09-19; native follow-up and release validation: 2026-09-21.
+Source and local development builds are implemented; stable release remains
+blocked by the gates below. The repository is now
+[Marios1111/lidpilot](https://github.com/Marios1111/lidpilot), with `dev` connected
+to `origin/dev`. Historical sections below describe their own dated checkpoints.
+See [V1_RELEASE_PLAN.md](V1_RELEASE_PLAN.md) for the newly authorized hardware,
+signing, RC and publication sequence. No stable release is claimed.
 
 Technical owner: the selected GPT-6 Astra Max lead. GPT-5.6 Luna Max handled
 bounded Core, diagnostics, project/release, and documentation work. GPT-5.6 Sol

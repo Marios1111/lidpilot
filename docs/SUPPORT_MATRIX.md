@@ -79,4 +79,6 @@ each exercised combination.
 For the real-machine procedure, use the preflight and retained-record rules in
 [`HARDWARE_VALIDATION.md`](HARDWARE_VALIDATION.md). Do not change the host's
 pre-existing global power state just to make a matrix cell pass; the
-development host's read-only `SleepDisabled=1` observation remains preserved.
+initial `SleepDisabled=1` observation belonged to another controller. In the
+September 21 authorized preflight, that controller was asked to quit normally;
+independent read-back subsequently confirmed `0`. LidPilot did not clear it.

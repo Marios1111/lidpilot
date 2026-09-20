@@ -39,9 +39,9 @@ current development snapshot; it is not a release announcement.
   by default and never resume implicitly after a safety pause.
 - Diagnostics are local and bounded, with path-like text redaction and no
   analytics, account, cloud, prompt, or workload collection.
-- The pre-existing development-host `SleepDisabled=1` observation remains
-  untouched; ordinary tests use mocks and do not install the helper or mutate
-  global power policy.
+- Ordinary tests use mocks and do not install the helper or mutate global power
+  policy. Real hardware validation uses a separately authorized baseline and
+  ownership/cleanup record.
 
 ### Validation status
 
@@ -49,5 +49,5 @@ current development snapshot; it is not a release announcement.
 - Native inactivity dimming without display-off, physical internal-panel power,
   real signed peer authentication, hardware crash recovery, notarized
   packaging, signed update replacement, and uninstall remain release gates.
-- No public download, repository, appcast, or signed release artifact is
-  configured in this snapshot.
+- The repository is now `Marios1111/lidpilot`; stable artifacts and the update
+  feed remain gated on the recorded release-validation results.

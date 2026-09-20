@@ -5,9 +5,10 @@ supports lectures and other open-lid work, plus carefully controlled local work
 that should continue when a MacBook lid closes. It is written in Swift 6 for
 Apple Silicon Macs running macOS 15 or later.
 
-This checkout is an unreleased development snapshot. It has no public download
-or repository URL configured, and it must not be described as a released,
-notarized, or hardware-validated product. The concept artwork in `design/` is a
+Development lives at [Marios1111/lidpilot](https://github.com/Marios1111/lidpilot)
+on `dev`. V1 release validation is in progress; a stable signed download is not
+yet available. Follow the [verification record](docs/VERIFICATION.md) for actual
+hardware, signing, and update results. The concept artwork in `design/` is a
 directional design artifact; it is not evidence of power behavior.
 
 ## Modes
@@ -65,11 +66,11 @@ permission checked, and written atomically before a mutation.
 
 Normal tests use mock clocks, samplers, assertions, helper transport, power
 drivers, and journals. They do not install or enable the helper and must not
-change this Mac's global power policy. During development, a read-only
-`pmset -g` inspection reported `SleepDisabled=1` on the host; that pre-existing
-state is preserved and is not treated as LidPilot ownership. The user confirmed
-another closed-lid controller is actively managing it. Do not run a write to
-reset it as part of ordinary tests.
+change this Mac's global power policy. Hardware tests require an explicit
+operator-controlled session and a recorded baseline. If another controller
+already owns `SleepDisabled=1`, stop it through its supported cleanup path and
+verify restoration before allowing LidPilot to acquire a lease. Never reset
+an unowned flag merely to make a test pass.
 
 The supported project wrappers are:
 

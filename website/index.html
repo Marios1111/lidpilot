@@ -12,7 +12,7 @@
   <a class="skip" href="#main">Skip to content</a>
   <header class="nav wrap">
     <a class="brand" href="#" aria-label="LidPilot home"><span class="mark" aria-hidden="true">↗</span>LidPilot</a>
-    <nav aria-label="Main navigation"><a href="#behaviors">How it works</a><a href="#setup">Get started</a></nav>
+    <nav aria-label="Main navigation"><a href="#behaviors">How it works</a><a href="#setup">Get started</a><a href="https://github.com/Marios1111/lidpilot">Source</a></nav>
   </header>
   <main id="main">
     <section class="hero wrap">
@@ -48,7 +48,7 @@
       <ul><li>Battery cutoff and charger-aware policies</li><li>Thermal protection with an explicit restart</li><li>Verified cleanup and visible recovery status</li><li>Local diagnostics. No analytics. No account.</li></ul>
     </div></section>
     <section id="setup" class="section wrap setup">
-      <div><p class="eyebrow">Getting started</p><h2>Small by design.<br>Careful before release.</h2><p>A public signed download is not available yet. The repository includes the native app, tests, documentation, and a signing and notarization pipeline.</p><p class="note">Closed-lid panel behavior, recovery on real hardware, and the signed update lifecycle must pass the documented validation gates before public release.</p></div>
+      <div><p class="eyebrow">Getting started</p><h2>Small by design.<br>Careful before release.</h2><p>A stable signed download is not available yet. The <a href="https://github.com/Marios1111/lidpilot">repository</a> includes the native app, tests, documentation, and a signing and notarization pipeline.</p><p class="note">Follow the <a href="https://github.com/Marios1111/lidpilot/blob/dev/docs/VERIFICATION.md">validation record</a> for measured results. Release candidates, when available, are for supervised testing; physical panel behavior, recovery, and signed upgrades remain release gates.</p></div>
       <div class="questions">
         <details open><summary>How will installation work?</summary><p>Open the signed disk image, move LidPilot to Applications, and launch it. It starts Off. Keep Screen On works without the privileged helper; the other two behaviors guide you through macOS helper approval.</p></details>
         <details><summary>Does it change brightness?</summary><p>LidPilot does not write brightness settings or simulate user input. Manual brightness stays available. Keeping a display awake with the public macOS API may also stop idle dimming; independent dimming behavior is still being validated.</p></details>
