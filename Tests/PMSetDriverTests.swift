@@ -90,10 +90,22 @@ struct PMSetDriverTests {
             return child
         }
 
-        #expect(throws: (any Error).self) { try fence.withExclusive(timeout: 0.05) {} }
+        do {
+            try fence.withExclusive(timeout: 0.05) {}
+            Issue.record("the inherited child did not retain the command fence")
+        } catch let error as RuntimeFailure {
+            #expect(error == .unavailable("Timed out waiting for the command fence."))
+        } catch {
+            Issue.record("unexpected error while the inherited child holds the fence: \(error)")
+        }
         let competing = try CommandFence(directoryDescriptor: folder.descriptor, owner: geteuid())
-        #expect(throws: (any Error).self) {
+        do {
             try competing.withExclusive(timeout: 0.05) {}
+            Issue.record("a competing fence acquired the lock while the child was running")
+        } catch let error as RuntimeFailure {
+            #expect(error == .unavailable("Timed out waiting for the command fence."))
+        } catch {
+            Issue.record("unexpected error from a competing fence: \(error)")
         }
 
         var status: Int32 = 0
