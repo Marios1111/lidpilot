@@ -21,7 +21,11 @@ import LidPilotRuntime
         }
     }
     init() { refresh() }
-    func refresh() { status = service.status }
+    func refresh() {
+        status = service.status
+        // Approval can complete in System Settings after register() reports EPERM.
+        if status == .enabled { error = nil }
+    }
     func register() {
         guard mutationsAllowed else { return }
         guard signed else { error = "Helper approval requires a build signed by the LidPilot publisher."; return }
