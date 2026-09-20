@@ -45,7 +45,7 @@ if [[ "$CONFIGURATION" == "Release" && "${LIDPILOT_SIGNED_BUILD:-0}" == "1" ]]; 
     echo "Release builds require a Developer ID Application identity" >&2
     exit 1
   fi
-  SIGNING_ARGS=("DEVELOPMENT_TEAM=$DEVELOPMENT_TEAM" "CODE_SIGN_IDENTITY=$LIDPILOT_DEVELOPER_IDENTITY" "CODE_SIGN_STYLE=Manual")
+  SIGNING_ARGS=("DEVELOPMENT_TEAM=$DEVELOPMENT_TEAM" "CODE_SIGN_IDENTITY=$LIDPILOT_DEVELOPER_IDENTITY" "CODE_SIGN_STYLE=Manual" "OTHER_CODE_SIGN_FLAGS=--timestamp")
 else
   # Local Debug and Release builds are deliberately ad-hoc. This is useful for
   # GUI and optimized compilation checks but is never a distributable release;
