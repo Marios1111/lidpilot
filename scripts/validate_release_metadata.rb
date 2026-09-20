@@ -3,6 +3,7 @@
 
 require "digest"
 require "base64"
+require "cgi"
 require "fileutils"
 require "json"
 require "optparse"
@@ -16,6 +17,7 @@ class ValidationError < StandardError; end
 # Do not treat ordinary XML tags as placeholders. Only explicit template
 # markers and reserved/example hosts are rejected.
 PLACEHOLDER = /(example\.(com|org|net|test)|localhost|127\.0\.0\.1|\.invalid\b|YOUR[_-]?[A-Z0-9_-]*|CHANGE[_-]?ME|REPLACE[_-]?ME|<\s*(?:YOUR|CHANGE|REPLACE|PLACEHOLDER)[^>]*>)/i
+RELEASE_DEFAULTS_PATH = File.join(File.dirname($PROGRAM_NAME), "..", "Config", "ReleaseDefaults.json")
 
 def fail_validation(message)
   raise ValidationError, message
@@ -47,6 +49,116 @@ def require_real_url(value, label)
   uri
 rescue URI::InvalidURIError => e
   fail_validation("#{label} is not a valid URL: #{e.message}")
+end
+
+def validate_release_label(version, release_label, channel)
+  fail_validation("release channel must be stable or rc") unless %w[stable rc].include?(channel)
+  expected = case channel
+             when "stable"
+               version
+             when "rc"
+               fail_validation("release label must match VERSION-rc.N for the selected channel") unless release_label.match?(/\A#{Regexp.escape(version)}-rc\.[1-9][0-9]*\z/)
+               release_label
+             end
+  fail_validation("stable release label must equal the numeric marketing version") unless release_label == expected
+  release_label
+end
+
+def load_release_defaults
+  require_regular_file(RELEASE_DEFAULTS_PATH, "release defaults")
+  defaults = JSON.parse(File.read(RELEASE_DEFAULTS_PATH))
+  %w[repository stableFeedURL rcFeedURL sparklePublicKey].each do |key|
+    fail_validation("release defaults are missing #{key}") unless defaults[key].is_a?(String) && !defaults[key].empty?
+  end
+  defaults
+rescue JSON::ParserError => e
+  fail_validation("release defaults are not valid JSON: #{e.message}")
+end
+
+def validate_publication_urls(feed, download, repository, release_label, channel)
+  fail_validation("repository must be owner/repository") unless repository.match?(/\A[A-Za-z0-9-]+\/[A-Za-z0-9_.-]+\z/)
+  owner, = repository.split("/", 2)
+  fail_validation("Pages URL must use the repository owner's GitHub Pages HTTPS host") unless feed.port == 443 && feed.host.to_s.downcase == "#{owner.downcase}.github.io"
+  path_parts = feed.path.to_s.split("/").reject(&:empty?)
+  fail_validation("Pages URL must point to an appcast.xml path") unless path_parts.last == "appcast.xml"
+  if channel == "rc"
+    fail_validation("RC Pages URL must use the /rc/appcast.xml path") unless path_parts[-2] == "rc"
+  else
+    fail_validation("stable Pages URL must not use the RC appcast path") if path_parts.include?("rc")
+  end
+  fail_validation("release download URL must use github.com") unless download.host.to_s.downcase == "github.com"
+  expected_download = "https://github.com/#{repository}/releases/download/v#{release_label}/LidPilot-#{release_label}.zip"
+  fail_validation("release download URL must exactly match the immutable GitHub Release asset") unless download.to_s == expected_download
+end
+
+def release_configuration(version, environment = ENV)
+  fail_validation("version must be numeric x.y.z") unless version.match?(/\A[0-9]+\.[0-9]+\.[0-9]+\z/)
+  channel = environment.fetch("LIDPILOT_RELEASE_CHANNEL", "stable")
+  fail_validation("LIDPILOT_RELEASE_CHANNEL must be stable or rc") unless %w[stable rc].include?(channel)
+
+  if channel == "rc"
+    rc_number = environment["LIDPILOT_RC_NUMBER"].to_s
+    fail_validation("LIDPILOT_RC_NUMBER must be a positive integer for an RC") unless rc_number.match?(/\A[1-9][0-9]*\z/)
+    fail_validation("LIDPILOT_RC_TESTING_APPROVED=1 is required for an RC") unless environment["LIDPILOT_RC_TESTING_APPROVED"] == "1"
+    release_label = "#{version}-rc.#{rc_number}"
+  else
+    release_label = version
+  end
+
+  validate_release_label(version, release_label, channel)
+  defaults = load_release_defaults
+  repository = environment["LIDPILOT_GITHUB_REPOSITORY"] || defaults.fetch("repository")
+  expected_feed = channel == "rc" ? defaults.fetch("rcFeedURL") : defaults.fetch("stableFeedURL")
+  feed_url = environment["LIDPILOT_PAGES_URL"] || expected_feed
+  expected_download = "https://github.com/#{repository}/releases/download/v#{release_label}/LidPilot-#{release_label}.zip"
+  download_url = environment["LIDPILOT_RELEASE_DOWNLOAD_URL"] || expected_download
+  sparkle_public_key = environment["LIDPILOT_SPARKLE_PUBLIC_KEY"] || defaults.fetch("sparklePublicKey")
+  fail_validation("LIDPILOT_SPARKLE_PUBLIC_KEY contains a placeholder") if sparkle_public_key.match?(PLACEHOLDER)
+  begin
+    fail_validation("LIDPILOT_SPARKLE_PUBLIC_KEY must decode to 32 bytes") unless Base64.strict_decode64(sparkle_public_key).bytesize == 32
+  rescue ArgumentError
+    fail_validation("LIDPILOT_SPARKLE_PUBLIC_KEY is not valid Base64")
+  end
+  feed = require_real_url(feed_url, "feed URL")
+  download = require_real_url(download_url, "download URL")
+  fail_validation("release download URL must not use /latest/") if download.path.to_s.include?("/latest/")
+  validate_publication_urls(feed, download, repository, release_label, channel)
+
+  hardware_validation = if channel == "rc"
+                          "pending"
+                        elsif environment["LIDPILOT_HARDWARE_APPROVED"] == "1"
+                          "approved"
+                        else
+                          "pending"
+                        end
+  {
+    "channel" => channel,
+    "releaseLabel" => release_label,
+    "repository" => repository,
+    "feedURL" => feed_url,
+    "downloadURL" => download_url,
+    "sparklePublicKey" => sparkle_public_key,
+    "hardwareValidation" => hardware_validation
+  }
+rescue URI::InvalidURIError => e
+  fail_validation("release URL is not valid: #{e.message}")
+end
+
+def assert_monotonic_build(current_build, previous_build)
+  current = current_build.to_s
+  previous = previous_build.to_s
+  fail_validation("current build must be a positive integer") unless current.match?(/\A[1-9][0-9]*\z/)
+  fail_validation("previous build must be a positive integer") unless previous.match?(/\A[1-9][0-9]*\z/)
+  fail_validation("build #{current} is not greater than the last recorded release build #{previous}") unless Integer(current, 10) > Integer(previous, 10)
+end
+
+def check_monotonic_build_file(current_build, state_file)
+  return unless File.exist?(state_file)
+
+  state = JSON.parse(File.read(state_file))
+  assert_monotonic_build(current_build, state.fetch("build"))
+rescue JSON::ParserError, KeyError => e
+  fail_validation("release state is invalid: #{e.message}")
 end
 
 def read_plist(path, label)
@@ -88,18 +200,6 @@ def validate_appcast(path, version, build, feed_url, download_url, archive_size,
   fail_validation("appcast release-notes length does not match the notes file") unless notes.attributes["sparkle:length"].to_i == notes_size
 rescue REXML::ParseException => e
   fail_validation("appcast XML is malformed: #{e.message}")
-end
-
-def validate_publication_urls(feed, download, repository, version)
-  return unless repository
-
-  fail_validation("repository must be owner/repository") unless repository.match?(/\A[A-Za-z0-9-]+\/[A-Za-z0-9_.-]+\z/)
-  owner, = repository.split("/", 2)
-  fail_validation("Pages URL must use the repository owner's GitHub Pages HTTPS host") unless feed.port == 443 && feed.host.to_s.downcase == "#{owner.downcase}.github.io"
-  fail_validation("Pages URL must point to an appcast.xml path") unless feed.path.to_s.end_with?("/appcast.xml")
-  fail_validation("release download URL must use github.com") unless download.host.to_s.downcase == "github.com"
-  expected_download = "https://github.com/#{repository}/releases/download/v#{version}/LidPilot-#{version}.zip"
-  fail_validation("release download URL must exactly match the immutable GitHub Release asset") unless download.to_s == expected_download
 end
 
 def validate_bundle(bundle, version, build, team, feed_url)
@@ -175,17 +275,24 @@ end
 
 def validate(options)
   version = options.fetch(:version)
+  release_label = options.fetch(:release_label)
+  channel = options.fetch(:channel)
   build = options.fetch(:build)
+  hardware_validation = options.fetch(:hardware_validation)
   fail_validation("version must be numeric x.y.z") unless version.match?(/\A[0-9]+\.[0-9]+\.[0-9]+\z/)
+  validate_release_label(version, release_label, channel)
   fail_validation("build must be a positive integer") unless build.match?(/\A[1-9][0-9]*\z/)
+  expected_hardware_validation = channel == "rc" ? "pending" : "approved"
+  fail_validation("#{channel} manifest hardware validation must be #{expected_hardware_validation}") unless hardware_validation == expected_hardware_validation
   feed = require_real_url(options.fetch(:feed_url), "feed URL")
   download = require_real_url(options.fetch(:download_url), "download URL")
   fail_validation("download URL must not use /latest/") if download.path.to_s.include?("/latest/")
-  fail_validation("download URL must identify this version") unless download.path.to_s.include?(version) || download.path.to_s.include?("v#{version}")
-  validate_publication_urls(feed, download, options[:repository], version)
+  validate_publication_urls(feed, download, options.fetch(:repository), release_label, channel)
 
   require_regular_file(options.fetch(:archive), "update archive")
   require_regular_file(options.fetch(:notes), "release notes")
+  fail_validation("update archive name must use release label #{release_label}") unless File.basename(options.fetch(:archive)) == "LidPilot-#{release_label}.zip"
+  fail_validation("release notes name must use release label #{release_label}") unless File.basename(options.fetch(:notes)) == "LidPilot-#{release_label}.md"
   notes = File.read(options.fetch(:notes))
   fail_validation("release notes are empty") if notes.strip.empty?
   fail_validation("release notes contain a placeholder") if notes.match?(PLACEHOLDER)
@@ -194,7 +301,15 @@ def validate(options)
   validate_bundle(options[:bundle], version, build, options[:team], options[:feed_url]) if options[:bundle]
   verify_signatures(options) if options[:sign_tool]
   digest = Digest::SHA256.file(options.fetch(:archive)).hexdigest
-  { "version" => version, "build" => build, "archive" => File.basename(options.fetch(:archive)), "sha256" => digest }
+  {
+    "version" => version,
+    "releaseLabel" => release_label,
+    "channel" => channel,
+    "hardwareValidation" => hardware_validation,
+    "build" => build,
+    "archive" => File.basename(options.fetch(:archive)),
+    "sha256" => digest
+  }
 end
 
 def expect_failure(label)
@@ -207,60 +322,226 @@ def expect_failure(label)
   fail_validation("self-test expected #{label} to fail")
 end
 
+def fixture_plist_value(value)
+  case value
+  when true then "<true/>"
+  when false then "<false/>"
+  when Integer then "<integer>#{value}</integer>"
+  when Hash
+    entries = value.map do |key, nested_value|
+      "<key>#{CGI.escapeHTML(key.to_s)}</key>#{fixture_plist_value(nested_value)}"
+    end.join
+    "<dict>#{entries}</dict>"
+  else "<string>#{CGI.escapeHTML(value.to_s)}</string>"
+  end
+end
+
+def write_fixture_plist(path, values)
+  FileUtils.mkdir_p(File.dirname(path))
+  entries = values.map do |key, value|
+    "<key>#{CGI.escapeHTML(key)}</key>#{fixture_plist_value(value)}"
+  end.join
+  File.write(path, "<?xml version=\"1.0\" encoding=\"UTF-8\"?><plist version=\"1.0\"><dict>#{entries}</dict></plist>")
+end
+
+def write_fixture_appcast(path, options)
+  feed_url = options.fetch(:feed_url)
+  notes_url = URI.join(feed_url, File.basename(options.fetch(:notes))).to_s
+  File.write(path, <<~XML)
+    <rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle"><channel>
+      <item><link>#{feed_url}</link>
+        <sparkle:version>#{options.fetch(:build)}</sparkle:version>
+        <sparkle:shortVersionString>#{options.fetch(:version)}</sparkle:shortVersionString>
+        <sparkle:releaseNotesLink sparkle:edSignature="fixture" sparkle:length="#{File.size(options.fetch(:notes))}">#{notes_url}</sparkle:releaseNotesLink>
+        <enclosure url="#{options.fetch(:download_url)}" sparkle:edSignature="fixture" length="#{File.size(options.fetch(:archive))}" />
+      </item></channel></rss>
+  XML
+end
+
+def write_fixture_bundle(bundle, options)
+  contents = File.join(bundle, "Contents")
+  public_key = Base64.strict_encode64("x" * 32)
+  write_fixture_plist(File.join(contents, "Info.plist"), {
+    "CFBundleIdentifier" => "com.lidpilot.app",
+    "CFBundleShortVersionString" => options.fetch(:version),
+    "CFBundleVersion" => options.fetch(:build),
+    "SUFeedURL" => options.fetch(:feed_url),
+    "SUPublicEDKey" => public_key,
+    "SUEnableAutomaticChecks" => true,
+    "SUScheduledCheckInterval" => 86_400,
+    "SUAutomaticallyUpdate" => false,
+    "SUAllowsAutomaticUpdates" => false,
+    "SUEnableSystemProfiling" => false,
+    "SUVerifyUpdateBeforeExtraction" => true,
+    "SURequireSignedFeed" => true,
+    "SUSignedFeedFailureExpirationInterval" => 0,
+    "LSMultipleInstancesProhibited" => true,
+    "LidPilotTeamIdentifier" => "L69774LN97"
+  })
+
+  helper = File.join(contents, "Library", "HelperTools", "LidPilotHelper")
+  FileUtils.mkdir_p(File.dirname(helper))
+  File.write(helper, "fixture helper")
+  FileUtils.chmod(0o755, helper)
+
+  write_fixture_plist(File.join(contents, "Library", "LaunchDaemons", "com.lidpilot.app.helper.plist"), {
+    "Label" => "com.lidpilot.app.helper",
+    "BundleProgram" => "Contents/Library/HelperTools/LidPilotHelper",
+    "MachServices" => { "com.lidpilot.app.helper" => true },
+    "RunAtLoad" => true,
+    "KeepAlive" => true,
+    "ThrottleInterval" => 10,
+    "ProcessType" => "Background"
+  })
+end
+
+def expect_equal(actual, expected, label)
+  fail_validation("self-test expected #{label} to be #{expected.inspect}, got #{actual.inspect}") unless actual == expected
+end
+
 def self_test
   Dir.mktmpdir("lidpilot-release-validator-") do |dir|
+    stable_config = release_configuration("1.0.0", { "LIDPILOT_RELEASE_CHANNEL" => "stable", "LIDPILOT_RC_NUMBER" => "7", "LIDPILOT_RC_TESTING_APPROVED" => "1" })
+    expect_equal(stable_config.fetch("releaseLabel"), "1.0.0", "stable release label")
+    expect_equal(stable_config.fetch("feedURL"), "https://marios1111.github.io/lidpilot/appcast.xml", "stable feed default")
+    expect_equal(stable_config.fetch("downloadURL"), "https://github.com/Marios1111/lidpilot/releases/download/v1.0.0/LidPilot-1.0.0.zip", "stable immutable URL")
+
+    rc_config = release_configuration("1.0.0", {
+      "LIDPILOT_RELEASE_CHANNEL" => "rc",
+      "LIDPILOT_RC_NUMBER" => "4",
+      "LIDPILOT_RC_TESTING_APPROVED" => "1",
+      "LIDPILOT_HARDWARE_APPROVED" => "1"
+    })
+    expect_equal(rc_config.fetch("releaseLabel"), "1.0.0-rc.4", "RC release label")
+    expect_equal(rc_config.fetch("feedURL"), "https://marios1111.github.io/lidpilot/rc/appcast.xml", "RC feed default")
+    expect_equal(rc_config.fetch("downloadURL"), "https://github.com/Marios1111/lidpilot/releases/download/v1.0.0-rc.4/LidPilot-1.0.0-rc.4.zip", "RC immutable URL")
+    expect_equal(rc_config.fetch("hardwareValidation"), "pending", "RC hardware status even when hardware approval is present")
+
+    expect_failure("missing RC testing consent") do
+      release_configuration("1.0.0", { "LIDPILOT_RELEASE_CHANNEL" => "rc", "LIDPILOT_RC_NUMBER" => "4" })
+    end
+    expect_failure("invalid RC number") do
+      release_configuration("1.0.0", { "LIDPILOT_RELEASE_CHANNEL" => "rc", "LIDPILOT_RC_NUMBER" => "0", "LIDPILOT_RC_TESTING_APPROVED" => "1" })
+    end
+    expect_failure("invalid release label") do
+      validate_release_label("1.0.0", "1.0.0-rc.04", "rc")
+    end
+    expect_failure("unknown release channel") do
+      release_configuration("1.0.0", { "LIDPILOT_RELEASE_CHANNEL" => "nightly" })
+    end
+    state_file = File.join(dir, "last-release.json")
+    File.write(state_file, JSON.generate("build" => "10"))
+    expect_failure("non-monotonic state build") { check_monotonic_build_file("10", state_file) }
+    check_monotonic_build_file("11", state_file)
+    puts "self-test accepted a strictly monotonic build"
+
     archive = File.join(dir, "LidPilot-1.0.0.zip")
     notes = File.join(dir, "LidPilot-1.0.0.md")
-    appcast = File.join(dir, "appcast.xml")
+    appcast = File.join(dir, "stable-appcast.xml")
     File.binwrite(archive, "fixture bytes")
     File.write(notes, "fixture notes")
-    base = {
+    stable_base = {
       archive: archive,
       notes: notes,
+      appcast: appcast,
       version: "1.0.0",
+      release_label: "1.0.0",
+      channel: "stable",
       build: "1",
-      feed_url: "https://lidpilot.github.io/lidpilot/appcast.xml",
-      download_url: "https://github.com/lidpilot/lidpilot/releases/download/v1.0.0/LidPilot-1.0.0.zip",
-      repository: "lidpilot/lidpilot"
+      hardware_validation: "approved",
+      feed_url: stable_config.fetch("feedURL"),
+      download_url: stable_config.fetch("downloadURL"),
+      repository: stable_config.fetch("repository")
     }
     File.write(appcast, "<rss>")
-    expect_failure("malformed appcast") { validate(base.merge(appcast: appcast)) }
-    File.write(appcast, <<~XML)
-      <rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle"><channel>
-        <item><link>https://lidpilot.github.io/lidpilot/appcast.xml</link>
-          <sparkle:version>1</sparkle:version><sparkle:shortVersionString>1.0.0</sparkle:shortVersionString>
-          <sparkle:releaseNotesLink sparkle:edSignature="fixture" sparkle:length="13">https://lidpilot.github.io/lidpilot/LidPilot-1.0.0.md</sparkle:releaseNotesLink>
-          <enclosure url="https://github.com/lidpilot/lidpilot/releases/download/v1.0.0/LidPilot-1.0.0.zip" sparkle:edSignature="fixture" length="13" />
-        </item></channel></rss>
-    XML
-    accepted = validate(base.merge(appcast: appcast))
-    fail_validation("self-test expected a valid appcast to pass") if accepted["sha256"].to_s.empty?
-    puts "self-test accepted valid appcast"
+    expect_failure("malformed appcast") { validate(stable_base) }
+    write_fixture_appcast(appcast, stable_base)
+    accepted_stable = validate(stable_base)
+    expect_equal(accepted_stable.fetch("releaseLabel"), "1.0.0", "validated stable label")
+    expect_equal(accepted_stable.fetch("channel"), "stable", "validated stable channel")
+    puts "self-test accepted stable metadata"
+
+    expect_failure("stable metadata using the RC feed") do
+      validate(stable_base.merge(feed_url: rc_config.fetch("feedURL")))
+    end
     expect_failure("wrong Pages origin") do
-      validate(base.merge(feed_url: "https://other.github.io/lidpilot/appcast.xml"))
+      validate(stable_base.merge(feed_url: "https://other.github.io/lidpilot/appcast.xml"))
     end
     expect_failure("wrong GitHub Release owner/repository") do
-      validate(base.merge(download_url: "https://github.com/other/lidpilot/releases/download/v1.0.0/LidPilot-1.0.0.zip"))
+      validate(stable_base.merge(download_url: "https://github.com/Other/lidpilot/releases/download/v1.0.0/LidPilot-1.0.0.zip"))
     end
     expect_failure("credential-bearing publication URL") do
-      validate(base.merge(feed_url: "https://user:pass@lidpilot.github.io/lidpilot/appcast.xml"))
+      validate(stable_base.merge(feed_url: "https://user:pass@marios1111.github.io/lidpilot/appcast.xml"))
     end
-    expect_failure("wrong release-notes origin") do
-      wrong_notes = File.read(appcast).sub("https://lidpilot.github.io/lidpilot/LidPilot-1.0.0.md", "https://other.github.io/lidpilot/LidPilot-1.0.0.md")
-      File.write(appcast, wrong_notes)
-      validate(base.merge(appcast: appcast))
+    expect_failure("placeholder feed URL") do
+      validate(stable_base.merge(feed_url: "https://example.com/appcast.xml"))
     end
-    File.write(appcast, File.read(appcast).sub("https://other.github.io/lidpilot/LidPilot-1.0.0.md", "https://lidpilot.github.io/lidpilot/LidPilot-1.0.0.md"))
-    expect_failure("appcast enclosure publication mismatch") do
-      wrong_asset = File.read(appcast).sub("https://github.com/lidpilot/lidpilot/releases/download/v1.0.0/LidPilot-1.0.0.zip", "https://github.com/lidpilot/lidpilot/releases/download/v1.0.0/LidPilot-0.9.0.zip")
-      File.write(appcast, wrong_asset)
-      validate(base.merge(appcast: appcast))
-    end
-    File.write(appcast, File.read(appcast).sub("https://github.com/lidpilot/lidpilot/releases/download/v1.0.0/LidPilot-0.9.0.zip", "https://github.com/lidpilot/lidpilot/releases/download/v1.0.0/LidPilot-1.0.0.zip"))
-    expect_failure("placeholder feed URL") { validate(base.merge(appcast: appcast, feed_url: "https://example.com/appcast.xml")) }
+
+    rc_archive = File.join(dir, "LidPilot-1.0.0-rc.4.zip")
+    rc_notes = File.join(dir, "LidPilot-1.0.0-rc.4.md")
+    rc_appcast = File.join(dir, "rc-appcast.xml")
+    File.binwrite(rc_archive, "fixture RC bytes")
+    File.write(rc_notes, "fixture RC notes")
+    rc_base = {
+      archive: rc_archive,
+      notes: rc_notes,
+      appcast: rc_appcast,
+      version: "1.0.0",
+      release_label: "1.0.0-rc.4",
+      channel: "rc",
+      build: "2",
+      hardware_validation: "pending",
+      feed_url: rc_config.fetch("feedURL"),
+      download_url: rc_config.fetch("downloadURL"),
+      repository: rc_config.fetch("repository"),
+      team: "L69774LN97"
+    }
+    write_fixture_appcast(rc_appcast, rc_base)
     bundle = File.join(dir, "LidPilot.app")
-    FileUtils.mkdir_p(File.join(bundle, "Contents"))
-    expect_failure("missing application bundle paths") { validate(base.merge(appcast: appcast, bundle: bundle)) }
+    write_fixture_bundle(bundle, rc_base)
+    accepted_rc = validate(rc_base.merge(bundle: bundle))
+    expect_equal(accepted_rc.fetch("releaseLabel"), "1.0.0-rc.4", "validated RC label")
+    expect_equal(accepted_rc.fetch("version"), "1.0.0", "RC numeric marketing version")
+    expect_equal(accepted_rc.fetch("hardwareValidation"), "pending", "validated RC hardware status")
+    puts "self-test accepted RC metadata with a numeric bundle version"
+
+    wrong_asset_url = "https://github.com/Marios1111/lidpilot/releases/download/v1.0.0/LidPilot-1.0.0.zip"
+    expect_failure("RC metadata with a stable immutable URL") do
+      validate(rc_base.merge(download_url: wrong_asset_url))
+    end
+    expect_failure("RC metadata marked hardware approved") do
+      validate(rc_base.merge(hardware_validation: "approved"))
+    end
+    expect_failure("RC label embedded as bundle marketing version") do
+      app_info = File.join(bundle, "Contents", "Info.plist")
+      info = read_plist(app_info, "fixture Info.plist")
+      info["CFBundleShortVersionString"] = "1.0.0-rc.4"
+      write_fixture_plist(app_info, info)
+      validate(rc_base.merge(bundle: bundle))
+    end
+    expect_failure("release-notes origin mismatch") do
+      wrong_notes = File.read(rc_appcast).sub("https://marios1111.github.io/lidpilot/rc/LidPilot-1.0.0-rc.4.md", "https://other.github.io/lidpilot/rc/LidPilot-1.0.0-rc.4.md")
+      File.write(rc_appcast, wrong_notes)
+      validate(rc_base)
+    end
+    File.write(rc_appcast, File.read(rc_appcast).sub("https://other.github.io/lidpilot/rc/LidPilot-1.0.0-rc.4.md", "https://marios1111.github.io/lidpilot/rc/LidPilot-1.0.0-rc.4.md"))
+    expect_failure("appcast enclosure URL mismatch") do
+      wrong_asset = File.read(rc_appcast).sub(rc_config.fetch("downloadURL"), wrong_asset_url)
+      File.write(rc_appcast, wrong_asset)
+      validate(rc_base)
+    end
+    File.write(rc_appcast, File.read(rc_appcast).sub(wrong_asset_url, rc_config.fetch("downloadURL")))
+    expect_failure("invalid stable label") do
+      validate(stable_base.merge(release_label: "1.0.0-rc.4"))
+    end
+    expect_failure("wrong archive filename") do
+      validate(rc_base.merge(archive: archive))
+    end
+    expect_failure("missing application bundle paths") do
+      empty_bundle = File.join(dir, "Missing.app")
+      FileUtils.mkdir_p(File.join(empty_bundle, "Contents"))
+      validate(rc_base.merge(bundle: empty_bundle))
+    end
   end
   puts "release metadata validator self-tests passed"
 end
@@ -276,7 +557,13 @@ parser = OptionParser.new do |opts|
   opts.on("--download-url URL") { |value| options[:download_url] = value }
   opts.on("--repository OWNER/REPOSITORY") { |value| options[:repository] = value }
   opts.on("--version VERSION") { |value| options[:version] = value }
+  opts.on("--release-label LABEL") { |value| options[:release_label] = value }
+  opts.on("--channel CHANNEL") { |value| options[:channel] = value }
   opts.on("--build BUILD") { |value| options[:build] = value }
+  opts.on("--hardware-validation STATUS") { |value| options[:hardware_validation] = value }
+  opts.on("--state-file PATH") { |value| options[:state_file] = value }
+  opts.on("--resolve-config") { options[:resolve_config] = true }
+  opts.on("--check-monotonic-build") { options[:check_monotonic_build] = true }
   opts.on("--team TEAM") { |value| options[:team] = value }
   opts.on("--sign-tool PATH") { |value| options[:sign_tool] = value }
   opts.on("--private-key-file PATH") { |value| options[:private_key_file] = value }
@@ -287,8 +574,16 @@ begin
   parser.parse!(ARGV)
   if options[:self_test]
     self_test
+  elsif options[:resolve_config]
+    fail_validation("missing --version") unless options[:version]
+    puts JSON.generate(release_configuration(options[:version]))
+  elsif options[:check_monotonic_build]
+    fail_validation("missing --build") unless options[:build]
+    fail_validation("missing --state-file") unless options[:state_file]
+    check_monotonic_build_file(options[:build], options[:state_file])
+    puts "build number is strictly monotonic"
   else
-    %i[archive appcast notes feed_url download_url repository version build].each do |key|
+    %i[archive appcast notes feed_url download_url repository version release_label channel build hardware_validation].each do |key|
       fail_validation("missing --#{key.to_s.tr("_", "-")}") unless options[key]
     end
     result = validate(options)

@@ -8,7 +8,7 @@ credentials.
 
 ## Inputs kept outside Git
 
-The release operator supplies real values for the following inputs. Placeholder
+The release operator supplies the protected signing inputs below. Placeholder
 values, empty values, example domains and development identities are rejected
 by preflight:
 
@@ -19,17 +19,52 @@ by preflight:
 | `LIDPILOT_NOTARY_PROFILE` | `notarytool` keychain profile. |
 | `SPARKLE_TOOLS_DIR` | The reviewed Sparkle 2.10.0 `bin` directory. |
 | `SPARKLE_PRIVATE_KEY_FILE` | The Ed25519 private key used only by Sparkle tooling. |
-| `LIDPILOT_SPARKLE_PUBLIC_KEY` | The matching Ed25519 public key embedded in the signed app. |
-| `LIDPILOT_PAGES_URL` | The exact HTTPS appcast URL in the built app. |
-| `LIDPILOT_RELEASE_DOWNLOAD_URL` | The immutable, version-specific archive URL in the appcast. |
-| `LIDPILOT_GITHUB_REPOSITORY` | The intended `owner/repository` for a future GitHub Release. |
-| `LIDPILOT_HARDWARE_APPROVED=1` | Maintainer record that the physical release checklist passed. |
+| `LIDPILOT_SPARKLE_PUBLIC_KEY` | Optional override for the public key in `Config/ReleaseDefaults.json`. |
+| `LIDPILOT_GITHUB_REPOSITORY` | Optional override; defaults to `Marios1111/lidpilot`. |
+| `LIDPILOT_PAGES_URL` | Optional override; defaults to the stable or RC feed for the selected channel. |
+| `LIDPILOT_RELEASE_DOWNLOAD_URL` | Optional override; defaults to the immutable GitHub asset for the release label. |
+| `LIDPILOT_RELEASE_CHANNEL` | Optional `stable` or `rc`; defaults to `stable`. |
+| `LIDPILOT_RC_NUMBER` | Required positive integer when the release channel is `rc`. |
+| `LIDPILOT_RC_TESTING_APPROVED=1` | Required explicit consent to prepare an RC for testing. |
+| `LIDPILOT_HARDWARE_APPROVED=1` | Required for stable releases after the physical hardware checklist passes. |
 
 Keep notary credentials, Developer ID certificates, Sparkle private keys and
 recovery copies in protected local stores. Pull request jobs must never receive
 them. `SUFeedURL` and `SUPublicEDKey` remain empty in developer builds so an
 unconfigured updater can be shown as unavailable rather than pretending to be
-ready.
+ready. The checked-in Sparkle public key is not secret; the private key remains
+outside the repository.
+
+## Stable and release-candidate labels
+
+Stable is the default channel. Its release label is the numeric marketing
+version from `Version.xcconfig`, and its feed defaults to
+`https://marios1111.github.io/lidpilot/appcast.xml`.
+
+An RC must opt in explicitly:
+
+```sh
+LIDPILOT_RELEASE_CHANNEL=rc \
+LIDPILOT_RC_NUMBER=2 \
+LIDPILOT_RC_TESTING_APPROVED=1 \
+./scripts/release.sh preflight
+```
+
+For marketing version `1.3.0`, this creates release label `1.3.0-rc.2`. The
+app bundle keeps `CFBundleShortVersionString=1.3.0`; `CFBundleVersion` remains
+the positive, strictly increasing build number from `Version.xcconfig`. The
+stage directory includes both label and build, while the DMG, Sparkle archive,
+notes, GitHub tag, and immutable URL use the release label. RCs use
+`https://marios1111.github.io/lidpilot/rc/appcast.xml` and the matching
+`v1.3.0-rc.2/LidPilot-1.3.0-rc.2.zip` GitHub asset path.
+
+An RC still requires Developer ID identity, timestamped app/helper signing,
+notarization, the protected Sparkle private key, signed feed and notes, and
+exact immutable URL validation. It requires `LIDPILOT_RC_TESTING_APPROVED=1`
+instead of the stable hardware approval gate. Its manifest always records
+`"channel": "rc"` and `"hardwareValidation": "pending"`, even if a hardware
+approval variable is present. Stable manifests record hardware validation as
+approved only after the stable preflight gate passes.
 
 ## Local stages
 
@@ -40,9 +75,10 @@ The default command is safe to run while iterating:
 ./scripts/release.sh preflight
 ```
 
-The script checks the clean tree, version/build monotonicity, changelog,
-arm64/project settings, release identities, updater inputs, hardware gate and
-bundle layout before doing any signing. The archive/export stages use
+The script checks the clean tree, numeric marketing version, strictly
+increasing build number, release label, changelog, arm64/project settings,
+release identities, updater inputs, channel-specific approval and bundle
+layout before doing any signing. The archive/export stages use
 `xcodebuild` and a temporary Developer ID export options file. Notarization and
 stapling use `xcrun notarytool` and `xcrun stapler`; the app is submitted as a
 temporary ZIP and the original exported bundle is stapled after the ticket is
@@ -68,8 +104,8 @@ fabricate signatures when tools or keys are missing.
 Publication is deliberately outside the local script. After the final
 manifest has been reviewed:
 
-1. Create the exact versioned GitHub Release and upload the final DMG, update
-   archive, notes and manifest.
+1. Create the GitHub Release with tag `v<release-label>` and upload the final
+   DMG, update archive, notes and manifest.
 2. Fetch every uploaded byte back from GitHub and compare its SHA-256 with the
    local manifest. Stop on any mismatch.
 3. Publish the signed appcast and signed notes to the exact GitHub Pages path.
@@ -79,9 +115,9 @@ manifest has been reviewed:
 
 Do not use `/latest/download` as the signed archive identity, overwrite a
 previously advertised asset, or publish a feed that points at bytes that have
-not been fetched and checked. A faulty release is recovered with a new,
-higher build number; reverting only the feed cannot downgrade an installed
-client.
+not been fetched and checked. Keep stable and RC feeds on their configured
+paths. A faulty release is recovered with a new, higher build number;
+reverting only the feed cannot downgrade an installed client.
 
 ## Gates that remain independent of scripts
 

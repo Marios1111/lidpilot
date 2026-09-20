@@ -41,18 +41,24 @@ xcconfig_value() {
 
 VERSION="$(xcconfig_value MARKETING_VERSION)"
 BUILD="$(xcconfig_value CURRENT_PROJECT_VERSION)"
-RELEASE_ID="${VERSION}-${BUILD}"
+RELEASE_CONFIGURATION="$(ruby "$VALIDATOR" --resolve-config --version "$VERSION")"
+IFS=$'\t' read -r RELEASE_CHANNEL RELEASE_LABEL LIDPILOT_GITHUB_REPOSITORY LIDPILOT_PAGES_URL LIDPILOT_RELEASE_DOWNLOAD_URL RELEASE_HARDWARE_VALIDATION LIDPILOT_SPARKLE_PUBLIC_KEY <<<"$(ruby -rjson -e '
+  configuration = JSON.parse(STDIN.read)
+  keys = %w[channel releaseLabel repository feedURL downloadURL hardwareValidation sparklePublicKey]
+  STDOUT.write(keys.map { |key| configuration.fetch(key) }.join("\t"))
+' <<<"$RELEASE_CONFIGURATION")"
+RELEASE_ID="${RELEASE_LABEL}-${BUILD}"
 STAGE_ROOT="$RELEASE_ROOT/$RELEASE_ID"
 ARCHIVE_PATH="$STAGE_ROOT/LidPilot.xcarchive"
 EXPORT_DIR="$STAGE_ROOT/export"
 UPDATE_DIR="$STAGE_ROOT/update"
 EXPORT_OPTIONS="$STAGE_ROOT/ExportOptions.plist"
 APP_PATH="$EXPORT_DIR/LidPilot.app"
-DMG_PATH="$STAGE_ROOT/LidPilot-${VERSION}.dmg"
-NOTARY_APP_ARCHIVE="$STAGE_ROOT/LidPilot-${VERSION}-notary.zip"
-UPDATE_ARCHIVE="$UPDATE_DIR/LidPilot-${VERSION}.zip"
+DMG_PATH="$STAGE_ROOT/LidPilot-${RELEASE_LABEL}.dmg"
+NOTARY_APP_ARCHIVE="$STAGE_ROOT/LidPilot-${RELEASE_LABEL}-notary.zip"
+UPDATE_ARCHIVE="$UPDATE_DIR/LidPilot-${RELEASE_LABEL}.zip"
 APPCAST_PATH="$UPDATE_DIR/appcast.xml"
-NOTES_PATH="$UPDATE_DIR/LidPilot-${VERSION}.md"
+NOTES_PATH="$UPDATE_DIR/LidPilot-${RELEASE_LABEL}.md"
 MANIFEST_PATH="$STAGE_ROOT/manifest.json"
 
 PREFLIGHT_FAILURES=0
@@ -141,16 +147,19 @@ check_publication_urls() {
   local download_url="${LIDPILOT_RELEASE_DOWNLOAD_URL:-}"
   [[ -z "$repository" || -z "$pages_url" || -z "$download_url" ]] && return 0
   ruby -ruri -e '
-    repository, version, pages_value, download_value = ARGV
+    repository, release_label, channel, pages_value, download_value = ARGV
     abort unless repository.match?(/\A[A-Za-z0-9-]+\/[A-Za-z0-9_.-]+\z/)
     owner = repository.split("/", 2).first
     pages = URI.parse(pages_value)
     download = URI.parse(download_value)
     abort unless pages.is_a?(URI::HTTPS) && pages.port == 443 && pages.host && pages.userinfo.nil? && pages.query.nil? && pages.fragment.nil?
     abort unless pages.host.downcase == "#{owner.downcase}.github.io" && pages.path.end_with?("/appcast.xml")
-    expected = "https://github.com/#{repository}/releases/download/v#{version}/LidPilot-#{version}.zip"
+    path_parts = pages.path.split("/").reject(&:empty?)
+    abort if channel == "stable" && path_parts.include?("rc")
+    abort if channel == "rc" && path_parts[-2] != "rc"
+    expected = "https://github.com/#{repository}/releases/download/v#{release_label}/LidPilot-#{release_label}.zip"
     abort unless download.to_s == expected
-  ' "$repository" "$VERSION" "$pages_url" "$download_url" >/dev/null 2>&1
+  ' "$repository" "$RELEASE_LABEL" "$RELEASE_CHANNEL" "$pages_url" "$download_url" >/dev/null 2>&1
 }
 
 check_release_notes_heading() {
@@ -164,13 +173,7 @@ check_release_notes_heading() {
 }
 
 check_monotonic_build() {
-  [[ ! -e "$STATE_FILE" ]] && return
-  if ! ruby -rjson -e '
-    current = Integer(ARGV.fetch(0))
-    state = JSON.parse(File.read(ARGV.fetch(1)))
-    previous = Integer(state.fetch("build"))
-    abort unless current > previous
-  ' "$BUILD" "$STATE_FILE" >/dev/null 2>&1; then
+  if ! ruby "$VALIDATOR" --check-monotonic-build --build "$BUILD" --state-file "$STATE_FILE" >/dev/null 2>&1; then
     release_error "build ${BUILD} is not greater than the last recorded release in ${STATE_FILE}"
   fi
 }
@@ -248,21 +251,25 @@ preflight() {
     if [[ "$LIDPILOT_RELEASE_DOWNLOAD_URL" == */latest/* ]]; then
       release_error "release download URL must be immutable and must not use /latest/"
     fi
-    if [[ "$LIDPILOT_RELEASE_DOWNLOAD_URL" != *"$VERSION"* && "$LIDPILOT_RELEASE_DOWNLOAD_URL" != *"v$VERSION"* ]]; then
-      release_error "release download URL must identify version ${VERSION}"
+    if [[ "$LIDPILOT_RELEASE_DOWNLOAD_URL" != *"$RELEASE_LABEL"* && "$LIDPILOT_RELEASE_DOWNLOAD_URL" != *"v$RELEASE_LABEL"* ]]; then
+      release_error "release download URL must identify release ${RELEASE_LABEL}"
     fi
-    if [[ "${LIDPILOT_RELEASE_DOWNLOAD_URL##*/}" != "LidPilot-${VERSION}.zip" ]]; then
-      release_error "release download URL must end in LidPilot-${VERSION}.zip"
+    if [[ "${LIDPILOT_RELEASE_DOWNLOAD_URL##*/}" != "LidPilot-${RELEASE_LABEL}.zip" ]]; then
+      release_error "release download URL must end in LidPilot-${RELEASE_LABEL}.zip"
     fi
   fi
   if [[ -n "${LIDPILOT_GITHUB_REPOSITORY:-}" && -n "${LIDPILOT_PAGES_URL:-}" && -n "${LIDPILOT_RELEASE_DOWNLOAD_URL:-}" ]] && ! check_publication_urls; then
-    release_error "publication URLs must be credential-free; Pages must use the repository owner's *.github.io appcast.xml and the download must exactly be the versioned GitHub Release zip"
+    release_error "publication URLs must use the repository owner's *.github.io appcast.xml for the selected channel and the exact immutable GitHub Release zip for ${RELEASE_LABEL}"
   fi
-  if [[ "${LIDPILOT_HARDWARE_APPROVED:-}" != "1" ]]; then
+  if [[ "$RELEASE_CHANNEL" == "rc" ]]; then
+    if [[ "$RELEASE_HARDWARE_VALIDATION" != "pending" ]]; then
+      release_error "RC hardware validation must remain pending"
+    fi
+  elif [[ "${LIDPILOT_HARDWARE_APPROVED:-}" != "1" ]]; then
     release_error "LIDPILOT_HARDWARE_APPROVED=1 is required after the hardware checklist"
   fi
   case "${PREFLIGHT_COMMAND:-preflight}" in
-    dry-run|preflight|archive|all) check_monotonic_build ;;
+    dry-run|preflight|archive|manifest|all) check_monotonic_build ;;
   esac
   for tool in xcodebuild xcrun hdiutil codesign ditto shasum; do
     command -v "$tool" >/dev/null 2>&1 || release_error "required host tool is missing: $tool"
@@ -270,7 +277,7 @@ preflight() {
   if [[ "$PREFLIGHT_FAILURES" -gt 0 ]]; then
     return 1
   fi
-  echo "release preflight passed for LidPilot ${VERSION} (${BUILD})"
+  echo "release preflight passed for LidPilot ${RELEASE_LABEL} (${BUILD}, channel ${RELEASE_CHANNEL})"
 }
 
 ensure_stage_directory() {
@@ -333,6 +340,7 @@ run_archive() {
     DEVELOPMENT_TEAM="$DEVELOPMENT_TEAM" \
     CODE_SIGN_IDENTITY="$LIDPILOT_DEVELOPER_IDENTITY" \
     CODE_SIGN_STYLE=Manual \
+    OTHER_CODE_SIGN_FLAGS=--timestamp \
     SUFeedURL="$LIDPILOT_PAGES_URL" \
     SUPublicEDKey="$LIDPILOT_SPARKLE_PUBLIC_KEY" \
     archive
@@ -394,7 +402,7 @@ run_dmg() {
   local dmg_root="$STAGE_ROOT/dmg-root"
   mkdir -p "$dmg_root"
   ditto "$APP_PATH" "$dmg_root/LidPilot.app"
-  hdiutil create -volname "LidPilot ${VERSION}" -srcfolder "$dmg_root" -ov -format UDZO "$DMG_PATH"
+  hdiutil create -volname "LidPilot ${RELEASE_LABEL}" -srcfolder "$dmg_root" -ov -format UDZO "$DMG_PATH"
   codesign --force --timestamp --sign "$LIDPILOT_DEVELOPER_IDENTITY" "$DMG_PATH"
   xcrun notarytool submit "$DMG_PATH" --keychain-profile "$LIDPILOT_NOTARY_PROFILE" --wait
   xcrun stapler staple "$DMG_PATH"
@@ -463,7 +471,10 @@ run_sign_update() {
     --download-url "$LIDPILOT_RELEASE_DOWNLOAD_URL" \
     --repository "$LIDPILOT_GITHUB_REPOSITORY" \
     --version "$VERSION" \
+    --release-label "$RELEASE_LABEL" \
+    --channel "$RELEASE_CHANNEL" \
     --build "$BUILD" \
+    --hardware-validation "$RELEASE_HARDWARE_VALIDATION" \
     --team "$DEVELOPMENT_TEAM" \
     --sign-tool "$SPARKLE_TOOLS_DIR/sign_update" \
     --private-key-file "$SPARKLE_PRIVATE_KEY_FILE"
@@ -493,24 +504,30 @@ run_manifest() {
     --download-url "$LIDPILOT_RELEASE_DOWNLOAD_URL" \
     --repository "$LIDPILOT_GITHUB_REPOSITORY" \
     --version "$VERSION" \
+    --release-label "$RELEASE_LABEL" \
+    --channel "$RELEASE_CHANNEL" \
     --build "$BUILD" \
+    --hardware-validation "$RELEASE_HARDWARE_VALIDATION" \
     --team "$DEVELOPMENT_TEAM" \
     --sign-tool "$SPARKLE_TOOLS_DIR/sign_update" \
     --private-key-file "$SPARKLE_PRIVATE_KEY_FILE" >/dev/null
   ruby -rjson -rdigest -e '
-    version, build, feed, download, output = ARGV.shift(5)
+    version, release_label, channel, hardware_validation, build, feed, download, output = ARGV.shift(8)
     pairs = ARGV.each_slice(2).to_h
     files = pairs.map do |name, path|
       { "name" => name, "path" => File.basename(path), "sha256" => Digest::SHA256.file(path).hexdigest }
     end
     File.write(output, JSON.pretty_generate(
       "version" => version,
+      "releaseLabel" => release_label,
+      "channel" => channel,
+      "hardwareValidation" => hardware_validation,
       "build" => build,
       "feedURL" => feed,
       "downloadURL" => download,
       "files" => files
     ) + "\n")
-  ' "$VERSION" "$BUILD" "$LIDPILOT_PAGES_URL" "$LIDPILOT_RELEASE_DOWNLOAD_URL" "$MANIFEST_PATH" \
+  ' "$VERSION" "$RELEASE_LABEL" "$RELEASE_CHANNEL" "$RELEASE_HARDWARE_VALIDATION" "$BUILD" "$LIDPILOT_PAGES_URL" "$LIDPILOT_RELEASE_DOWNLOAD_URL" "$MANIFEST_PATH" \
     "dmg" "$DMG_PATH" \
     "update-archive" "$UPDATE_ARCHIVE" \
     "appcast" "$APPCAST_PATH" \
@@ -526,7 +543,7 @@ if [[ "$COMMAND" == "dry-run" ]]; then
     release_error "static verification failed"
   fi
   preflight dry-run || true
-  echo "dry-run complete for LidPilot ${VERSION} (${BUILD}); no signing, notarization, or upload was attempted"
+  echo "dry-run complete for LidPilot ${RELEASE_LABEL} (${BUILD}, channel ${RELEASE_CHANNEL}); no signing, notarization, or upload was attempted"
   exit 0
 fi
 
