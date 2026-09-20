@@ -1,6 +1,6 @@
 # V1 implementation checkpoint
 
-Date: 2026-09-19. Source and local development builds are implemented; public
+Initial checkpoint: 2026-09-19; native follow-up: 2026-09-21. Source and local development builds are implemented; public
 release is blocked by the gates below. No remote publication or push occurred.
 
 Technical owner: the selected GPT-6 Astra Max lead. GPT-5.6 Luna Max handled
@@ -16,11 +16,11 @@ focused context, with current source and builds as the final evidence.
 | --- | --- | --- |
 | Native arm64 macOS 15+ app | Swift 6 / SwiftUI / AppKit menu-bar app, original icon, adaptive Soft Glass mode cards | Stable supported OS and interactive accessibility pass |
 | Follow Lid / Keep Screen On / Keep Mac Running / Off | Separate requested/effective/observed state, read-back, generation invalidation | G1/G2 physical behavior |
-| Sessions | 30m/1h/2h/4h/custom/until-time/indefinite; immutable hard deadlines; switch preserves deadline | Native picker interaction |
+| Sessions | 30m/1h/2h/4h/custom/until-time/indefinite; immutable hard deadlines; switch preserves deadline | Native preset/custom/until-time/indefinite interaction passed; physical timing remains gated |
 | Safety | Thermal protection, 10/20/30% battery cutoff, battery/LPM policies, charger/lid/display/wake observation, explicit restart after pause | Live sensor and workload continuity checks |
 | Closed-lid helper | Reciprocal signed XPC, console user restriction, fixed pmset operations, bounded child execution, leases/watchdog, journal and conflict handling | Signed authentication, launchd/crash/recovery tests G3/G4 |
 | App lifecycle | Starts Off, login preference, helper approval, onboarding, notifications, verified quit and Stop & Sleep | Real approval/login/notification/sleep paths |
-| Diagnostics/recovery | Local redacted bounded logs, export preview, cleanup/repair/removal UI, explicit ambiguous-state recovery | Native export/recovery interaction |
+| Diagnostics/recovery | Local redacted bounded logs, export preview, cleanup/repair/removal UI, explicit ambiguous-state recovery | Native export passed; privileged recovery remains gated |
 | Sparkle 2.10.0 | Manual/daily checks, signed feed/notes/archive configuration, active-session barrier, helper replacement and interrupted-update handling | Real signed upgrade G5 |
 | Distribution/community | MIT and dependency notices, README, CONTRIBUTING, SECURITY, CHANGELOG, issue templates, CI, staged signed/notarized DMG tooling | Publisher identity, private reporting route and release inputs |
 | Website | Static accessible Pages-ready site, no trackers or build dependency | Publication intentionally not performed |
@@ -75,8 +75,9 @@ verification passed, and the tooling retains the macOS 15-compatible command.
 
 ## Artifacts and commands
 
-The latest local bundles are under
-`/private/tmp/lidpilot-501-local/DerivedData/Build/Products/{Debug,Release}/LidPilot.app`.
+The September 21 local bundles are under
+`/private/tmp/lidpilot-501/DerivedData/Build/Products/{Debug,Release}/LidPilot.app`.
+The earlier temporary builds were cleared; temporary artifacts can disappear.
 They are development artifacts, not redistributable signed releases. Ignored
 `build/` contains build/test logs and native preview artifacts. Temporary
 Sparkle fixture locations are `/private/tmp/lidpilot-sparkle-appcast-valid.D7qR9F`
@@ -95,11 +96,11 @@ in Git. The unsigned packaging fixture is under
 
 ## Resume point and release gates
 
-1. Unlock the Mac for an interactive native pass: menu cards, all durations,
-   settings, onboarding, keyboard, VoiceOver, contrast/transparency, and export.
-   Use the Debug mock harness. Native computer-use reported the Mac locked;
-   it could not inspect those controls. Do not substitute image renders for
-   that check.
+1. Complete a spoken VoiceOver navigation pass, full keyboard navigation under
+   the release candidate's keyboard-access configuration, and live light/high-
+   contrast/reduced-transparency variations. The September 21 interaction and
+   accessibility-tree checks below passed; they do not establish these remaining
+   assistive-technology and appearance cases.
 2. Keep the user's running closed-lid controller and its observed `SleepDisabled=1`
    intact. No helper registration, global write, real sleep request, closed-lid
    test, or controller termination was performed in this implementation task.
@@ -116,8 +117,68 @@ in Git. The unsigned packaging fixture is under
    G5 from a prior signed build, including tamper rejection, active-session
    deferral, helper replacement, launch Off and uninstall.
 
-The next action is the unlocked native mock UI pass. Public release remains a
-separate explicit approval after all applicable evidence has been retained.
+The next action is the remaining accessibility/appearance pass, followed by
+explicitly approved hardware validation. Public release remains a separate
+explicit approval after all applicable evidence has been retained.
+
+## Native follow-up — 2026-09-21
+
+Owner and reviewer: Astra lead. Tested source: `a2ea6ed` (includes the
+accessibility fix `74f9710`). No additional reviewer or implementation agent
+was used for this focused pass. Environment remained macOS 27.2 (26B5086k),
+Xcode 27.0 (27A5252f), arm64.
+
+The original temporary build was gone. An untracked `Runtime/PMSetDriver 2.swift`
+was present on resume and differs from the tracked driver. It was preserved,
+excluded from commits, and excluded from validation by extracting `git archive`
+to a disposable directory and copying only the two reviewed UI edits there.
+The validated source matches the tracked application at `a2ea6ed`; this is not
+proof that a direct build including that untracked duplicate succeeds.
+
+Live computer-use interaction and screenshots of the actual Debug app used
+`LIDPILOT_UI_TESTING=1` throughout. The preview badge was visible. Tests covered:
+
+- All three mode cards, Off/start/stop, and active mode switches without resetting
+  the countdown. Preset durations and the More menu were disabled while active.
+- 30m, 1h, 2h, 4h, a typed 45-minute custom duration, the native date/time picker
+  with keyboard edits, and an indefinite session. These were activation/UI
+  checks, not waits for each complete duration.
+- Return to stop, Return to acknowledge onboarding, Escape to dismiss a native
+  menu, and Command-Q during a mock session. The process exited with code zero;
+  relaunch began Off with the duration preference retained.
+- Mock Stop & Sleep returned to Off; the real Mac was not asked to sleep.
+- All five Settings sections, inactive versus active safety/default locks,
+  10/20/30 percent cutoff choices, disabled unsigned helper mutations, and the
+  unavailable publisher-update state. No helper or login registration occurred.
+- Diagnostic preview, native Save dialog, and a local report written to
+  `/private/tmp/LidPilot-native-20260921.txt.txt` (the Save dialog appended its
+  extension). The report contained mock session events and status; no transmission.
+- Native dark-appearance panel, menu-bar popover, settings, and onboarding
+  screenshots. No system appearance/accessibility settings were changed.
+
+Two defects were fixed and rechecked in the running app:
+
+1. Grouped status readings omitted individual field names from the tool-visible
+   accessibility text. Each visual label/value row now has an equivalent text
+   accessibility representation. The final tree reads, for example,
+   `Power: external Lid: open Thermal pressure: nominal System assertion: off
+   Display assertion: off`. Spoken VoiceOver remains unverified.
+2. The native onboarding window compressed and truncated explanatory text.
+   It now takes its natural content height; a final native screenshot shows the
+   complete introduction, brightness caveat, and safety/update paragraph.
+
+Debug and Release were rebuilt after the final changes. Both pass strict deep
+ad-hoc signature verification. The 51 Runtime and 21 Core tests passed again;
+these modules were unchanged by the UI fixes. The final actual-app mock smoke
+passed activation, cleanup, rendering, and normal exit. Project/release-script
+and signed-update fixture validation was rerun. Logs are disposable files named
+`/private/tmp/lidpilot-native-{tests,verify,final-debug,final-release,final-smoke}.log`.
+
+The Mac briefly locked during the pass, and native automation failed despite
+locked-use being enabled. The user unlocked it and testing resumed. Hardware,
+real helper authentication/recovery, signed updates, performance budgets, and
+macOS 15 runtime compatibility remain open; no claim was upgraded from mock
+or UI evidence to physical/release evidence.
 
 ## Incremental history
 

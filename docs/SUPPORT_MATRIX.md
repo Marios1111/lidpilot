@@ -11,7 +11,7 @@ or update lifecycle has passed validation.
 | --- | --- | --- |
 | Hardware | Apple Silicon Mac with a built-in lid, plus supported external-display topologies | Ready for opt-in; physical behavior remains a G2 gate |
 | Operating system | macOS 15 or later | Source and project settings target macOS 15; each release must record the tested OS build |
-| Architecture | Native Swift 6, SwiftUI/AppKit, menu-bar app, arm64 | Debug/Release built; actual app launched with isolated mock power controls; interactive inspection pending an unlocked Mac |
+| Architecture | Native Swift 6, SwiftUI/AppKit, menu-bar app, arm64 | Debug/Release built; actual app launched with isolated mock power controls; native interaction and dark-appearance inspection passed on September 21 |
 | Modes | Follow Lid, Keep Screen On, Keep Mac Running, and Off | Implemented logic and app wiring; hardware behavior remains gated |
 | Sessions | Finite duration, absolute end time, indefinite session, explicit Stop | Core and Runtime logic evidence; delayed replies must not extend the hard deadline |
 | Safety | Thermal, battery floor, Low Power Mode, lid, topology, freshness, boot, and helper availability checks | Core and Runtime logic evidence; live sensor and physical behavior require opt-in validation |
@@ -21,8 +21,8 @@ or update lifecycle has passed validation.
 | Recovery | Durable journal, read-back, ownership ambiguity, explicit recovery | Mock/logic evidence; crash-window behavior on a real signed install is G3/G4 |
 | Updates | Sparkle 2 signed update path with an activation barrier | Configuration and coordinator logic exist; signed artifact/feed lifecycle is G5 |
 | Removal | Open-lid cleanup, verified helper unregistration, then app removal | Documented path; real installation cleanup is part of G5 |
-| Accessibility | Native SwiftUI/AppKit controls and labels | Requires an actual VoiceOver and keyboard pass on each release candidate |
-| Diagnostics | Local, bounded, redacted diagnostics | Seven retention, redaction, storage, and malformed-input tests pass; native export interaction remains pending |
+| Accessibility | Native SwiftUI/AppKit controls and labels | Native accessibility-tree labels and key shortcuts checked; spoken VoiceOver, full keyboard navigation, and appearance variations remain open |
+| Diagnostics | Local, bounded, redacted diagnostics | Seven retention, redaction, storage, and malformed-input tests pass; native preview and local Save dialog export passed |
 | Privacy | No account, cloud service, analytics, AI-agent detection, CLI, or remote-control feature | V1 scope and source review; reassess every new dependency |
 
 ## Mode and helper boundary

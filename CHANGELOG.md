@@ -24,6 +24,11 @@ current development snapshot; it is not a release announcement.
 - Local build, test, project-validation, and release-metadata validation
   scripts, plus architecture, safety, recovery, and hardware-support docs.
 
+### Fixed
+
+- Keep status field names in the accessibility text of grouped Settings rows.
+- Size onboarding to its content so introduction and safety text remain visible.
+
 ### Safety and privacy
 
 - Thermal, battery-floor, Low Power Mode, lid, topology, stale-reading, future-

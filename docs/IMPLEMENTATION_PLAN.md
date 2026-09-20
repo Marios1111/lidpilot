@@ -1,6 +1,6 @@
 # LidPilot V1 implementation plan
 
-Status: implementation and safe automated/native smoke checks are complete. The user delegated final design to Astra Max, retaining Mode Cards and the compact timer. User-facing labels are Follow Lid, Keep Screen On, and Keep Mac Running; internal semantics remain smart/display/closed. Live native interaction/accessibility verification is blocked by the locked Mac. Hardware, signed XPC, notarized upgrades, and performance measurements remain explicit release gates. No hardware power tests or privileged installation are authorized by this plan. See `VERIFICATION.md` for evidence and the exact resume point.
+Status: implementation and safe automated/native smoke checks are complete. The user delegated final design to Astra Max, retaining Mode Cards and the compact timer. User-facing labels are Follow Lid, Keep Screen On, and Keep Mac Running; internal semantics remain smart/display/closed. The September 21 native mock interaction and accessibility-tree pass is complete, including timer choices, settings, export, onboarding, and two verified UI fixes. Spoken VoiceOver, full keyboard navigation, and live accessibility/appearance variations remain open. Hardware, signed XPC, notarized upgrades, and performance measurements remain explicit release gates. No hardware power tests or privileged installation are authorized by this plan. See `VERIFICATION.md` for evidence and the exact resume point.
 
 ## Outcome and fixed decisions
 
