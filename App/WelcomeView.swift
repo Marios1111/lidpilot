@@ -24,7 +24,7 @@ struct WelcomeView: View {
                     .buttonStyle(.borderedProminent).controlSize(.large).keyboardShortcut(.defaultAction)
             }
         }
-        .padding(32).frame(width: 520).background(.regularMaterial)
+        .padding(32).frame(width: 520).fixedSize(horizontal: false, vertical: true).background(.regularMaterial)
     }
     private func note(_ title: String, _ detail: String, _ icon: String) -> some View {
         HStack(alignment: .top, spacing: 13) {
