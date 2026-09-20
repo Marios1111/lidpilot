@@ -1,0 +1,21 @@
+<?xml version="1.0" standalone="yes"?><!-- sparkle-sign-warning:
+IMPORTANT: This file was signed by Sparkle. Any modifications to this file requires re-signing this file with generate_appcast or sign_update! The signed signature will be embedded at the end of this file.
+--><rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
+    <channel>
+        <title>LidPilot</title>
+        <item>
+            <title>1.0.0</title>
+            <pubDate>Mon, 21 Sep 2026 02:27:49 +0300</pubDate>
+            <link>https://marios1111.github.io/lidpilot/rc/appcast.xml</link>
+            <sparkle:version>1</sparkle:version>
+            <sparkle:shortVersionString>1.0.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+            <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
+            <sparkle:releaseNotesLink sparkle:edSignature="dDvVbUdrOtbzriGkMlxPCfpnf98dZQmLXo4yr9SYbpGxAtHCeH/XcpHRoMIP9EmAwJSmvTdaBSwXWmFzzvZYDQ==" sparkle:length="2982">https://marios1111.github.io/lidpilot/rc/LidPilot-1.0.0-rc.1.md</sparkle:releaseNotesLink>
+            <enclosure url="https://github.com/Marios1111/lidpilot/releases/download/v1.0.0-rc.1/LidPilot-1.0.0-rc.1.zip" length="1897292" type="application/octet-stream" sparkle:edSignature="oytY1r1uUmjSvLcabFQCBu878mjcdmj18caX86SNk8eBHRU5s7JPftqhK3k7WjoAyo0E4DzLfbKB9HZzZcdzBQ=="></enclosure>
+        </item>
+    </channel>
+</rss><!-- sparkle-signatures:
+edSignature: 8eHrFcdOOUg03oeahD0V41VIXcXKNXaJFWUjvEVCa7Ltr4dIvogEhMEB5R+8lu1/OYJrJhk/n5iTlTmIa/+KCA==
+length: 1472
+-->

@@ -108,8 +108,28 @@ manifest has been reviewed:
    DMG, update archive, notes and manifest.
 2. Fetch every uploaded byte back from GitHub and compare its SHA-256 with the
    local manifest. Stop on any mismatch.
-3. Publish the signed appcast and signed notes to the exact GitHub Pages path.
-4. Fetch the Pages files, validate signatures, URLs, build number, minimum OS
+3. For an RC, copy the exact signed appcast and release notes to `website/rc/`.
+   Verify the appcast, archive and notes signatures against the public key,
+   and compare the release assets with the manifest before committing. The
+   scoped `.gitattributes` rule disables text conversion for `website/rc/*`;
+   do not format, normalize, regenerate, or otherwise edit these signed bytes.
+   Any byte change requires new signatures and a new manifest hash. For a
+   future stable release, use the distinct root paths `website/appcast.xml` and
+   `website/<signed-release-notes-name>.md`; do not place stable metadata under
+   `website/rc/`.
+4. The current publisher at `.github/workflows/pages.yml` is RC-specific. To
+   publish an RC, review the committed `website/` tree, open Actions, select
+   the current default `dev` branch, and choose `publish-rc`; the default
+   `skip` choice does not deploy. The workflow runs only for
+   `workflow_dispatch`, requires that explicit choice, validates the RC feed
+   paths/signature metadata, and uploads `website/` without a build or metadata
+   rewrite. It has no push, tag, release, or other automatic deployment
+   trigger. GitHub Pages must be configured to use GitHub Actions as its
+   publishing source. Adding the workflow and files does not dispatch it or
+   publish the site. Before a stable publication, separately validate the
+   stable feed and notes at the root paths and update the manual workflow's
+   checks to cover them.
+5. Fetch the Pages files, validate signatures, URLs, build number, minimum OS
    and archive hashes, then perform the update smoke test from the last
    supported public build.
 

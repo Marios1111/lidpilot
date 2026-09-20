@@ -1,0 +1,123 @@
+name: Publish GitHub Pages
+
+on:
+  workflow_dispatch:
+    inputs:
+      publication:
+        description: Publish the committed RC website to GitHub Pages.
+        required: true
+        type: choice
+        default: skip
+        options:
+          - skip
+          - publish-rc
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/dev' && inputs.publication == 'publish-rc'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check out the selected default branch
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # actions/checkout v6
+        with:
+          persist-credentials: false
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # actions/configure-pages v5
+
+      - name: Validate committed RC metadata without rewriting it
+        run: |
+          test -s website/index.html
+          test -s website/rc/appcast.xml
+          python3 - <<'PY'
+          import base64
+          import re
+          from pathlib import Path
+          from urllib.parse import urlsplit
+          from xml.etree import ElementTree
+
+          def local_name(name):
+              return name.rsplit("}", 1)[-1]
+
+          def child_named(element, name):
+              return next((child for child in element.iter() if local_name(child.tag) == name), None)
+
+          def attribute_named(element, name):
+              return next((value for key, value in element.attrib.items() if local_name(key) == name), "")
+
+          appcast_path = Path("website/rc/appcast.xml")
+          raw = appcast_path.read_bytes()
+          signature_block = re.search(
+              rb"<!--\s*sparkle-signatures:\s*edSignature:\s*([A-Za-z0-9+/=]+)\s*length:\s*(\d+)\s*-->",
+              raw,
+          )
+          if signature_block is None:
+              raise SystemExit("RC appcast has no Sparkle feed signature block")
+          if raw[signature_block.end():].strip():
+              raise SystemExit("RC appcast has bytes after the Sparkle signature block")
+          feed_signature = base64.b64decode(signature_block.group(1), validate=True)
+          if len(feed_signature) != 64 or int(signature_block.group(2)) != signature_block.start():
+              raise SystemExit("RC appcast feed signature or signed-byte length is invalid")
+
+          root = ElementTree.fromstring(raw)
+          item = child_named(root, "item")
+          if item is None:
+              raise SystemExit("RC appcast has no item")
+          enclosure = child_named(item, "enclosure")
+          notes = child_named(item, "releaseNotesLink")
+          if enclosure is None or notes is None:
+              raise SystemExit("RC appcast has no archive or signed notes entry")
+          for label, element in (("archive", enclosure), ("notes", notes)):
+              signature = base64.b64decode(attribute_named(element, "edSignature"), validate=True)
+              if len(signature) != 64:
+                  raise SystemExit(f"RC appcast {label} signature is not Ed25519-sized")
+
+          feed_link = child_named(item, "link")
+          if feed_link is None:
+              raise SystemExit("RC appcast has no feed link")
+          feed_url = urlsplit((feed_link.text or "").strip())
+          if (feed_url.scheme, feed_url.netloc, feed_url.path, feed_url.query, feed_url.fragment) != (
+              "https", "marios1111.github.io", "/lidpilot/rc/appcast.xml", "", ""
+          ):
+              raise SystemExit("RC appcast points outside the configured RC feed URL")
+
+          notes_url = urlsplit((notes.text or "").strip())
+          note_parts = notes_url.path.split("/")
+          if (notes_url.scheme, notes_url.netloc, notes_url.query, notes_url.fragment) != (
+              "https", "marios1111.github.io", "", ""
+          ) or len(note_parts) != 4 or note_parts[:3] != ["", "lidpilot", "rc"] or note_parts[-1] in ("", ".", ".."):
+              raise SystemExit("RC notes link points outside the configured RC Pages path")
+          notes_path = Path("website/rc") / note_parts[-1]
+          if not notes_path.is_file():
+              raise SystemExit("signed RC notes are missing")
+          if attribute_named(notes, "length") != str(notes_path.stat().st_size):
+              raise SystemExit("signed RC notes length differs from the appcast")
+
+          archive_url = urlsplit(enclosure.attrib.get("url", ""))
+          if archive_url.scheme != "https" or archive_url.netloc != "github.com" or not archive_url.path.startswith("/Marios1111/lidpilot/releases/download/v") or archive_url.query or archive_url.fragment:
+              raise SystemExit("RC archive link is not an immutable LidPilot GitHub Release URL")
+          PY
+
+      - name: Upload the website directory unchanged
+        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # actions/upload-pages-artifact v4
+        with:
+          path: website
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # actions/deploy-pages v4
