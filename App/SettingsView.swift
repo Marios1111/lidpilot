@@ -79,6 +79,12 @@ struct SettingsView: View {
         }
     }
 
+    /// Include labels in the spoken text even when macOS groups adjacent rows.
+    private func statusRow(_ title: String, value: String) -> some View {
+        LabeledContent(title, value: value)
+            .accessibilityRepresentation { Text("\(title): \(value)") }
+    }
+
     private var general: some View {
         Group {
             Section("Defaults") {
@@ -111,7 +117,7 @@ struct SettingsView: View {
                 Text("Applies to Follow Lid and Keep Mac Running. By default, unplugging pauses the session.").font(.caption).foregroundStyle(.secondary)
             }.disabled(model.controller.hasSession)
             Section("Thermal protection") {
-                LabeledContent("Thermal protection", value: "Always on")
+                statusRow("Thermal protection", value: "Always on")
                 Text("Serious or critical thermal pressure ends the session. Safety pauses require an explicit restart.").font(.caption).foregroundStyle(.secondary)
             }
             Section {
@@ -123,7 +129,7 @@ struct SettingsView: View {
     private var helper: some View {
         Group {
             Section("Closed-lid support") {
-                LabeledContent("Helper", value: model.helper.label)
+                statusRow("Helper", value: model.helper.label)
                 Text("A small privileged helper controls one macOS sleep setting. It is only required for Follow Lid and Keep Mac Running.").font(.caption).foregroundStyle(.secondary)
                 HStack {
                     Button(model.helper.status == .requiresApproval ? "Open System Settings" : "Enable Helper") {
@@ -134,9 +140,9 @@ struct SettingsView: View {
                 if let error = model.helper.error { Text(error).font(.caption).foregroundStyle(.orange) }
             }
             Section("Verified status") {
-                LabeledContent("Session", value: model.controller.phase.title)
-                LabeledContent("System sleep override", value: model.controller.helperState?.flag.rawValue ?? "unknown")
-                LabeledContent("Internal panel power", value: "Not measured")
+                statusRow("Session", value: model.controller.phase.title)
+                statusRow("System sleep override", value: model.controller.helperState?.flag.rawValue ?? "unknown")
+                statusRow("Internal panel power", value: "Not measured")
                 Text(model.controller.message).font(.caption).foregroundStyle(.secondary)
             }
             Section("Recovery") {
@@ -180,11 +186,11 @@ struct SettingsView: View {
     private var diagnostics: some View {
         Group {
             Section("Local status") {
-                LabeledContent("Power", value: model.controller.observation?.power.rawValue ?? "unknown")
-                LabeledContent("Lid", value: model.controller.observation?.lid.rawValue ?? "unknown")
-                LabeledContent("Thermal pressure", value: model.controller.observation?.thermal.rawValue ?? "unknown")
-                LabeledContent("System assertion", value: model.controller.assertions.system.rawValue)
-                LabeledContent("Display assertion", value: model.controller.assertions.display.rawValue)
+                statusRow("Power", value: model.controller.observation?.power.rawValue ?? "unknown")
+                statusRow("Lid", value: model.controller.observation?.lid.rawValue ?? "unknown")
+                statusRow("Thermal pressure", value: model.controller.observation?.thermal.rawValue ?? "unknown")
+                statusRow("System assertion", value: model.controller.assertions.system.rawValue)
+                statusRow("Display assertion", value: model.controller.assertions.display.rawValue)
             }
             Section("Diagnostics") {
                 Text("Stored on this Mac for up to 7 days, below 5 MB. No workload data, account, or analytics.").font(.caption).foregroundStyle(.secondary)
