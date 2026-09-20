@@ -6,7 +6,7 @@ Read "/Users/marios/.codex/AGENTS.md" before working in this repository.
 
 - Build the app in `/Users/marios/Documents/👨🏼‍💻/coding mac/LidPilot/LidPilot`.
 - The requested mode is EXECUTE: plan, implement, verify, and finish the agreed V1 scope. Preserve unrelated work. Do not publish, push, merge, release, or alter production without the required explicit authority.
-- Use the selected GPT-6 Astra as lead at the user's selected effort (currently Max, updated from High). Astra retains consequential planning, architecture, and design-heavy UI judgment. Prefer GPT-5.6 Luna / Max for worthwhile bounded implementation. One GPT-5.6 Sol / High may own substantial routine remaining work or final review under the global policy, without duplicate Astra review. Do not change Codex configuration or silently substitute models.
+- Use the selected GPT-6 Astra as lead at the user's selected effort (currently High for release validation). Astra retains consequential planning, architecture, and design-heavy UI judgment. Prefer GPT-5.6 Luna / Max for worthwhile bounded implementation. One GPT-5.6 Sol / High may own substantial routine remaining work or final review under the global policy, without duplicate Astra review. Do not change Codex configuration or silently substitute models.
 - Use CodeGraph for focused code context before edits when an index is available; confirm stale or missing information against current source. Keep the Codex progress checklist current.
 
 ## Source of truth
