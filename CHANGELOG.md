@@ -3,12 +3,13 @@
 All notable LidPilot changes will be recorded here. This file describes the
 current development snapshot; it is not a release announcement.
 
-## 1.0.0 - release candidate validation
+## 1.0.0 - release candidate 2
 
-This is a supervised release candidate, not a stable V1.0 release. Physical
-display, recovery, helper authentication, performance, and the signed update
-lifecycle are still being validated. Use on an open, ventilated desk and read
-the verification record before enabling closed-lid support.
+This is a supervised V1.0 release candidate, not a stable release. RC2 fixes a
+stale helper approval error after approval completes in System Settings.
+Physical display, recovery, helper authentication, performance, and the signed
+update lifecycle are still being validated. Use on an open, ventilated desk and
+read the verification record before enabling closed-lid support.
 
 ### Added
 
@@ -32,9 +33,10 @@ the verification record before enabling closed-lid support.
 ### Fixed
 
 - Give the selected Settings section a stronger outline with Increase Contrast.
-
 - Keep status field names in the accessibility text of grouped Settings rows.
 - Size onboarding to its content so introduction and safety text remain visible.
+- Clear a stale helper registration error after approval completes in System
+  Settings.
 
 ### Safety and privacy
 
@@ -51,8 +53,17 @@ the verification record before enabling closed-lid support.
 ### Validation status
 
 - Core and Runtime mock/failure tests are useful logic evidence.
-- Native inactivity dimming without display-off, physical internal-panel power,
-  real signed peer authentication, hardware crash recovery, notarized
-  packaging, signed update replacement, and uninstall remain release gates.
+- Runtime contention tests now require the expected fenced-command failure, and
+  a bounded, inspect-only developer probe is available for XPC client-identity
+  checks. Its timeout does not prove authentication rejection.
+- Release metadata validation now distinguishes placeholder tokens from
+  ordinary release prose.
+- RC1's Developer ID-signed, notarized, and stapled app and DMG passed release
+  checks. XPC access succeeded for the approved identity and was rejected for
+  wrong-ID and ad-hoc clients. GUI crash cleanup completed in 0.28 seconds; a
+  10-minute Off sample measured 0.102% CPU and 47.62 MiB mean combined memory.
+- Physical display behavior, hardware recovery, the remaining peer-identity
+  matrix, active-session performance, a real signed upgrade, and uninstall
+  remain open release gates; RC1 results do not clear them.
 - The repository is now `Marios1111/lidpilot`; stable artifacts and the update
   feed remain gated on the recorded release-validation results.
