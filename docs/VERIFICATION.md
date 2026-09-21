@@ -1,14 +1,17 @@
-# V1 implementation checkpoint
+# V1 release verification
 
 Initial checkpoint: 2026-09-19; native follow-up and release validation: 2026-09-21.
 Source and local development builds are implemented; stable release remains
 blocked by the gates below. The repository is now
 [Marios1111/lidpilot](https://github.com/Marios1111/lidpilot), with `dev` connected
 to `origin/dev`. Historical sections below describe their own dated checkpoints.
-See [V1_RELEASE_PLAN.md](V1_RELEASE_PLAN.md) for the newly authorized hardware,
-signing, RC and publication sequence. No stable release is claimed.
+The public [RC1 prerelease](https://github.com/Marios1111/lidpilot/releases/tag/v1.0.0-rc.1)
+and [RC site/feed](https://marios1111.github.io/lidpilot/) are published for explicitly
+approved supervised testing. See [the current evidence record](validation/2026-09-21-native-and-release.md)
+and [V1_RELEASE_PLAN.md](V1_RELEASE_PLAN.md). No stable release is claimed.
 
-Technical owner: the selected GPT-6 Astra Max lead. GPT-5.6 Luna Max handled
+Current release-validation owner: the selected GPT-6 Astra High lead. The initial
+implementation/UI owner was Astra Max. GPT-5.6 Luna Max handled
 bounded Core, diagnostics, project/release, and documentation work. GPT-5.6 Sol
 High performed a focused read-only helper security review. Its command-fencing,
 journal-phase, admission, and retry findings were fixed by the lead and covered
@@ -23,17 +26,17 @@ focused context, with current source and builds as the final evidence.
 | Follow Lid / Keep Screen On / Keep Mac Running / Off | Separate requested/effective/observed state, read-back, generation invalidation | G1/G2 physical behavior |
 | Sessions | 30m/1h/2h/4h/custom/until-time/indefinite; immutable hard deadlines; switch preserves deadline | Native preset/custom/until-time/indefinite interaction passed; physical timing remains gated |
 | Safety | Thermal protection, 10/20/30% battery cutoff, battery/LPM policies, charger/lid/display/wake observation, explicit restart after pause | Live sensor and workload continuity checks |
-| Closed-lid helper | Reciprocal signed XPC, console user restriction, fixed pmset operations, bounded child execution, leases/watchdog, journal and conflict handling | Signed authentication, launchd/crash/recovery tests G3/G4 |
-| App lifecycle | Starts Off, login preference, helper approval, onboarding, notifications, verified quit and Stop & Sleep | Real approval/login/notification/sleep paths |
+| Closed-lid helper | Reciprocal signed XPC, console user restriction, fixed pmset operations, bounded child execution, leases/watchdog, journal and conflict handling | Real registration, publisher/wrong-ID/ad-hoc enforcement and GUI-crash cleanup verified on RC1; remaining G3/G4 cases open |
+| App lifecycle | Starts Off, login preference, helper approval, onboarding, notifications, verified quit and Stop & Sleep | Real helper approval and crash relaunch Off passed; login/notification/sleep paths remain |
 | Diagnostics/recovery | Local redacted bounded logs, export preview, cleanup/repair/removal UI, explicit ambiguous-state recovery | Native export passed; privileged recovery remains gated |
 | Sparkle 2.10.0 | Manual/daily checks, signed feed/notes/archive configuration, active-session barrier, helper replacement and interrupted-update handling | Real signed upgrade G5 |
-| Distribution/community | MIT and dependency notices, README, CONTRIBUTING, SECURITY, CHANGELOG, issue templates, CI, staged signed/notarized DMG tooling | Publisher identity, private reporting route and release inputs |
-| Website | Static accessible Pages-ready site, no trackers or build dependency | Publication intentionally not performed |
+| Distribution/community | MIT and dependency notices, README, CONTRIBUTING, SECURITY, CHANGELOG, issue templates, CI, staged signed/notarized DMG tooling | Developer ID, private reporting, signed/notarized RC1 and public artifact hashes verified; stable release still gated |
+| Website | Static accessible Pages site, no trackers or build dependency | Manual RC publication passed; hosted signed feed bytes/signature verified |
 
 No CLI, AI-agent detection, process automation, Shortcuts, widgets, remote
 control, cloud account, or Homebrew feature was added.
 
-## Checks performed
+## Initial implementation checks — September 19–21
 
 Environment: Apple Silicon; macOS 27.2 (26B5086k); Xcode 27.0 (27A5252f).
 The project targets macOS 15.0, but this newer development environment does not
@@ -78,7 +81,7 @@ caches; tests completed successfully using the disposable scratch/cache paths.
 The newer host also warns that `hdiutil create` is deprecated; creation and
 verification passed, and the tooling retains the macOS 15-compatible command.
 
-## Artifacts and commands
+## Initial development artifacts and commands
 
 The September 21 local bundles are under
 `/private/tmp/lidpilot-501/DerivedData/Build/Products/{Debug,Release}/LidPilot.app`.
@@ -99,32 +102,29 @@ in Git. The unsigned packaging fixture is under
 ./scripts/release.sh dry-run
 ```
 
-## Resume point and release gates
+## Current release gates
 
-1. Repeat the accessibility checks below on each release candidate and supported
-   macOS version. This development-host pass is complete with user-assisted
-   VoiceOver speech confirmation and the documented preferred-reading-size
-   limitation; it is not a universal accessibility certification.
-2. Keep the user's running closed-lid controller and its observed
-   `SleepDisabled=1` state intact. No helper registration, global write, real
-   sleep request, closed-lid test, or controller termination was performed in
-   this implementation task.
-3. Obtain explicit opt-in for G1–G4 in `HARDWARE_VALIDATION.md`. Idle dimming
-   while preventing display-off and actual internal-panel shutdown remain
-   unresolved. No synthetic input, private brightness API, overlay, or blanket
-   external-display blanking was used. Present measured alternatives to the
-   owner if the requested G1 behavior is unavailable safely.
-4. Measure the specified ten-minute CPU, combined physical footprint, and
-   click-to-pending budgets; instantaneous RSS/CPU readings do not prove them.
-5. Supply the real Apple Team/Developer ID identity, notary profile, protected
-   Sparkle key pair, GitHub repository and Pages feed. Configure the private
-   security reporting route and finalize versioned release notes. Then perform
-   G5 from a prior signed build, including tamper rejection, active-session
-   deferral, helper replacement, launch Off and uninstall.
+| Gate | Current evidence | Remaining mandatory work |
+| --- | --- | --- |
+| G1 display | PASS for Keep Screen On/Off on the recorded built-in display: manual/ambient brightness, two-minute idle observation, cleanup | Complete remaining mode/power/support-matrix observations; independent idle dimming is a documented limitation |
+| G2 closed lid | Follow Lid workload continued; display assertion released; operator saw a dark screen after about one minute and normal reopen | Keep Mac Running and remaining supported setups; immediate panel shutdown is not claimed |
+| G3 recovery | GUI SIGKILL restored the owned override to 0 within 0.28 seconds; relaunch verified Off | Helper crash/restart, lease expiry and remaining safely reproducible failure paths |
+| G4 identity/helper | Signed/notarized helper registered through ServiceManagement; publisher accepted, wrong-ID/ad-hoc clients rejected by explicit XPC signing logs | Remaining identity/lifecycle matrix and helper replacement |
+| Performance | Off 600 s passed: 0.102% CPU, 47.62 MiB mean / 47.88 MiB sampled max combined footprint | Keep Screen On / Keep Mac Running ten-minute runs and UI timing |
+| G5 release/update | Developer ID app/DMG notarized and stapled; signatures/tamper rejection, public RC1 hashes and hosted feed verified | Real RC-to-RC update, active-session install block, replacement, updated Off and uninstall |
+| Final candidate | CI `35545726417` at `b0eaa7d` passed tests plus Debug/Release; native accessibility history below | Repeat final relevant checks and confirm declared OS/hardware support |
 
-The next action is explicitly approved hardware validation on the documented
-G1–G5 matrix, followed by release credentials and signed lifecycle checks.
-Public release remains a separate explicit approval after all applicable evidence has been retained.
+The earlier running-controller baseline was resolved through its normal quit
+path and independent Off read-back before LidPilot acquired ownership. No
+unowned override was cleared. The required signing identity, notary profile
+and Sparkle key are now configured; private material remains outside Git.
+The prior duplicate driver file was absent at the start of this release pass.
+
+Stable `main`, `v1.0.0` and the stable update feed are not created while mandatory
+gates remain open. RC publication is explicitly authorized and distinct from
+stable approval. The complete evidence, exact revisions and artifact hashes
+are retained in the linked dated record; historical sections below are not
+claims about the current RC's untested paths.
 
 ## Native follow-up — 2026-09-21
 

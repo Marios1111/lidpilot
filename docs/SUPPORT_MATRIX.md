@@ -1,6 +1,6 @@
 # Support matrix
 
-LidPilot is an unreleased development snapshot. This matrix states the
+LidPilot is in public release-candidate validation. This matrix states the
 intended V1 boundary and the evidence currently available for each area. A
 target platform is not a claim that its physical behavior, signing, recovery,
 or update lifecycle has passed validation.
@@ -9,17 +9,17 @@ or update lifecycle has passed validation.
 
 | Area | V1 boundary | Current evidence/status |
 | --- | --- | --- |
-| Hardware | Apple Silicon Mac with a built-in lid, plus supported external-display topologies | Ready for opt-in; physical behavior remains a G2 gate |
+| Hardware | Apple Silicon Mac with a built-in lid, plus supported external-display topologies | M4 MacBook Air/built-in panel has partial G1/G2 evidence; other models/topologies are untested |
 | Operating system | macOS 15 or later | Source and project settings target macOS 15; each release must record the tested OS build |
-| Architecture | Native Swift 6, SwiftUI/AppKit, menu-bar app, arm64 | Debug/Release built; actual app launched with isolated mock power controls; native interaction and dark-appearance inspection passed on September 21 |
-| Modes | Follow Lid, Keep Screen On, Keep Mac Running, and Off | Implemented logic and app wiring; hardware behavior remains gated |
+| Architecture | Native Swift 6, SwiftUI/AppKit, menu-bar app, arm64 | Debug/Release and CI passed; signed/notarized RC1 and its actual helper ran on the recorded host |
+| Modes | Follow Lid, Keep Screen On, Keep Mac Running, and Off | Keep Screen On/Off observed; Follow Lid continuity/reopen observed; Keep Mac Running physical test pending |
 | Sessions | Finite duration, absolute end time, indefinite session, explicit Stop | Core and Runtime logic evidence; delayed replies must not extend the hard deadline |
 | Safety | Thermal, battery floor, Low Power Mode, lid, topology, freshness, boot, and helper availability checks | Core and Runtime logic evidence; live sensor and physical behavior require opt-in validation |
-| Display control | App-scoped public macOS assertions | Implemented; G1 must measure the requested dimming/display-off behavior |
-| Internal panel | Physical built-in panel/backlight behavior | Not measured; G2 is open |
-| Closed-lid control | Authenticated helper lease around fixed `pmset` operations | Mock/logic evidence; real signed launchd and ServiceManagement lifecycle is G4 |
-| Recovery | Durable journal, read-back, ownership ambiguity, explicit recovery | Mock/logic evidence; crash-window behavior on a real signed install is G3/G4 |
-| Updates | Sparkle 2 signed update path with an activation barrier | Configuration and coordinator logic exist; signed artifact/feed lifecycle is G5 |
+| Display control | App-scoped public macOS assertions | Built-in G1 manual/ambient brightness and no-idle-off observed; independent idle dimming is not provided |
+| Internal panel | Physical built-in panel/backlight behavior | Operator observed dark screen after about one minute closed under the current idle policy; immediate or universal shutdown is not claimed |
+| Closed-lid control | Authenticated helper lease around fixed `pmset` operations | Real ServiceManagement approval, signed helper and publisher/wrong-ID/ad-hoc enforcement passed on RC1; remaining G4 cases open |
+| Recovery | Durable journal, read-back, ownership ambiguity, explicit recovery | Real GUI crash restored the owned override in 0.28 s; other G3/G4 cases remain open |
+| Updates | Sparkle 2 signed update path with an activation barrier | RC1 app/DMG notarized and stapled; signed public archive/feed verified; real upgrade/replacement/uninstall pending |
 | Removal | Open-lid cleanup, verified helper unregistration, then app removal | Documented path; real installation cleanup is part of G5 |
 | Accessibility | Native SwiftUI/AppKit controls and labels | Keyboard flows, user-assisted VoiceOver speech, Light/Dark and contrast/transparency/motion settings checked; preferred-reading-size scaling is not claimed |
 | Diagnostics | Local, bounded, redacted diagnostics | Seven retention, redaction, storage, and malformed-input tests pass; native preview and local Save dialog export passed |
@@ -53,8 +53,9 @@ Use the following evidence labels when reporting support:
 
 The current snapshot has logic evidence for core deadlines, safety policy,
 wire validation, helper leases, recovery journal handling, session races, and
-mode transitions. It is suitable for bounded development checks, but it does
-not yet carry a hardware or release evidence label. See
+mode transitions. It also has the bounded hardware and release evidence in
+[the September 21 record](validation/2026-09-21-native-and-release.md). This is
+not a full hardware matrix or stable release approval. See
 [`HARDWARE_VALIDATION.md`](HARDWARE_VALIDATION.md) for the opt-in G1-G5
 procedures and [`SAFETY.md`](SAFETY.md) for the fail-closed rules.
 

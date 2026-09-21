@@ -52,7 +52,11 @@ open-lid path and battery/external-display variants still require their own reco
 Public RC testing was explicitly approved; it does not approve stable V1.
 Its manifest records hardware validation as pending. CI for this source passed:
 [run 35544706952](https://github.com/Marios1111/lidpilot/actions/runs/35544706952).
-Hosted download-byte comparison and Pages publication are tracked separately.
+All five release assets were fetched anonymously; their bytes match the local
+manifest. The RC Pages workflow passed in run `35545741944` at `b0eaa7d`.
+The published feed and notes are byte-identical to their committed signed files;
+the hosted feed's Ed25519 signature verifies over its 1,472-byte signed prefix.
+The live site was inspected in the browser and its brightness disclosure opened.
 
 ## G4: ServiceManagement and real client identity
 
@@ -80,9 +84,73 @@ replacement and the remaining G4 matrix are not yet verified. The observed
 approval flow also left a stale registration error visible after approval; the
 next candidate clears that error when refreshed status becomes enabled.
 
+## G2: Follow Lid and workload continuity
+
+The native UI reported active ownership and independently sampled
+`SleepDisabled=1` before closure. A harmless Python workload appended a UTC and
+monotonic timestamp each second, sampling lid/override state every five seconds.
+The sustained closed interval was observed from 23:41:52.795 through
+23:43:07.021 UTC (75 samples). `SleepDisabled` stayed `1`. A separate read while
+closed showed LidPilot's system assertion present and display assertion absent.
+After reopening, the display assertion returned.
+
+The operator left an approximately 4 mm viewing gap while the lid sensor
+reported closed. They observed the screen staying lit initially, then going
+black after about one minute, and normal reopening. This is physical visual
+evidence on this setup, not an electrical panel-power measurement or proof of
+immediate shutdown. The one-minute macOS display-idle setting was unchanged.
+No forced display-sleep command, overlay or brightness manipulation was used.
+
+The complete 359-sample run's largest wall-time gap was 1.0571 seconds, including
+the sustained closed interval. It also captured the later GUI-crash cleanup.
+Raw data and the exact observer script are retained locally under
+`release-private/validation/2026-09-21/`. The trace SHA-256 is
+`b8fc40763ad4ac490e40f9790311e1e4fceed112edba0613583eab55e8152e77`.
+Keep Mac Running and other available power/support cases still need separate tests.
+
+## G3: real GUI crash
+
+With Follow Lid active and the lid independently checked open, the app was
+terminated using SIGKILL. The helper remained running. Read-only `pmset -g`
+sampling first observed `SleepDisabled=0` within 0.28 seconds (two samples).
+This is an observed upper bound, not a guaranteed worst-case cleanup time.
+After relaunch, native Settings showed Session Off, override off, and
+“LidPilot's controls are off.” No global reset command was issued by the test.
+
+The local retained record `lidpilot-gui-crash-rc1.json` has SHA-256
+`eed1f757e2307e9db17122f327921f9950c8c9b008fd3abfd513bfdb106586cb`.
+Only this GUI-crash path has passed; helper loss, lease expiry and fault cases
+are not inferred from it.
+
+## Performance: Off, RC1
+
+The operator ran the bounded recorder with administrator access to both RC1
+processes (app PID 44995, helper PID 47084). The run started at
+23:51:27 UTC on September 20 and lasted 600.008 seconds, with 121 samples at
+five-second intervals. Lid open, AC connected, panel/settings closed, session
+Off; the final independent read-back remained `SleepDisabled=0`. Battery was
+39% and charging at completion. No local build or power mutation ran during it.
+
+| Metric | Result | Target/status |
+| --- | ---: | --- |
+| Mean CPU, app/helper plus reaped children | 0.1018% of one core | PASS, ≤0.2% |
+| Mean combined physical footprint | 47.624 MiB | PASS, ≤75 MiB |
+| Maximum sampled combined physical footprint | 47.877 MiB | PASS, ≤75 MiB sampled |
+| Interrupt wakeups | 0.3867/s | Recorded; no numeric product threshold |
+| Package-idle wakeups | 0.0100/s | Recorded; no numeric product threshold |
+| Reported process energy counter delta | 144,171,363 nJ | Accounting value, not Activity Monitor Energy Impact |
+
+The public `proc_pid_rusage` recorder checks process identity throughout and
+includes reaped-child CPU time. Wakeup/energy counters cover the named processes;
+they are not whole-machine measurements. Sampled memory does not establish
+an absolute transient peak. UI feedback latency and the two active-mode runs
+remain unmeasured. Raw `lidpilot-off-rc1.json` is retained in the same local
+validation directory, SHA-256
+`ba64819658c259ec5d337d644879e2ecfad0a913f645812d4234fdc45a7bdac0`.
+
 ## Remaining evidence
 
-G2, G3, full G4, ten-minute performance, RC-to-RC installation, helper replacement
+Remaining G2/G3 cases, full G4, active-mode performance, RC-to-RC installation, helper replacement
 and uninstall remain open. A non-root `proc_pid_rusage` read of the root helper
 was denied; no helper memory/CPU numbers are inferred from that failed read.
 The initial restricted-runner EBADF test anomaly remains recorded separately;

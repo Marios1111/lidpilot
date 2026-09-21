@@ -2,8 +2,10 @@
 
 Started 2026-09-21 from `8cb7fc9` on `dev`, matching `origin/dev`.
 The working tree was clean; the previously untracked duplicate driver was absent.
-The repository is https://github.com/Marios1111/lidpilot and is currently private.
-Its default branch is `dev`; Pages is not configured. No stable release is claimed.
+At the start, https://github.com/Marios1111/lidpilot was private and Pages was
+not configured. After the owner explicitly approved public RC testing, the
+reviewed source, signed RC1, and RC Pages feed were published. `dev` remains the
+default branch. No stable release is claimed.
 
 The user explicitly authorized real hardware tests, cleanly stopping the other
 closed-lid controller, signing/notarization, RC testing, normal development
@@ -59,8 +61,8 @@ the native UI remain frozen except for evidence-backed fixes.
 - Available host: MacBook Air, Apple M4, 24 GB; macOS 27.2 (26B5086k), Xcode
   27.0 (27A5252f). This does not establish macOS 15 runtime support.
 - Developer ID Application identity is available for team `L69774LN97`.
-- Notarization profile setup is pending user input. No passwords are requested
-  in chat or stored in source.
+- The operator saved the notarization profile locally; RC1 app and DMG were
+  accepted and stapled. No passwords are requested in chat or stored in source.
 - Initial observation: lid open, built-in display only, automatic brightness on,
   global sleep override active, AC reported with battery at 48% and discharging.
   Conflicting/transitioning power readings must be reconciled before a lease.
