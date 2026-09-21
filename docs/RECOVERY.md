@@ -63,9 +63,11 @@ recovery when an external writer changes the flag during a lease. It does not
 silently write `0`, repeatedly fight the other utility, or claim that a read of
 `1` proves panel power state.
 
-The development host had `SleepDisabled=1` before ordinary testing. That read
-was observation only and remains untouched. Developers should use mock drivers
-for tests and should not “clean up” a pre-existing flag by hand.
+The development host initially had `SleepDisabled=1` from another controller.
+For the separately authorized September 21 hardware run, that controller was
+quit through its normal path and the flag was independently observed off before
+LidPilot acquired ownership. No unowned override was cleared. Developers should
+use mock drivers for ordinary tests and never “clean up” a pre-existing flag by hand.
 
 ## Explicit recovery action
 

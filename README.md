@@ -7,7 +7,8 @@ Apple Silicon Macs running macOS 15 or later.
 
 Development lives at [Marios1111/lidpilot](https://github.com/Marios1111/lidpilot)
 on `dev`. V1 release validation is in progress; a stable signed download is not
-yet available. Follow the [verification record](docs/VERIFICATION.md) for actual
+yet available. A signed and notarized [RC1 prerelease](https://github.com/Marios1111/lidpilot/releases/tag/v1.0.0-rc.1)
+is available for supervised testing. Follow the [verification record](docs/VERIFICATION.md) for actual
 hardware, signing, and update results. The concept artwork in `design/` is a
 directional design artifact; it is not evidence of power behavior.
 
@@ -25,6 +26,13 @@ a session; launch and launch-at-login always leave LidPilot Off.
 Off releases LidPilot's own assertions and helper lease after read-back. It does
 not clear another utility's sleep assertion or promise that the whole Mac is
 already asleep.
+
+Display sleep follows macOS policy after LidPilot releases its display hold.
+On the recorded M4 test, the built-in screen went dark about one minute after
+lid closure; immediate panel shutdown is not promised. Manual and ambient
+brightness worked in the tested Keep Screen On session, while the public display
+assertion suppressed both idle dimming and display-off. Other OS versions and
+display topologies need separate validation.
 
 Sessions can be 30 minutes, 1 hour, 2 hours, 4 hours, a custom duration, an
 absolute “until” time, or indefinite until the user stops them. Finite sessions
