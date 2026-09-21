@@ -84,6 +84,22 @@ replacement and the remaining G4 matrix are not yet verified. The observed
 approval flow also left a stale registration error visible after approval; the
 next candidate clears that error when refreshed status becomes enabled.
 
+### Signed malformed-wire checks
+
+With the installed RC1 app Off, no LidPilot assertions, and an independent
+`SleepDisabled=0` baseline, the publisher-signed developer probe from `9b9ae88`
+sent four fixed inspect-only/malformed payloads. Wrong protocol, zero generation,
+malformed JSON and valid inspect JSON padded beyond 16 KiB all returned
+`success=false`, `failureCode=invalidRequest`. Transport failure or timeout would
+have failed this check. All four assertions passed; afterward the override was
+still off and no LidPilot assertion appeared. The test acquired no lease and
+sent no valid mutation request.
+
+The retained log `lidpilot-invalid-wire-rc1.log` has SHA-256
+`a2e476db5ee703b0bc992edc01943335ccb81c3f09b143836fcff56a4410574d`.
+This adds real protocol-boundary evidence; it does not substitute for the
+remaining different-team/console-user or replacement tests.
+
 ## G2: Follow Lid and workload continuity
 
 The native UI reported active ownership and independently sampled
@@ -175,3 +191,27 @@ while native automation reported a locked Mac. The profile worked for RC1;
 unlock/retry is required before concluding that credentials are missing.
 No RC2 artifact from that attempt was installed or published. A fresh candidate
 must include the journal fix before the actual upgrade test.
+
+The fixed RC2 app/helper were freshly archived and exported from `9b9ae88`
+as version 1.0.0 build 2. Both passed strict code-signature verification, with
+expected publisher team, helper identifier, hardened runtime and secure
+signing timestamps. The new candidate is at
+`/private/tmp/lidpilot-release-501/1.0.0-rc.2-2/export/LidPilot.app`.
+It has not yet been notarized, installed or published. The old pre-fix attempt
+is preserved separately under the `-before-journal-fix` staging directory.
+Static project/package/release-fixture checks also passed after the fix.
+
+CI [35547329625](https://github.com/Marios1111/lidpilot/actions/runs/35547329625)
+passed on exact source `9b9ae8849a8fbe888bf9e6d53f37afab8e5675b6`, including
+full package tests, static/release checks, Debug and optimized Release. The
+local fixed Debug, signed Release archive/export and strict bundle/helper
+signature checks passed separately. No stable `main`, `v1.0.0` tag or release
+exists; only `dev` and the approved RC1 tag/release are present remotely.
+
+At this checkpoint, native automation requires a manual unlock. The next
+operator-assisted step is Keep Mac Running activation while open, followed by
+independent ownership verification and the physical close/reopen test. Do not
+start an unobserved closed-lid session. Lease expiry, helper crash/restart,
+active-mode measurements and RC2 notarization/upgrade/uninstall are still open.
+The current RC1 was independently observed Off with no LidPilot assertions and
+`SleepDisabled=0` after the malformed-wire checks.

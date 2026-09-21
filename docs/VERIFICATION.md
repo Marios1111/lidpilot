@@ -109,10 +109,10 @@ in Git. The unsigned packaging fixture is under
 | G1 display | PASS for Keep Screen On/Off on the recorded built-in display: manual/ambient brightness, two-minute idle observation, cleanup | Complete remaining mode/power/support-matrix observations; independent idle dimming is a documented limitation |
 | G2 closed lid | Follow Lid workload continued; display assertion released; operator saw a dark screen after about one minute and normal reopen | Keep Mac Running and remaining supported setups; immediate panel shutdown is not claimed |
 | G3 recovery | GUI SIGKILL restored the owned override to 0 within 0.28 seconds; relaunch verified Off | Helper crash/restart, lease expiry and remaining safely reproducible failure paths |
-| G4 identity/helper | Signed/notarized helper registered through ServiceManagement; publisher accepted, wrong-ID/ad-hoc clients rejected by explicit XPC signing logs | Remaining identity/lifecycle matrix and helper replacement |
+| G4 identity/helper | Signed/notarized helper registered through ServiceManagement; publisher accepted, wrong-ID/ad-hoc clients rejected by explicit XPC signing logs; four malformed-wire cases rejected | Remaining identity/lifecycle matrix and helper replacement |
 | Performance | Off 600 s passed: 0.102% CPU, 47.62 MiB mean / 47.88 MiB sampled max combined footprint | Keep Screen On / Keep Mac Running ten-minute runs and UI timing |
 | G5 release/update | Developer ID app/DMG notarized and stapled; signatures/tamper rejection, public RC1 hashes and hosted feed verified | Real RC-to-RC update, active-session install block, replacement, updated Off and uninstall |
-| Final candidate | Journal fix `9a02faa`: 51 Runtime tests ×10, 21 Core tests and Debug passed; earlier CI `35546452910` passed at `7e42319` | Rebuilt signed candidate/CI after the fix and final hardware checks |
+| Final candidate | Fixed source `9b9ae88`: CI `35547329625`, Debug/Release, 51 Runtime tests ×10, 21 Core tests, static checks and signed RC2 archive/export passed | Notarization retry, native final-candidate checks and remaining hardware gates |
 
 The earlier running-controller baseline was resolved through its normal quit
 path and independent Off read-back before LidPilot acquired ownership. No
