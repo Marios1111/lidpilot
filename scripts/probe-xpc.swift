@@ -6,17 +6,26 @@
 //     Core/Sources/LidPilotCore/*.swift scripts/probe-xpc.swift \
 //     -o /private/tmp/lidpilot-probe-xpc
 //
-// An operator may then sign a disposable copy as needed and run it with no arguments:
+// The signed positive/negative-client identity probe keeps its no-argument invocation:
 //   /private/tmp/lidpilot-probe-xpc
+//
+// To check the helper's invalid-wire rejection using an authorized signed client:
+//   /private/tmp/lidpilot-probe-xpc --invalid-wire
+// That fixed mode sends four requests: inspect with protocol version 2, inspect with
+// generation 0, truncated inspect JSON, and valid inspect JSON padded with whitespace to
+// 16 KiB + 1. It checks locally that the generated payloads cannot decode as valid
+// WireRequests. Every helper response must be success=false with failureCode=invalidRequest.
 //
 // Run only after confirming LidPilot is Off, no owned override or pending recovery journal
 // exists, and baseline SleepDisabled is 0. HelperEngine runs bootstrap and its safety
-// watchdog before answering even an inspect request, so that path can perform existing
-// recovery housekeeping. Do not run during an active session. This probe sends exactly one
-// fixed, read-only `inspect` request; it has no payload, command, or timeout options.
+// watchdog before a valid inspect reply, while normal connection teardown also runs helper
+// disconnect cleanup. These paths can perform existing recovery housekeeping. Do not run
+// during an active session. The probe has no payload, command, path, or timeout options.
 //
-// Exit codes: 0 reply received (client reached the helper), 2 proxy/transport error, 3
-// connection interruption or invalidation, 4 bounded timeout, 5 malformed reply, and 64
+// No-argument exit codes: 0 reply received, 2 proxy/transport error, 3 connection
+// interruption or invalidation, 4 bounded timeout, 5 malformed reply, and 64 incorrect
+// invocation. --invalid-wire exits 0 only when all four typed invalidRequest assertions pass,
+// 1 on any unexpected reply or transport outcome, 70 if local fixture checks fail, and 64 on
 // incorrect invocation. A transport error or interruption may be an authentication
 // rejection, but this probe cannot prove the cause. A timeout is inconclusive and never
 // proves that authentication was rejected.
@@ -35,6 +44,18 @@ private enum ProbeOutcome: Sendable {
     case invalidated
     case malformedReply
     case timeout
+}
+
+private struct InvalidWireCase {
+    let name: String
+    let payload: Data
+}
+
+private enum InvalidWireFixtureError: Error {
+    case baseRequestWasNotInspect
+    case locallyAccepted(String)
+    case malformedFixtureWasValidJSON
+    case oversizedRequestWasNotValidJSON
 }
 
 private final class ProbeCompletion: @unchecked Sendable {
@@ -68,24 +89,123 @@ private struct XPCProbe {
     private static let timeout: DispatchTimeInterval = .seconds(10)
 
     static func main() {
-        guard CommandLine.arguments.count == 1 else {
-            write("outcome=invalid_invocation; usage: /private/tmp/lidpilot-probe-xpc\n")
+        let arguments = Array(CommandLine.arguments.dropFirst())
+        switch arguments {
+        case []:
+            Darwin.exit(runInspectProbe())
+        case ["--invalid-wire"]:
+            Darwin.exit(runInvalidWireProbe())
+        default:
+            write("outcome=invalid_invocation; usage: /private/tmp/lidpilot-probe-xpc [--invalid-wire]\n")
             Darwin.exit(64)
         }
+    }
 
+    private static func fixedInspectPayload() throws -> Data {
         let request = WireRequest(
             operation: .inspect,
             sessionID: UUID(uuidString: "00000000-0000-4000-8000-000000000001")!,
             generation: 1
         )
-        let payload: Data
+        return try request.encoded()
+    }
+
+    private static func runInspectProbe() -> Int32 {
         do {
-            payload = try request.encoded()
+            return report(exchange(try fixedInspectPayload()))
         } catch {
             write("outcome=local_encoding_error\n")
-            Darwin.exit(70)
+            return 70
+        }
+    }
+
+    private static func runInvalidWireProbe() -> Int32 {
+        let cases: [InvalidWireCase]
+        do {
+            cases = try invalidWireCases()
+        } catch {
+            write("outcome=local_fixture_error; detail=\(String(describing: error))\n")
+            return 70
         }
 
+        var allPassed = true
+        for testCase in cases {
+            let outcome = exchange(testCase.payload)
+            let passed: Bool
+            if case let .reply(success, failureCode) = outcome {
+                passed = !success && failureCode == WireFailureCode.invalidRequest.rawValue
+            } else {
+                passed = false
+            }
+            write("case=\(testCase.name); \(describe(outcome)); assertion=\(passed ? "pass" : "FAIL")\n")
+            allPassed = allPassed && passed
+        }
+        return allPassed ? 0 : 1
+    }
+
+    private static func invalidWireCases() throws -> [InvalidWireCase] {
+        let validInspect = try fixedInspectPayload()
+        let baseObject = try jsonObject(from: validInspect)
+        guard let operation = baseObject["operation"] as? String,
+              operation == WireOperation.inspect.rawValue,
+              let generation = baseObject["generation"] as? Int,
+              generation == 1 else {
+            throw InvalidWireFixtureError.baseRequestWasNotInspect
+        }
+
+        var wrongProtocolObject = baseObject
+        wrongProtocolObject["protocolVersion"] = WireRequest.protocolVersion + 1
+        let wrongProtocol = try jsonData(from: wrongProtocolObject)
+
+        var zeroGenerationObject = baseObject
+        zeroGenerationObject["generation"] = 0
+        let zeroGeneration = try jsonData(from: zeroGenerationObject)
+
+        let malformedJSON = Data(#"{"protocolVersion":1,"operation":"inspect""#.utf8)
+        guard (try? JSONSerialization.jsonObject(with: malformedJSON)) == nil else {
+            throw InvalidWireFixtureError.malformedFixtureWasValidJSON
+        }
+
+        guard validInspect.count <= WireRequest.maximumEncodedSize else {
+            throw InvalidWireFixtureError.baseRequestWasNotInspect
+        }
+        var oversizedInspect = validInspect
+        oversizedInspect.append(Data(
+            repeating: 0x20,
+            count: WireRequest.maximumEncodedSize + 1 - oversizedInspect.count
+        ))
+        guard oversizedInspect.count == WireRequest.maximumEncodedSize + 1,
+              let oversizedObject = try? JSONSerialization.jsonObject(with: oversizedInspect),
+              oversizedObject is [String: Any] else {
+            throw InvalidWireFixtureError.oversizedRequestWasNotValidJSON
+        }
+
+        let cases = [
+            InvalidWireCase(name: "wrong-protocol-inspect", payload: wrongProtocol),
+            InvalidWireCase(name: "zero-generation-inspect", payload: zeroGeneration),
+            InvalidWireCase(name: "malformed-inspect-json", payload: malformedJSON),
+            InvalidWireCase(name: "oversized-valid-inspect-json", payload: oversizedInspect)
+        ]
+        for testCase in cases {
+            guard (try? WireRequest.decode(testCase.payload)) == nil else {
+                throw InvalidWireFixtureError.locallyAccepted(testCase.name)
+            }
+        }
+        return cases
+    }
+
+    private static func jsonObject(from data: Data) throws -> [String: Any] {
+        guard let object = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
+            throw InvalidWireFixtureError.baseRequestWasNotInspect
+        }
+        return object
+    }
+
+    private static func jsonData(from object: [String: Any]) throws -> Data {
+        try JSONSerialization.data(withJSONObject: object, options: [.sortedKeys])
+    }
+
+    private static func exchange(_ payload: Data) -> ProbeOutcome {
         let completion = ProbeCompletion()
         let connection = NSXPCConnection(machServiceName: serviceName, options: .privileged)
         connection.setCodeSigningRequirement(helperRequirement)
@@ -115,29 +235,34 @@ private struct XPCProbe {
 
         let outcome = completion.wait(timeout: timeout)
         connection.invalidate()
-        report(outcome)
+        return outcome
     }
 
-    private static func report(_ outcome: ProbeOutcome) {
+    private static func report(_ outcome: ProbeOutcome) -> Int32 {
+        write("\(describe(outcome))\n")
+        switch outcome {
+        case .reply: return 0
+        case .proxyError: return 2
+        case .interrupted, .invalidated: return 3
+        case .timeout: return 4
+        case .malformedReply: return 5
+        }
+    }
+
+    private static func describe(_ outcome: ProbeOutcome) -> String {
         switch outcome {
         case let .reply(success, failureCode):
-            write("outcome=reply; success=\(success); failure_code=\(failureCode ?? "none")\n")
-            Darwin.exit(0)
+            return "outcome=reply; success=\(success); failure_code=\(failureCode ?? "none")"
         case let .proxyError(domain, code):
-            write("outcome=proxy_error_or_transport_rejection; domain=\(domain); code=\(code)\n")
-            Darwin.exit(2)
+            return "outcome=proxy_error_or_transport_rejection; domain=\(domain); code=\(code)"
         case .interrupted:
-            write("outcome=connection_interrupted; rejection_is_not_proven\n")
-            Darwin.exit(3)
+            return "outcome=connection_interrupted; rejection_is_not_proven"
         case .invalidated:
-            write("outcome=connection_invalidated; rejection_is_not_proven\n")
-            Darwin.exit(3)
+            return "outcome=connection_invalidated; rejection_is_not_proven"
         case .malformedReply:
-            write("outcome=malformed_reply\n")
-            Darwin.exit(5)
+            return "outcome=malformed_reply"
         case .timeout:
-            write("outcome=timeout; authentication_rejection_not_proven\n")
-            Darwin.exit(4)
+            return "outcome=timeout; authentication_rejection_not_proven"
         }
     }
 
