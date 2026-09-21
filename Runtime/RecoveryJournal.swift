@@ -50,14 +50,17 @@ public final class RecoveryJournal: RecoveryStoring, @unchecked Sendable {
     init(directory path: String, owner: uid_t) throws {
         self.owner = owner
         if mkdir(path, 0o700) != 0, errno != EEXIST { throw Self.failure("create directory") }
-        directory = open(path, O_RDONLY | O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC)
-        guard directory >= 0 else { throw Self.failure("open directory") }
+        let openedDirectory = open(path, O_RDONLY | O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC)
+        guard openedDirectory >= 0 else { throw Self.failure("open directory") }
         var info = stat()
-        guard fstat(directory, &info) == 0, info.st_uid == owner,
+        guard fstat(openedDirectory, &info) == 0, info.st_uid == owner,
               info.st_mode & S_IFMT == S_IFDIR, info.st_mode & 0o077 == 0 else {
-            close(directory)
+            close(openedDirectory)
             throw RuntimeFailure.unavailable("Recovery directory ownership or permissions are unsafe.")
         }
+        // Transfer FD ownership only after validation; throwing after assigning it
+        // would run deinit and close the same descriptor again during unwinding.
+        directory = openedDirectory
     }
 
     deinit { close(directory) }

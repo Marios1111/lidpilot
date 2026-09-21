@@ -36,6 +36,13 @@ struct NativeBoundaryTests {
         try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: folder) }
         chmod(folder.path, 0o755)
-        #expect(throws: (any Error).self) { try RecoveryJournal(directory: folder.path, owner: geteuid()) }
+        do {
+            _ = try RecoveryJournal(directory: folder.path, owner: geteuid())
+            Issue.record("a loosely permissioned recovery directory was accepted")
+        } catch let error as RuntimeFailure {
+            #expect(error == .unavailable("Recovery directory ownership or permissions are unsafe."))
+        } catch {
+            Issue.record("unexpected recovery-directory error: \(error)")
+        }
     }
 }

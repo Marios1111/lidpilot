@@ -37,6 +37,8 @@ read the verification record before enabling closed-lid support.
 - Size onboarding to its content so introduction and safety text remain visible.
 - Clear a stale helper registration error after approval completes in System
   Settings.
+- Keep descriptor ownership local until recovery-directory validation succeeds,
+  preventing a double close when an unsafe directory is rejected.
 
 ### Safety and privacy
 
