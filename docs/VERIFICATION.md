@@ -112,7 +112,7 @@ in Git. The unsigned packaging fixture is under
 | G4 identity/helper | Signed/notarized helper registered through ServiceManagement; publisher accepted, wrong-ID/ad-hoc clients rejected by explicit XPC signing logs | Remaining identity/lifecycle matrix and helper replacement |
 | Performance | Off 600 s passed: 0.102% CPU, 47.62 MiB mean / 47.88 MiB sampled max combined footprint | Keep Screen On / Keep Mac Running ten-minute runs and UI timing |
 | G5 release/update | Developer ID app/DMG notarized and stapled; signatures/tamper rejection, public RC1 hashes and hosted feed verified | Real RC-to-RC update, active-session install block, replacement, updated Off and uninstall |
-| Final candidate | CI `35545726417` at `b0eaa7d` passed tests plus Debug/Release; native accessibility history below | Repeat final relevant checks and confirm declared OS/hardware support |
+| Final candidate | Journal fix `9a02faa`: 51 Runtime tests ×10, 21 Core tests and Debug passed; earlier CI `35546452910` passed at `7e42319` | Rebuilt signed candidate/CI after the fix and final hardware checks |
 
 The earlier running-controller baseline was resolved through its normal quit
 path and independent Off read-back before LidPilot acquired ownership. No

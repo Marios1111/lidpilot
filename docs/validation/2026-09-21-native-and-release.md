@@ -153,6 +153,25 @@ validation directory, SHA-256
 Remaining G2/G3 cases, full G4, active-mode performance, RC-to-RC installation, helper replacement
 and uninstall remain open. A non-root `proc_pid_rusage` read of the root helper
 was denied; no helper memory/CPU numbers are inferred from that failed read.
-The initial restricted-runner EBADF test anomaly remains recorded separately;
-ten host Runtime runs and CI passed. The tests now require the exact expected
-lock-contention error rather than accepting any error (`78ead60`).
+A fresh unrestricted Runtime run at `7e42319` reproduced the earlier EBADF
+failure despite passing CI (`35546452910`). Investigation confirmed an actual
+ownership bug in `RecoveryJournal.init`: the unsafe-directory rejection branch
+closed its stored descriptor, then Swift ran `deinit` and closed it again.
+Concurrent descriptor reuse explains why another fence operation could fail.
+A standalone reproducer deterministically showed the second close invalidating
+a replacement descriptor; this is no longer classified as a runner anomaly.
+
+Fix `9a02faa` validates a local descriptor before transferring ownership to the
+journal. Permission checks remain intact. The existing rejection test now
+requires the precise error. After the fix, all nine focused boundary/fence tests
+passed and ten complete Runtime runs each passed all 51 tests. All 21 Core tests
+also passed; fixed Debug compiled. The probe and logs are retained locally.
+The earlier failure log remains preserved as `lidpilot-rc2-tests.log`.
+
+RC2 build 2 was initially archived/exported and its signatures verified at
+`7e42319`; that unpublished bundle was preserved separately after the fix.
+Notarization stopped because `notarytool` could not access `lidpilot-notary`
+while native automation reported a locked Mac. The profile worked for RC1;
+unlock/retry is required before concluding that credentials are missing.
+No RC2 artifact from that attempt was installed or published. A fresh candidate
+must include the journal fix before the actual upgrade test.

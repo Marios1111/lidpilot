@@ -41,8 +41,9 @@ The current execution plan is [V1_RELEASE_PLAN.md](../V1_RELEASE_PLAN.md).
 - Initial GitHub CI run `35542304099` failed because `rg` was absent on the
   runner. The portable scanner fix is `cea90f9`; it preserves scan-error failures.
 - Fresh Runtime test execution initially produced five descriptor-related
-  issues in two command-fence tests. Investigation is pending. Real helper
-  activation is held until the failure is explained or fixed.
+  issues in two command-fence tests. Later unrestricted reproduction identified
+  a recovery-journal initializer double close, fixed in `9a02faa`; see the
+  [current validation record](2026-09-21-native-and-release.md) for the evidence.
 - Secure signed build log: `/private/tmp/lidpilot-gates-signed-build.log`.
 - Initial test log: `/private/tmp/lidpilot-gates-tests.log`.
 
