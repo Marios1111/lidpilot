@@ -19,7 +19,7 @@ def analyze(log_path, measurement, app_pid, helper_pid):
         raise ValueError('Wall clock changed during the measurement; log window is uncertain')
     events = []
     for line in Path(log_path).read_text().splitlines():
-        if not line.strip():
+        if not line.strip() or line.startswith('Filtering the log data using '):
             continue
         envelope = json.loads(line)
         if envelope.get('subsystem') != 'com.lidpilot.profile':
@@ -44,7 +44,7 @@ def analyze(log_path, measurement, app_pid, helper_pid):
     for e in window:
         if e['event'] != 'pmset_span_end':
             continue
-        key = f"{e.get('operation', 'unknown')}/{e.get('callsite', 'unknown')}"
+        key = f"{e.get('operation', 'unknown')}/{e.get('caller', 'unknown')}/{e.get('callsite', 'unknown')}"
         row = paths[key]
         row['calls'] += 1
         if e.get('result') == 'error' or e.get('reaped_child_cpu_complete') is False:
@@ -52,6 +52,12 @@ def analyze(log_path, measurement, app_pid, helper_pid):
         row['duration_ns'] += e['duration_ns']
         row['child_user_us'] += e['reaped_child_user_us']
         row['child_system_us'] += e['reaped_child_system_us']
+    beginnings = {e['span_id']: e for e in events if e['event'] == 'pmset_span_begin'}
+    endings = {e['span_id']: e for e in events if e['event'] == 'pmset_span_end'}
+    boundary = [sid for sid in beginnings.keys() & endings.keys()
+                if (start <= beginnings[sid]['wall_time'] <= end) != (start <= endings[sid]['wall_time'] <= end)]
+    unmatched = [e['span_id'] for e in window if e['event'] in ('pmset_span_begin', 'pmset_span_end')
+                 and e['span_id'] not in beginnings.keys() & endings.keys()]
     for row in paths.values():
         row['calls_per_minute'] = row['calls'] * 60 / duration
         row['child_cpu_percent_of_one_core'] = (row['child_user_us'] + row['child_system_us']) / 1e6 / duration * 100
@@ -72,7 +78,7 @@ def analyze(log_path, measurement, app_pid, helper_pid):
             'total_cpu_percent': measurement['cpuPercentOfOneCoreIncludingReapedChildren'],
             'event_origins': dict(origins), 'event_counts': dict(counts), 'events_per_minute': {k: v * 60 / duration for k, v in counts.items()},
             'pmset_by_path': dict(paths), 'sequence_gaps': gaps,
-            'counts_complete': not gaps,
+            'counts_complete': not gaps and not unmatched, 'boundary_spans': boundary, 'unmatched_spans': unmatched,
             'limitations': ['Profiling instrumentation overhead is included.',
                            'Commands crossing the window boundary need manual reconciliation.',
                            'No events before/after the measurement window must be checked against capture start/end.',
