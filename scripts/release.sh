@@ -47,7 +47,17 @@ IFS=$'\t' read -r RELEASE_CHANNEL RELEASE_LABEL LIDPILOT_GITHUB_REPOSITORY LIDPI
   keys = %w[channel releaseLabel repository feedURL downloadURL hardwareValidation sparklePublicKey]
   STDOUT.write(keys.map { |key| configuration.fetch(key) }.join("\t"))
 ' <<<"$RELEASE_CONFIGURATION")"
+PROFILE_ARGS=()
+case "${LIDPILOT_PROFILE_BUILD:-0}" in
+  0) ;;
+  1)
+    [[ "$RELEASE_CHANNEL" == rc ]] || { echo "Profiling is allowed only for an explicit RC, never stable" >&2; exit 64; }
+    PROFILE_ARGS=('OTHER_SWIFT_FLAGS=$(inherited) -DLIDPILOT_PROFILE')
+    ;;
+  *) echo "LIDPILOT_PROFILE_BUILD must be 0 or 1" >&2; exit 64 ;;
+esac
 RELEASE_ID="${RELEASE_LABEL}-${BUILD}"
+if [[ "${LIDPILOT_PROFILE_BUILD:-0}" == 1 ]]; then RELEASE_ID="${RELEASE_ID}-profile"; fi
 STAGE_ROOT="$RELEASE_ROOT/$RELEASE_ID"
 ARCHIVE_PATH="$STAGE_ROOT/LidPilot.xcarchive"
 EXPORT_DIR="$STAGE_ROOT/export"
@@ -343,6 +353,7 @@ run_archive() {
     OTHER_CODE_SIGN_FLAGS=--timestamp \
     SUFeedURL="$LIDPILOT_PAGES_URL" \
     SUPublicEDKey="$LIDPILOT_SPARKLE_PUBLIC_KEY" \
+    "${PROFILE_ARGS[@]}" \
     archive
   echo "archived $ARCHIVE_PATH"
 }
@@ -512,7 +523,7 @@ run_manifest() {
     --sign-tool "$SPARKLE_TOOLS_DIR/sign_update" \
     --private-key-file "$SPARKLE_PRIVATE_KEY_FILE" >/dev/null
   ruby -rjson -rdigest -e '
-    version, release_label, channel, hardware_validation, build, feed, download, output = ARGV.shift(8)
+    version, release_label, channel, hardware_validation, build, feed, download, output, profiling = ARGV.shift(9)
     pairs = ARGV.each_slice(2).to_h
     files = pairs.map do |name, path|
       { "name" => name, "path" => File.basename(path), "sha256" => Digest::SHA256.file(path).hexdigest }
@@ -522,12 +533,13 @@ run_manifest() {
       "releaseLabel" => release_label,
       "channel" => channel,
       "hardwareValidation" => hardware_validation,
+      "profilingEnabled" => profiling == "1",
       "build" => build,
       "feedURL" => feed,
       "downloadURL" => download,
       "files" => files
     ) + "\n")
-  ' "$VERSION" "$RELEASE_LABEL" "$RELEASE_CHANNEL" "$RELEASE_HARDWARE_VALIDATION" "$BUILD" "$LIDPILOT_PAGES_URL" "$LIDPILOT_RELEASE_DOWNLOAD_URL" "$MANIFEST_PATH" \
+  ' "$VERSION" "$RELEASE_LABEL" "$RELEASE_CHANNEL" "$RELEASE_HARDWARE_VALIDATION" "$BUILD" "$LIDPILOT_PAGES_URL" "$LIDPILOT_RELEASE_DOWNLOAD_URL" "$MANIFEST_PATH" "${LIDPILOT_PROFILE_BUILD:-0}" \
     "dmg" "$DMG_PATH" \
     "update-archive" "$UPDATE_ARCHIVE" \
     "appcast" "$APPCAST_PATH" \

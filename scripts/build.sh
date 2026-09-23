@@ -53,6 +53,13 @@ else
   SIGNING_ARGS=("DEVELOPMENT_TEAM=" "CODE_SIGN_IDENTITY=-" "CODE_SIGN_STYLE=Manual")
 fi
 
+PROFILE_ARGS=()
+case "${LIDPILOT_PROFILE_BUILD:-0}" in
+  0) ;;
+  1) PROFILE_ARGS=('OTHER_SWIFT_FLAGS=$(inherited) -DLIDPILOT_PROFILE') ;;
+  *) echo "LIDPILOT_PROFILE_BUILD must be 0 or 1" >&2; exit 64 ;;
+esac
+
 mkdir -p "$DERIVED_DATA"
 xcodebuild \
   -project "$PROJECT" \
@@ -66,6 +73,7 @@ xcodebuild \
   ARCHS=arm64 \
   ONLY_ACTIVE_ARCH=$([[ "$CONFIGURATION" == "Debug" ]] && echo YES || echo NO) \
   "${SIGNING_ARGS[@]}" \
+  "${PROFILE_ARGS[@]}" \
   build
 
 APP_PATH="$DERIVED_DATA/Build/Products/$CONFIGURATION/LidPilot.app"

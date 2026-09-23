@@ -152,3 +152,29 @@ signing and update evidence before a public release claim is made.
 The pipeline verifies the archive, feed, and release-note signatures with the pinned Sparkle tool. It also verifies the archive with CryptoKit against the public key actually embedded in the app, preventing a mismatched signing-key release. The archive, exported app/helper team, hardened runtime, secure signing timestamps, and arm64 executables are checked before notarization/update packaging. The manifest stage repeats signature verification over the final bytes.
 
 `scripts/verify.sh` includes a disposable Ed25519 check that rejects tampered bytes and a wrong public key. This does not replace the real signed-install/upgrade test in G5.
+
+## Local profiling candidates
+
+`LIDPILOT_PROFILE_BUILD=1` opts a build into `LIDPILOT_PROFILE` compilation.
+It is off by default. Release tooling refuses this option for the stable channel,
+uses a separate `-profile` staging directory, and records `profilingEnabled` in
+its manifest. Do not publish an instrumented candidate as a normal release.
+Verify that the profile subsystem is absent from normal optimized binaries and
+present in both the profiling app and helper before installation.
+
+The profiling candidate emits local unified-log events under
+`com.lidpilot.profile`. It adds no root endpoint, telemetry service, or custom
+privileged output path. Capture these events with macOS `log stream` (or export
+with `log show`) while running the same 600-second installed CPU recorder.
+Do not alter SIP to collect logs. Preserve exact commit, build, binary hashes,
+start/end times, and profile-enabled status. Instrumentation overhead is included
+in the candidate's CPU; a final passing gate also requires an uninstrumented
+installed build using the same method.
+
+`scripts/analyze-performance-profile.py` combines newline-delimited unified-log
+JSON with `scripts/measure-performance.swift` output. It reports event counts,
+calls/minute, read-path timing/child CPU, and separate app/helper/reaped-child
+CPU. Sequence gaps mean event counts are incomplete. Verify capture coverage and
+inspect spans crossing the measurement boundaries before interpreting results.
+The analyzer's synthetic test is `python3 scripts/test-performance-profile.py`;
+it does not establish an installed performance pass.
