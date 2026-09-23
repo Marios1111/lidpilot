@@ -287,3 +287,10 @@ The lead applied the verified rewrite after saving a private rollback bundle
 outside the repository. Local recovery objects/reflogs were retained; no GitHub
 remote was configured and no remote history, publication, or force-push occurred.
 The pre-existing untracked source duplicate remained unchanged.
+
+## RC4 candidate continuation
+
+The [September 24 RC4 record](validation/2026-09-24-rc4.md) records build 4
+CI, Developer ID signing, accepted notarization, stapling, signed Sparkle
+artifacts and hosted hash verification. RC4 installation and its ten-minute
+performance measurement remain pending; the RC3 CPU failure is not cleared.
