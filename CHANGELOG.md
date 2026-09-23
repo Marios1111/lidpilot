@@ -3,6 +3,20 @@
 All notable LidPilot changes will be recorded here. This file describes the
 current development snapshot; it is not a release announcement.
 
+## 1.0.0 - release candidate 3
+
+This supervised candidate keeps update checks out of an active session. In
+RC1, rejecting an available update opened a synchronous Sparkle error alert;
+while the alert remained open, the app's keep-awake assertion renewal was
+delayed until its 60-second lease expired. RC3 disables manual update actions
+while a session is active and defers update checks until LidPilot is Off. The
+installation barrier and signed-update requirements remain in place.
+
+The signed RC1-to-RC2 upgrade, build-2 helper replacement, lease-expiry cleanup,
+and helper-crash recovery have been exercised on one Apple Silicon Mac. RC3's
+active-session fix and remaining hardware/performance cases still require live
+validation. This is not the stable V1.0 release.
+
 ## 1.0.0 - release candidate 2
 
 This is a supervised V1.0 release candidate, not a stable release. RC2 fixes a
