@@ -5,6 +5,12 @@ import LidPilotCore
 
 final class TestPlatform: RuntimeClock, PowerSampling, SleepFlagControlling, RecoveryStoring, @unchecked Sendable {
     var time: Double = 100
+    var clockCallCount = 0
+    var advanceTimeOnClockCall: Int?
+    var clockAdvance: Double = 0
+    var bootID = "boot"
+    var changeBootIDOnClockCall: Int?
+    var replacementBootID = "restarted-boot"
     var flag: FlagState = .off
     var power: PowerSource = .external
     var lid: LidState = .open
@@ -16,6 +22,8 @@ final class TestPlatform: RuntimeClock, PowerSampling, SleepFlagControlling, Rec
     var failRead = false
     var sampleLatency: Double = 0
     var writes: [Bool] = []
+    var readCount = 0
+    var flagTurnsOffOnRead: Int?
     var onWrite: ((Bool) -> Void)?
     var onFence: (() -> Void)?
     var failFence = false
@@ -24,13 +32,20 @@ final class TestPlatform: RuntimeClock, PowerSampling, SleepFlagControlling, Rec
         onFence?()
         return try operation()
     }
-    func now() -> ClockSample { ClockSample(continuousSeconds: time, wallDate: Date(timeIntervalSince1970: time), bootID: "boot") }
+    func now() -> ClockSample {
+        clockCallCount += 1
+        if clockCallCount == advanceTimeOnClockCall { time += clockAdvance }
+        if clockCallCount == changeBootIDOnClockCall { bootID = replacementBootID }
+        return ClockSample(continuousSeconds: time, wallDate: Date(timeIntervalSince1970: time), bootID: bootID)
+    }
     func sample(flag: FlagState) -> PowerSnapshot {
         time += sampleLatency
         return PowerSnapshot(sampledAt: now(), lid: lid, power: power, batteryPercent: 70, thermal: thermal,
                       lowPowerMode: false, externalDisplayCount: 0, sleepDisabled: flag)
     }
     func read() throws -> FlagState {
+        readCount += 1
+        if readCount == flagTurnsOffOnRead { flag = .off }
         if failRead { throw RuntimeFailure.unavailable("read failed") }
         return flag
     }
@@ -56,6 +71,67 @@ final class TestPlatform: RuntimeClock, PowerSampling, SleepFlagControlling, Rec
 }
 
 struct HelperEngineTests {
+    @Test func renewalUsesOnePreflightWatchdogAndKeepsReplyReadback() throws {
+        let platform = TestPlatform(); let engine = platform.engine(); let client = UUID()
+        var request = try platform.acquire()
+        #expect(engine.handle(request, client: client).success)
+
+        platform.readCount = 0
+        request.operation = .renew
+        let reply = engine.handle(request, client: client)
+
+        #expect(reply.success && reply.flag == .on)
+        #expect(platform.readCount == 2) // Pre-dispatch watchdog plus live reply read-back.
+    }
+
+    @Test func renewalReplyReadbackAndWatchdogHandleFlagDrift() throws {
+        let platform = TestPlatform(); let engine = platform.engine(); let client = UUID()
+        var request = try platform.acquire()
+        #expect(engine.handle(request, client: client).success)
+
+        platform.readCount = 0
+        platform.flagTurnsOffOnRead = 2
+        request.operation = .renew
+        let reply = engine.handle(request, client: client)
+        #expect(reply.flag == .off)
+
+        platform.flagTurnsOffOnRead = nil
+        engine.watchdog()
+        let status = engine.handle(WireRequest(operation: .inspect, sessionID: UUID(), generation: 1), client: client)
+        #expect(status.flag == .off && !status.leaseActive && !status.ownsOverride)
+    }
+
+    @Test func renewalCannotExtendLeaseThatExpiresAfterPreflight() throws {
+        let platform = TestPlatform(); let engine = platform.engine(); let client = UUID()
+        var request = try platform.acquire(seconds: 600)
+        #expect(engine.handle(request, client: client).success)
+
+        platform.clockCallCount = 0
+        // The sample and preflight clock read occur before renew's clock read.
+        platform.advanceTimeOnClockCall = 3
+        platform.clockAdvance = 61
+        request.operation = .renew
+        let reply = engine.handle(request, client: client)
+
+        #expect(!reply.success && !reply.leaseActive && !reply.ownsOverride && reply.flag == .off)
+        #expect(platform.writes == [true, false])
+    }
+
+    @Test func renewalRejectsDeadlineAfterBootChangesBetweenChecks() throws {
+        let platform = TestPlatform(); let engine = platform.engine(); let client = UUID()
+        var request = try platform.acquire(seconds: 600)
+        #expect(engine.handle(request, client: client).success)
+
+        platform.clockCallCount = 0
+        // The snapshot and preflight occur before renew's current-clock check.
+        platform.changeBootIDOnClockCall = 3
+        request.operation = .renew
+        let reply = engine.handle(request, client: client)
+
+        #expect(!reply.success && !reply.leaseActive && !reply.ownsOverride && reply.flag == .off)
+        #expect(platform.writes == [true, false])
+    }
+
     @Test func sampledReadingsAreComparedWithAFreshClock() throws {
         let platform = TestPlatform(); platform.sampleLatency = 0.001
         let engine = platform.engine(); let client = UUID()

@@ -214,9 +214,12 @@ public final class HelperEngine {
               request.policy == current.policy, request.mode == current.mode else {
             throw failure("Lease identity or immutable session parameters do not match.")
         }
-        watchdogFenced()
         guard lease != nil else { throw failure("The lease expired or safety requires a new session.") }
         let now = clock.now()
+        guard now.continuousSeconds < current.expires, !current.deadline.isExpired(at: now) else {
+            try restore()
+            throw failure("The lease expired or safety requires a new session.")
+        }
         lease?.expires = min(now.continuousSeconds + 60,
                              now.continuousSeconds + (current.deadline.remaining(at: now) ?? 60))
         lastMessage = "Lease renewed and observed state verified."
