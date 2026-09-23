@@ -38,6 +38,9 @@ public final class HelperService: NSObject, NSXPCListenerDelegate, @unchecked Se
         timer.schedule(deadline: .now(), repeating: 10, leeway: .milliseconds(100))
         timer.setEventHandler { [weak self] in
             guard let self else { return }
+            #if LIDPILOT_PROFILE
+            PerformanceTrace.event("watchdog", fields: ["stage": "fire"])
+            #endif
             self.lock.lock()
             guard !self.watchdogQueued else { self.lock.unlock(); return }
             self.watchdogQueued = true
@@ -95,6 +98,9 @@ public final class HelperService: NSObject, NSXPCListenerDelegate, @unchecked Se
                 self.reject(.invalidRequest, "The request is invalid or unsupported.", reply: reply)
                 return
             }
+            #if LIDPILOT_PROFILE
+            PerformanceTrace.event("xpc", fields: ["direction": "receive", "op": request.operation.rawValue, "session_id": request.sessionID.uuidString])
+            #endif
             let result = self.engine.handle(request, client: endpoint.id)
             reply((try? result.encoded()) ?? Data())
         }
@@ -102,6 +108,9 @@ public final class HelperService: NSObject, NSXPCListenerDelegate, @unchecked Se
 
     fileprivate func reject(_ code: WireFailureCode, _ message: String,
                             reply: @escaping @Sendable (Data) -> Void) {
+        #if LIDPILOT_PROFILE
+        PerformanceTrace.event("xpc", fields: ["direction": "reject", "code": String(describing: code)])
+        #endif
         let result = WireReply(helperBuild: engine.build, message: message, failureCode: code)
         reply((try? result.encoded()) ?? Data())
     }

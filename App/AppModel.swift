@@ -93,6 +93,9 @@ enum DurationChoice: String, CaseIterable, Identifiable {
         observer?.onChange = { [weak self] in
             guard let self else { return }
             Task { @MainActor in
+                #if LIDPILOT_PROFILE
+                PerformanceTrace.event("reconcile_trigger", fields: ["source": "observer", "phase": String(describing: self.controller.phase)])
+                #endif
                 self.refreshHelper()
                 if self.controller.hasSession { await self.controller.reconcile() }
                 else { await self.controller.refreshWhileOff() }
@@ -172,6 +175,10 @@ enum DurationChoice: String, CaseIterable, Identifiable {
                     while let self, self.controller.hasSession, !Task.isCancelled {
                         let delay = max(0.1, min(15, self.controller.remaining ?? 15))
                         do { try await Task.sleep(for: .seconds(delay)) } catch { break }
+                        #if LIDPILOT_PROFILE
+                        PerformanceTrace.event("heartbeat", fields: ["stage": "fire", "delay_s": String(delay), "phase": String(describing: self.controller.phase)])
+                        PerformanceTrace.event("reconcile_trigger", fields: ["source": "heartbeat", "phase": String(describing: self.controller.phase)])
+                        #endif
                         await self.controller.reconcile()
                     }
                     if self?.heartbeatGeneration == heartbeatToken { self?.heartbeat = nil }

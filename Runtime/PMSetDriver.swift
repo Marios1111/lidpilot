@@ -75,6 +75,16 @@ public struct PMSetDriver: SleepFlagControlling, Sendable {
     }
 
     private func run(arguments: [String]) throws -> String {
+        #if LIDPILOT_PROFILE
+        return try PerformanceTrace.span(operation: arguments == ["-g"] ? "read" : (arguments.last == "1" ? "enable" : "restore")) {
+            try runUnprofiled(arguments: arguments)
+        }
+        #else
+        return try runUnprofiled(arguments: arguments)
+        #endif
+    }
+
+    private func runUnprofiled(arguments: [String]) throws -> String {
         let inheritedFence = fence?.descriptorForCurrentBody()
         do {
             return try runner.run(arguments: arguments, inheritedFence: inheritedFence)
@@ -142,6 +152,9 @@ internal struct POSIXCommandRunner: Sendable {
 
     internal func run(arguments: [String], inheritedFence: Int32?) throws -> String {
         let child = try spawn(arguments: arguments, inheritedFence: inheritedFence)
+        #if LIDPILOT_PROFILE
+        PerformanceTrace.event("spawn", fields: ["child_pid": String(child.pid), "callsite": PerformanceTrace.currentCallsite, "span_id": PerformanceTrace.currentSpanID ?? "none"])
+        #endif
         defer { close(child.outputDescriptor) }
 
         var output = Data()

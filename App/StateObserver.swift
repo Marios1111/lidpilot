@@ -1,6 +1,9 @@
 import AppKit
 import IOKit
 import IOKit.ps
+#if LIDPILOT_PROFILE
+import LidPilotRuntime
+#endif
 
 @MainActor final class StateObserver {
     var onChange: (() -> Void)?
@@ -26,7 +29,12 @@ import IOKit.ps
         powerSource = IOPSNotificationCreateRunLoopSource({ context in
             guard let context else { return }
             let owner = Unmanaged<StateObserver>.fromOpaque(context).takeUnretainedValue()
-            Task { @MainActor in owner.onChange?() }
+            Task { @MainActor in
+                #if LIDPILOT_PROFILE
+                PerformanceTrace.event("observer", fields: ["source": "power_source"])
+                #endif
+                owner.onChange?()
+            }
         }, context)?.takeRetainedValue()
         if let powerSource { CFRunLoopAddSource(CFRunLoopGetMain(), powerSource, .commonModes) }
 
@@ -35,10 +43,15 @@ import IOKit.ps
             IONotificationPortSetDispatchQueue(notificationPort, .main)
             root = IOServiceGetMatchingService(kIOMainPortDefault, IOServiceMatching("IOPMrootDomain"))
             if root != 0 {
-                IOServiceAddInterestNotification(notificationPort, root, kIOGeneralInterest, { context, _, _, _ in
+                IOServiceAddInterestNotification(notificationPort, root, kIOGeneralInterest, { context, _, messageType, _ in
                     guard let context else { return }
                     let owner = Unmanaged<StateObserver>.fromOpaque(context).takeUnretainedValue()
-                    Task { @MainActor in owner.onChange?() }
+                    Task { @MainActor in
+                        #if LIDPILOT_PROFILE
+                        PerformanceTrace.event("observer", fields: ["source": "iokit_interest", "message_type": String(messageType)])
+                        #endif
+                        owner.onChange?()
+                    }
                 }, context, &interest)
             }
         }
@@ -47,6 +60,9 @@ import IOKit.ps
     private func observe(_ center: NotificationCenter, _ name: Notification.Name, sleep: Bool = false) {
         let token = center.addObserver(forName: name, object: nil, queue: .main) { [weak self] _ in
             Task { @MainActor in
+                #if LIDPILOT_PROFILE
+                PerformanceTrace.event("observer", fields: ["source": name.rawValue, "sleep": String(sleep)])
+                #endif
                 if sleep { self?.onSleep?() } else { self?.onChange?() }
             }
         }

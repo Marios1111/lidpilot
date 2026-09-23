@@ -43,6 +43,9 @@ struct PilotPanel: View {
                     Spacer()
                     if model.controller.hasSession {
                         TimelineView(.animation(minimumInterval: 1, paused: !visible)) { _ in
+                            #if LIDPILOT_PROFILE
+                            let _ = PerformanceTrace.event("ui_timeline_render", fields: ["visible": String(visible)])
+                            #endif
                             Text(remainingText).font(.subheadline.monospacedDigit()).foregroundStyle(.secondary)
                         }
                     } else {

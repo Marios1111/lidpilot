@@ -30,6 +30,10 @@ jobs:
         run: ./scripts/verify.sh
       - name: Run Swift package tests
         run: ./scripts/test.sh
+      - name: Test profiling instrumentation with harmless fixtures
+        run: swift test --disable-sandbox --scratch-path /private/tmp/lidpilot-profile-ci -Xswiftc -DLIDPILOT_PROFILE
+      - name: Test profiling report analysis
+        run: PYTHONDONTWRITEBYTECODE=1 python3 scripts/test-performance-profile.py
       - name: Build Debug app without signing secrets
         run: ./scripts/build.sh Debug
       - name: Build optimized Release app without signing secrets

@@ -149,6 +149,10 @@ public enum SessionPhase: String, Sendable {
     }
 
     public func reconcile() async {
+        #if LIDPILOT_PROFILE
+        PerformanceTrace.event("reconcile", fields: ["stage": "begin", "phase": String(describing: phase), "already_reconciling": String(reconciling)])
+        defer { PerformanceTrace.event("reconcile", fields: ["stage": "end", "phase": String(describing: phase)]) }
+        #endif
         guard !reconciling, let mode = requestedMode, let deadline,
               phase == .active || phase == .starting else { return }
         reconciling = true

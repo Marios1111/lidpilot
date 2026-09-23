@@ -32,6 +32,22 @@ public final class HelperEngine {
     }
 
     public func handle(_ request: WireRequest, client: UUID) -> WireReply {
+        #if LIDPILOT_PROFILE
+        PerformanceTrace.event("handle", fields: ["op": request.operation.rawValue, "client_id": client.uuidString,
+            "session_id": request.sessionID.uuidString, "generation": String(request.generation),
+            "lease_active": String(lease != nil), "owns": String(owns), "recovery_pending": String(recoveryPending)])
+        defer { PerformanceTrace.event("handle_end", fields: ["lease_active": String(lease != nil), "owns": String(owns)]) }
+        return PerformanceTrace.withContext(["caller": "xpc", "op": request.operation.rawValue,
+            "client_id": client.uuidString, "session_id": request.sessionID.uuidString,
+            "lease_active": String(lease != nil), "owns": String(owns), "recovery_pending": String(recoveryPending)]) {
+            handleUnprofiled(request, client: client)
+        }
+        #else
+        return handleUnprofiled(request, client: client)
+        #endif
+    }
+
+    private func handleUnprofiled(_ request: WireRequest, client: UUID) -> WireReply {
         do {
             return try driver.withMutationFence { handleFenced(request, client: client) }
         } catch {
@@ -90,8 +106,21 @@ public final class HelperEngine {
     }
 
     public func watchdog() {
+        #if LIDPILOT_PROFILE
+        PerformanceTrace.event("watchdog", fields: ["stage": "begin", "lease_active": String(lease != nil), "owns": String(owns)])
+        defer { PerformanceTrace.event("watchdog", fields: ["stage": "end", "lease_active": String(lease != nil), "owns": String(owns)]) }
+        #endif
         do {
-            try driver.withMutationFence { bootstrap(); watchdogFenced() }
+            try driver.withMutationFence {
+                #if LIDPILOT_PROFILE
+                PerformanceTrace.withContext(["caller": "watchdog", "session_id": lease?.session.uuidString ?? "none",
+                    "lease_active": String(lease != nil), "owns": String(owns), "recovery_pending": String(recoveryPending)]) {
+                    bootstrap(); watchdogFenced()
+                }
+                #else
+                bootstrap(); watchdogFenced()
+                #endif
+            }
         } catch {
             lastMessage = error.localizedDescription
             if owns || !initialized { recoveryPending = true }
@@ -105,7 +134,7 @@ public final class HelperEngine {
         }
         guard let current = lease else { return }
         do {
-            let flag = try driver.read()
+            let flag = try readObserved("watchdog")
             let snapshot = sampler.sample(flag: flag)
             let now = clock.now()
             if now.continuousSeconds >= current.expires || current.deadline.isExpired(at: now) ||
@@ -148,7 +177,7 @@ public final class HelperEngine {
             case .prepared, .enableInFlight:
                 // The cross-process fence has settled every earlier child before this read.
                 // Intent alone cannot distinguish our write from another controller's write.
-                if try driver.read() == .off {
+                if try readObserved("bootstrap") == .off {
                     try journal.clear()
                     owns = false; recoveryPending = false; journalHealthy = true
                     lastMessage = "Interrupted activation is off; recovery is verified."
@@ -169,7 +198,7 @@ public final class HelperEngine {
         guard let mode = request.mode, let policy = request.policy, let deadline = request.deadline else {
             throw failure("Activation parameters are missing.")
         }
-        let flag = try driver.read()
+        let flag = try readObserved("acquire_preflight")
         guard flag == .off else {
             throw failure(flag == .on ? "Another controller already prevents sleep." : "Sleep state is unknown.")
         }
@@ -187,7 +216,7 @@ public final class HelperEngine {
                                             bootID: now.bootID, phase: .enableInFlight))
             owns = true
             try driver.setDisabled(true)
-            let verifiedFlag = try driver.read()
+            let verifiedFlag = try readObserved("acquire_verify")
             let verifiedSnapshot = sampler.sample(flag: verifiedFlag)
             let verifiedTime = clock.now()
             guard verifiedFlag == .on, !deadline.isExpired(at: verifiedTime), verifiedTime.continuousSeconds < now.continuousSeconds + 60,
@@ -222,6 +251,9 @@ public final class HelperEngine {
         }
         lease?.expires = min(now.continuousSeconds + 60,
                              now.continuousSeconds + (current.deadline.remaining(at: now) ?? 60))
+        #if LIDPILOT_PROFILE
+        PerformanceTrace.event("lease_renew", fields: ["session_id": current.session.uuidString, "generation": String(current.generation)])
+        #endif
         lastMessage = "Lease renewed and observed state verified."
     }
 
@@ -235,7 +267,7 @@ public final class HelperEngine {
         recoveryPending = true
         // Even after a failed read, our durable intent gives authority to attempt restoration.
         try driver.setDisabled(false)
-        guard try driver.read() == .off else { throw failure("Normal sleep policy could not be verified.") }
+        guard try readObserved("restore_verify") == .off else { throw failure("Normal sleep policy could not be verified.") }
         try journal.clear()
         journalHealthy = true
         owns = false
@@ -244,13 +276,31 @@ public final class HelperEngine {
     }
 
     private func reply(success: Bool) -> WireReply {
-        let flag = (try? driver.read()) ?? .unknown
+        let flag = (try? readObserved("reply")) ?? .unknown
         return WireReply(helperBuild: build, flag: flag, ownsOverride: owns, recoveryPending: recoveryPending,
                          leaseActive: lease != nil, message: lastMessage,
                          success: success && flag != .unknown, sample: sampler.sample(flag: flag),
                          failureCode: success && flag != .unknown ? nil : (recoveryPending ? .recoveryRequired : .operationFailed),
                          health: HelperHealth(journalHealthy: journalHealthy, powerStateReadable: flag != .unknown,
                                               watchdogAvailable: true))
+    }
+
+    private func readObserved(_ reason: String) throws -> FlagState {
+        #if LIDPILOT_PROFILE
+        PerformanceTrace.event("read_context", fields: ["callsite": reason,
+            "session_id": lease?.session.uuidString ?? "none", "owns": String(owns),
+            "lease_active": String(lease != nil), "recovery_pending": String(recoveryPending)])
+        do {
+            let flag = try PerformanceTrace.withCallsite(reason) { try driver.read() }
+            PerformanceTrace.event("readback", fields: ["callsite": reason, "flag": flag.rawValue])
+            return flag
+        } catch {
+            PerformanceTrace.event("readback", fields: ["callsite": reason, "flag": "read_failed"])
+            throw error
+        }
+        #else
+        return try driver.read()
+        #endif
     }
 
     private func failure(_ message: String) -> RuntimeFailure { .unavailable(message) }

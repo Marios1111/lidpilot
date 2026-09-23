@@ -70,6 +70,10 @@ private final class ReplyOnce: @unchecked Sendable {
     }
 
     public func send(_ request: WireRequest) async throws -> WireReply {
+        #if LIDPILOT_PROFILE
+        PerformanceTrace.event("xpc", fields: ["direction": "send", "op": request.operation.rawValue, "session_id": request.sessionID.uuidString])
+        defer { PerformanceTrace.event("xpc", fields: ["direction": "complete", "op": request.operation.rawValue]) }
+        #endif
         let activates = request.operation == .acquire || request.operation == .renew
         if activates, verifiedBuild != build {
             let status = try await send(WireRequest(operation: .inspect, sessionID: request.sessionID, generation: request.generation))
