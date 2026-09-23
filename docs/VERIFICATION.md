@@ -5,9 +5,11 @@ Source and local development builds are implemented; stable release remains
 blocked by the gates below. The repository is now
 [Marios1111/lidpilot](https://github.com/Marios1111/lidpilot), with `dev` connected
 to `origin/dev`. Historical sections below describe their own dated checkpoints.
-The public [RC1 prerelease](https://github.com/Marios1111/lidpilot/releases/tag/v1.0.0-rc.1)
-and [RC site/feed](https://marios1111.github.io/lidpilot/) are published for explicitly
-approved supervised testing. See [the current evidence record](validation/2026-09-21-native-and-release.md)
+The public [RC1](https://github.com/Marios1111/lidpilot/releases/tag/v1.0.0-rc.1)
+and [RC2](https://github.com/Marios1111/lidpilot/releases/tag/v1.0.0-rc.2)
+prereleases and [RC site/feed](https://marios1111.github.io/lidpilot/) are
+published for explicitly approved supervised testing. See
+[the current evidence record](validation/2026-09-23-closed-lid-and-lease.md)
 and [V1_RELEASE_PLAN.md](V1_RELEASE_PLAN.md). No stable release is claimed.
 
 Current release-validation owner: the selected GPT-6 Astra High lead. The initial
@@ -111,7 +113,7 @@ in Git. The unsigned packaging fixture is under
 | G3 recovery | GUI SIGKILL restored the owned override within 0.28 seconds; a real 60-second helper lease expiry restored it by the 65-second sample. Corrected source handles stale assertion IDs with read-back and passed logic/build checks | BLOCKED: installed RC1 GUI falsely entered Recovery required after expiry; corrected RC2 must pass a live retest. Helper crash/restart and remaining safely reproducible failure paths also remain |
 | G4 identity/helper | Signed/notarized helper registered through ServiceManagement; publisher accepted, wrong-ID/ad-hoc and wrong-console clients rejected by explicit XPC logs; four malformed-wire cases rejected | Genuine different-team client unavailable, remaining lifecycle matrix and helper replacement |
 | Performance | Off 600 s: 0.102% CPU, 47.62 MiB mean; Keep Screen On 600 s: 0.079% CPU, 37.32 MiB mean. Both meet 0.2%/75 MiB targets on installed RC1 | Keep Mac Running ten-minute run, final-candidate review and measured UI timing |
-| G5 release/update | RC1 public bytes/feed verified; corrected RC2 app/DMG signed, notarized and stapled locally; final RC2 archive/feed/notes signatures, hashes and tamper rejection pass | Publish reviewed RC2, then real RC-to-RC update, active-session install block, replacement, updated Off and uninstall |
+| G5 release/update | RC1 and RC2 are public prereleases; anonymous RC2 asset downloads and hosted Pages feed/notes match the final signed local hashes; corrected RC2 app/DMG are signed, notarized and stapled | Real RC-to-RC update, active-session install block, replacement, updated Off and uninstall |
 | Final candidate | Fix `e2037dc`: [CI 35891274636](https://github.com/Marios1111/lidpilot/actions/runs/35891274636), Debug/Release, 54 Runtime + 21 Core tests and static checks pass; RC2 local manifest/hash record below | Native corrected-build recovery, signed upgrade and remaining hardware/performance gates |
 
 The earlier running-controller baseline was resolved through its normal quit

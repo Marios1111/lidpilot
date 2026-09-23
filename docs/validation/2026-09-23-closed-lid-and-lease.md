@@ -54,4 +54,10 @@ The corrected arm64 app/helper build 2 was Developer ID signed. Apple accepted a
 | `appcast.xml` | 1,616 | `2337eb417a4421d3bb82b8132451f8cd7ead629263cadb5a1ffb5272eaa20233` |
 | Signed RC2 notes | 4,264 | `a3a195bb4ea01e09d6665642d0ac8e4bcee0a5700119c44d5063ccaabb25cb0a` |
 
-The final local manifest is SHA-256 `efcbd247974a2eb004d2d09398127c56b0de4eea9309f88c8689dd5b37402cf5`. It retains `hardwareValidation=pending`. The earlier notarized build-2 stage used obsolete notes and will not be published; no RC2 GitHub asset or Pages feed had been uploaded at this point.
+The final local manifest is SHA-256 `efcbd247974a2eb004d2d09398127c56b0de4eea9309f88c8689dd5b37402cf5`. It retains `hardwareValidation=pending`. The earlier notarized build-2 stage used obsolete notes and was not published.
+
+## RC2 publication and hosted-byte verification
+
+The reviewed source tag `v1.0.0-rc.2` points to `0116ef888f58bf92741fdbcc6b778b1d93ee7aac`. Its [CI run](https://github.com/Marios1111/lidpilot/actions/runs/35892178926) passed the Swift tests, release fixtures, Debug build and optimized Release build. The [RC2 GitHub prerelease](https://github.com/Marios1111/lidpilot/releases/tag/v1.0.0-rc.2) includes the final DMG, update ZIP, signed notes, signed appcast and manifest. Each of the five assets was downloaded through its anonymous public URL and compared byte-for-byte by SHA-256 with the final local stage; all matched the table and manifest above. The update archive URL is versioned and immutable within the signed feed.
+
+The exact signed feed and notes bytes were committed at `146f3654b243b50b249f18332820cf999fe266fb`. The manual [Pages deployment](https://github.com/Marios1111/lidpilot/actions/runs/35892765712) and that commit's [CI run](https://github.com/Marios1111/lidpilot/actions/runs/35892757173) passed. Anonymous downloads from `https://marios1111.github.io/lidpilot/rc/appcast.xml` and its RC2 notes URL matched the signed local bytes with SHA-256 `2337eb417a4421d3bb82b8132451f8cd7ead629263cadb5a1ffb5272eaa20233` and `a3a195bb4ea01e09d6665642d0ac8e4bcee0a5700119c44d5063ccaabb25cb0a`, respectively. This establishes hosted-byte integrity; the installed RC1-to-RC2 Sparkle path remains to be exercised.
