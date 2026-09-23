@@ -107,6 +107,11 @@ in Git. The unsigned packaging fixture is under
 
 ## Current release gates
 
+The [RC4 performance investigation](validation/2026-09-24-performance-investigation.md)
+tracks the inclusive CPU profile and public read-back research. The owner
+reconfirmed that external-display/dock hardware and a separate signing-team
+identity are unavailable; their G2/G4 cases remain blocked.
+
 | Gate | Current evidence | Remaining mandatory work |
 | --- | --- | --- |
 | G1 display | PASS for Keep Screen On/Off on the recorded built-in display: manual/ambient brightness, two-minute idle observation, cleanup | Complete remaining mode/power/support-matrix observations; independent idle dimming is a documented limitation |
