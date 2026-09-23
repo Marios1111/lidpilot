@@ -5,17 +5,17 @@ IMPORTANT: This file was signed by Sparkle. Any modifications to this file requi
         <title>LidPilot</title>
         <item>
             <title>1.0.0</title>
-            <pubDate>Wed, 23 Sep 2026 19:50:32 +0300</pubDate>
+            <pubDate>Wed, 23 Sep 2026 20:34:37 +0300</pubDate>
             <link>https://marios1111.github.io/lidpilot/rc/appcast.xml</link>
-            <sparkle:version>2</sparkle:version>
+            <sparkle:version>3</sparkle:version>
             <sparkle:shortVersionString>1.0.0</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
             <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
-            <sparkle:releaseNotesLink sparkle:edSignature="gxLkDBh/7X5zYzPa+Vy+jLddycGsmHlZ8cW9dU4n+M87im8mB8vlTExyytyHZ/azX6xTH1JFI6DTwUHZKrrUDQ==" sparkle:length="4264">https://marios1111.github.io/lidpilot/rc/LidPilot-1.0.0-rc.2.md</sparkle:releaseNotesLink>
-            <enclosure url="https://github.com/Marios1111/lidpilot/releases/download/v1.0.0-rc.2/LidPilot-1.0.0-rc.2.zip" length="1897765" type="application/octet-stream" sparkle:edSignature="Iy14IkDt6zgTqQW03RAwyTdq6kVrR2MwtorvVxuYsPdc2LUjBYYbm7dzOCRzq+se02XkS+trHRn5wYL8PD7jDQ=="></enclosure>
+            <sparkle:releaseNotesLink sparkle:edSignature="JEUUSLQFVMpARyWeGEQz5kwXfsw8tLSXkrmUP8hlomoZUZVSvoehwj540pf8YRS5T983rC0bILFz/VLM9p4CDA==" sparkle:length="5036">https://marios1111.github.io/lidpilot/rc/LidPilot-1.0.0-rc.3.md</sparkle:releaseNotesLink>
+            <enclosure url="https://github.com/Marios1111/lidpilot/releases/download/v1.0.0-rc.3/LidPilot-1.0.0-rc.3.zip" length="1897997" type="application/octet-stream" sparkle:edSignature="g/b4LnK0jjksp5xSV1AYwLIWjqsHm6EHUk58WDYb3cI+Snjor2tS+fmLSze18M2zLxl4+Wg/rtd/yRqyphujDg=="></enclosure>
         </item>
     </channel>
 </rss><!-- sparkle-signatures:
-edSignature: 9i0bVAkZIZDaP0OXKsR0ueBQwq2LHpltdyPIA7OD0MDem4sV9/rSqQ2TsZwlezqZWAfJzK5Ji1AGR33wCol9Cg==
+edSignature: Z5YZAPt9Yh0QcVFjRzHk28VMlHu4R+kIwz08c0l6YAuB52KrrT7cR7NC0FplhTY46Ql/S0nwfWZ0fl3BroZJBQ==
 length: 1472
 -->
