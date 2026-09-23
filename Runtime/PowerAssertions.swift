@@ -9,6 +9,21 @@ public struct AssertionState: Equatable, Sendable {
     public static let off = AssertionState(system: .off, display: .off)
 }
 
+enum AssertionRemovalOutcome: Equatable {
+    case clearID
+    case assertionStillPresent
+    case releaseFailed
+
+    static func evaluate(releaseResult: IOReturn, assertionPresent: Bool) -> Self {
+        guard releaseResult == kIOReturnSuccess ||
+              releaseResult == kIOReturnNotFound ||
+              releaseResult == kIOReturnBadArgument else {
+            return .releaseFailed
+        }
+        return assertionPresent ? .assertionStillPresent : .clearID
+    }
+}
+
 @MainActor public protocol PowerAssertions: AnyObject {
     func apply(system: Bool, display: Bool, timeout: Double) throws -> AssertionState
     func release() throws -> AssertionState
@@ -80,14 +95,16 @@ public struct AssertionState: Equatable, Sendable {
     private func remove(_ id: inout IOPMAssertionID?) throws {
         guard let existing = id else { return }
         let result = IOPMAssertionRelease(existing)
-        // The OS may already have released an expired, bounded assertion.
-        guard result == kIOReturnSuccess || result == kIOReturnNotFound else {
+        // A timed-out assertion can already be gone; IOKit may reject its stale ID.
+        let remains = IOPMAssertionCopyProperties(existing)?.takeRetainedValue() != nil
+        switch AssertionRemovalOutcome.evaluate(releaseResult: result, assertionPresent: remains) {
+        case .clearID:
+            id = nil
+        case .assertionStillPresent:
+            throw RuntimeFailure.unavailable("An assertion remains after release.")
+        case .releaseFailed:
             throw RuntimeFailure.unavailable("An assertion could not be released.")
         }
-        guard IOPMAssertionCopyProperties(existing)?.takeRetainedValue() == nil else {
-            throw RuntimeFailure.unavailable("An assertion remains after release.")
-        }
-        id = nil
     }
 
     private func level(_ id: IOPMAssertionID?) -> FlagState {
