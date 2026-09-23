@@ -3,6 +3,17 @@
 All notable LidPilot changes will be recorded here. This file describes the
 current development snapshot; it is not a release announcement.
 
+## 1.0.0 - release candidate 5
+
+RC5 supports an explicitly instrumented local diagnostic build. Compile-time
+profiling records fixed power-command call sites, read-backs, XPC traffic,
+watchdog/heartbeat activity, observer callbacks, and reconciliation. Normal
+Release builds exclude it. No read, timer, lease, or safety policy is removed.
+
+This candidate investigates RC4's measured 0.684% inclusive CPU against the
+hard 0.2% target. It is not a performance pass or stable V1.0 release. Installed
+profiling, subsequent optimization, and remaining release gates are pending.
+
 ## 1.0.0 - release candidate 4
 
 RC4 removes a redundant fixed `pmset -g` read during each closed-lid helper
@@ -14,7 +25,7 @@ session deadline expires between the watchdog preflight and renewal.
 This change follows a 600-second installed RC3 Keep Mac Running measurement:
 50.57 MiB mean combined physical footprint passed the 75 MiB target, but
 0.855% CPU of one core including reaped `pmset` children exceeded the 0.2%
-target. The RC4 CPU result is **not yet measured**. Its signed upgrade, physical
+target. The RC4 CPU result was **0.684%**, still above target. Its signed upgrade, physical
 display behavior, remaining recovery and authentication cases, and uninstall
 remain supervised validation gates. This is not the stable V1.0 release.
 
