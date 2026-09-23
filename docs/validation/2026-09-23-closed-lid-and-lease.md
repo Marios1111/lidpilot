@@ -34,3 +34,9 @@ The operator ran the public `proc_pid_rusage` recorder with administrator access
 | Reported process energy counter delta | 111,670,531 nJ | Accounting value, not Activity Monitor Energy Impact |
 
 Raw report: `/private/tmp/lidpilot-keep-screen-on-rc1.json`, SHA-256 `895b061a79598d1e077de84157138a8ece624e87afcaa1626a6d36dfef45bc1d`. These are process counters, not whole-machine energy, and five-second footprint samples do not establish an absolute transient peak. Visible click-to-pending latency remains unmeasured.
+
+## G4: signed wrong-console client
+
+With the installed app Off, no LidPilot assertions and `SleepDisabled=0`, the operator ran the fixed inspect-only XPC probe as the existing `nobody` account. The probe's effective signature had identifier `com.lidpilot.app` and Team ID `L69774LN97`; the console user was `marios` (UID 501). Its output was `outcome=connection_interrupted; rejection_is_not_proven`, which is correctly inconclusive by itself. The concurrent macOS log explicitly recorded `Peer connection was rejected by the listener` for that probe PID. The helper listener checks the connection's effective UID against the current console UID before accepting a client, so the log plus signed identity and operator command support wrong-console rejection. No valid mutation request was sent, and the override remained off.
+
+The filtered local log is `release-private/validation/2026-09-23/wrong-console-xpc.log`, SHA-256 `33494b83da6c47ab65bf9a0da3764625c7f0e625d65a0a57c401026688387687`. The separately named Apple Development identity on this Mac still produces the **same** effective Team ID when signing this probe; it cannot serve as a genuine wrong-team test. That G4 case remains untested.

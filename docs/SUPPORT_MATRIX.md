@@ -17,7 +17,7 @@ or update lifecycle has passed validation.
 | Safety | Thermal, battery floor, Low Power Mode, lid, topology, freshness, boot, and helper availability checks | Core and Runtime logic evidence; live sensor and physical behavior require opt-in validation |
 | Display control | App-scoped public macOS assertions | Built-in G1 manual/ambient brightness and no-idle-off observed; independent idle dimming is not provided |
 | Internal panel | Physical built-in panel/backlight behavior | Operator observed dark screen after about one minute closed under the current idle policy; immediate or universal shutdown is not claimed |
-| Closed-lid control | Authenticated helper lease around fixed `pmset` operations | Real ServiceManagement approval, signed helper and publisher/wrong-ID/ad-hoc enforcement passed on RC1; remaining G4 cases open |
+| Closed-lid control | Authenticated helper lease around fixed `pmset` operations | Real ServiceManagement approval, signed helper and publisher/wrong-ID/ad-hoc/wrong-console enforcement passed on RC1; remaining G4 cases open |
 | Recovery | Durable journal, read-back, ownership ambiguity, explicit recovery | Real GUI crash restored the owned override in 0.28 s; lease expiry restored it by the 65-second sample, but RC1's GUI falsely reported Recovery required afterward. Corrected-source retest and other G3/G4 cases remain open |
 | Updates | Sparkle 2 signed update path with an activation barrier | RC1 app/DMG notarized and stapled; signed public archive/feed verified; real upgrade/replacement/uninstall pending |
 | Removal | Open-lid cleanup, verified helper unregistration, then app removal | Documented path; real installation cleanup is part of G5 |
