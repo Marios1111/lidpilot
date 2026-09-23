@@ -61,6 +61,14 @@ No runtime optimization or new ten-minute gate pass is claimed here. In
 particular, the microbenchmark does not establish that the target is impossible
 or achievable in an installed settled session.
 
+A request-local renewal coalescing proposal was also rejected before adoption.
+The existing `renewalReplyReadbackAndWatchdogHandleFlagDrift` regression proves
+that the second read detects an external change after preflight. Reusing the
+preflight observation would defer that detection to the next watchdog tick.
+Although the timer itself would be unchanged, this weakens reply-time state
+verification and conflicts with the owner's explicit constraint. The original
+runtime and regression remain in place.
+
 ## Recorder improvement
 
 Commit `af4cb2a` adds per-target user/system/reaped-child tick deltas and the
