@@ -47,7 +47,7 @@ IFS=$'\t' read -r RELEASE_CHANNEL RELEASE_LABEL LIDPILOT_GITHUB_REPOSITORY LIDPI
   keys = %w[channel releaseLabel repository feedURL downloadURL hardwareValidation sparklePublicKey]
   STDOUT.write(keys.map { |key| configuration.fetch(key) }.join("\t"))
 ' <<<"$RELEASE_CONFIGURATION")"
-PROFILE_ARGS=()
+PROFILE_ARGS=('OTHER_SWIFT_FLAGS=$(inherited)')
 case "${LIDPILOT_PROFILE_BUILD:-0}" in
   0) ;;
   1)

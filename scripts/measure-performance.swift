@@ -30,6 +30,8 @@ struct TargetCPU: Codable {
 struct Report: Codable {
     let label: String
     let startedAt: Date
+    let startedAtUnixSeconds: Double
+    let endedAtUnixSeconds: Double
     let durationSeconds: Double
     let machTimebaseNumerator: UInt32
     let machTimebaseDenominator: UInt32
@@ -158,7 +160,9 @@ do {
                                         Double(targetTicks) * secondsPerTick / elapsed * 100))
     }
     let memory = samples.map { $0.processes.reduce(0.0) { $0 + Double($1.physicalBytes) } / 1_048_576 }
-    let report = Report(label: args[1], startedAt: startedAt, durationSeconds: elapsed,
+    let report = Report(label: args[1], startedAt: startedAt,
+                        startedAtUnixSeconds: startedAt.timeIntervalSince1970,
+                        endedAtUnixSeconds: Date().timeIntervalSince1970, durationSeconds: elapsed,
                         machTimebaseNumerator: timebase.numer, machTimebaseDenominator: timebase.denom,
                         cpuPercentOfOneCoreIncludingReapedChildren: Double(cpuTicks) * secondsPerTick / elapsed * 100,
                         cpuByTarget: cpuByTarget,

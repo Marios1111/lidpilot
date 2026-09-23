@@ -13,7 +13,10 @@ def analyze(log_path, measurement, app_pid, helper_pid):
     if not math.isfinite(duration) or duration < 599.5:
         raise ValueError('A full 600-second installed measurement is required')
     start = datetime.datetime.fromisoformat(measurement['startedAt'].replace('Z', '+00:00')).timestamp()
+    start = measurement.get('startedAtUnixSeconds', start)
     end = start + duration
+    if 'endedAtUnixSeconds' in measurement and abs(measurement['endedAtUnixSeconds'] - end) > 0.25:
+        raise ValueError('Wall clock changed during the measurement; log window is uncertain')
     events = []
     for line in Path(log_path).read_text().splitlines():
         if not line.strip():
@@ -36,6 +39,7 @@ def analyze(log_path, measurement, app_pid, helper_pid):
         gaps.extend({'pid': pid, 'previous': a, 'next': b} for a, b in zip(seq, seq[1:]) if b != a + 1)
     window = [e for e in events if start <= e['wall_time'] <= end]
     counts = collections.Counter(e['event'] for e in window)
+    origins = collections.Counter('/'.join(str(e.get(k, '-')) for k in ('event', 'source', 'stage', 'direction', 'op')) for e in window)
     paths = collections.defaultdict(lambda: {'calls': 0, 'duration_ns': 0, 'child_user_us': 0, 'child_system_us': 0})
     for e in window:
         if e['event'] != 'pmset_span_end':
@@ -43,6 +47,8 @@ def analyze(log_path, measurement, app_pid, helper_pid):
         key = f"{e.get('operation', 'unknown')}/{e.get('callsite', 'unknown')}"
         row = paths[key]
         row['calls'] += 1
+        if e.get('result') == 'error' or e.get('reaped_child_cpu_complete') is False:
+            raise ValueError('Failed or incompletely accounted command span; cannot produce complete attribution')
         row['duration_ns'] += e['duration_ns']
         row['child_user_us'] += e['reaped_child_user_us']
         row['child_system_us'] += e['reaped_child_system_us']
@@ -64,7 +70,7 @@ def analyze(log_path, measurement, app_pid, helper_pid):
         raise ValueError('CPU breakdown does not match aggregate measurement')
     return {'duration_seconds': duration, 'cpu_percent_of_one_core': split,
             'total_cpu_percent': measurement['cpuPercentOfOneCoreIncludingReapedChildren'],
-            'event_counts': dict(counts), 'events_per_minute': {k: v * 60 / duration for k, v in counts.items()},
+            'event_origins': dict(origins), 'event_counts': dict(counts), 'events_per_minute': {k: v * 60 / duration for k, v in counts.items()},
             'pmset_by_path': dict(paths), 'sequence_gaps': gaps,
             'counts_complete': not gaps,
             'limitations': ['Profiling instrumentation overhead is included.',
