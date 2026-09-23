@@ -107,8 +107,8 @@ in Git. The unsigned packaging fixture is under
 | Gate | Current evidence | Remaining mandatory work |
 | --- | --- | --- |
 | G1 display | PASS for Keep Screen On/Off on the recorded built-in display: manual/ambient brightness, two-minute idle observation, cleanup | Complete remaining mode/power/support-matrix observations; independent idle dimming is a documented limitation |
-| G2 closed lid | Follow Lid workload continued; display assertion released; operator saw a dark screen after about one minute and normal reopen | Keep Mac Running and remaining supported setups; immediate panel shutdown is not claimed |
-| G3 recovery | GUI SIGKILL restored the owned override to 0 within 0.28 seconds; relaunch verified Off | Helper crash/restart, lease expiry and remaining safely reproducible failure paths |
+| G2 closed lid | Follow Lid and Keep Mac Running workloads continued through recorded closed-lid intervals; operator saw the built-in screen darken and normal reopen | External/dock topologies unavailable; immediate or electrical panel shutdown is not claimed |
+| G3 recovery | GUI SIGKILL restored the owned override within 0.28 seconds; a real 60-second helper lease expiry restored it by the 65-second sample and kept it off after GUI resume | Native post-lease UI check, helper crash/restart and remaining safely reproducible failure paths |
 | G4 identity/helper | Signed/notarized helper registered through ServiceManagement; publisher accepted, wrong-ID/ad-hoc clients rejected by explicit XPC signing logs; four malformed-wire cases rejected | Remaining identity/lifecycle matrix and helper replacement |
 | Performance | Off 600 s passed: 0.102% CPU, 47.62 MiB mean / 47.88 MiB sampled max combined footprint | Keep Screen On / Keep Mac Running ten-minute runs and UI timing |
 | G5 release/update | Developer ID app/DMG notarized and stapled; signatures/tamper rejection, public RC1 hashes and hosted feed verified | Real RC-to-RC update, active-session install block, replacement, updated Off and uninstall |
@@ -119,6 +119,8 @@ path and independent Off read-back before LidPilot acquired ownership. No
 unowned override was cleared. The required signing identity, notary profile
 and Sparkle key are now configured; private material remains outside Git.
 The prior duplicate driver file was absent at the start of this release pass.
+The separate [September 23 record](validation/2026-09-23-closed-lid-and-lease.md)
+retains the Keep Mac Running and helper lease-expiry trace hashes.
 
 Stable `main`, `v1.0.0` and the stable update feed are not created while mandatory
 gates remain open. RC publication is explicitly authorized and distinct from
