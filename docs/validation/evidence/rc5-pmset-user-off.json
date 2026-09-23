@@ -1,0 +1,451 @@
+{
+  "arguments" : [
+    "-g"
+  ],
+  "effectiveUID" : 501,
+  "endedAtUnixSeconds" : 1790205589.102068,
+  "executable" : "\/usr\/bin\/pmset",
+  "fixedEnvironment" : [
+    "PATH=\/usr\/bin:\/bin",
+    "LANG=C",
+    "LC_ALL=C",
+    "HOME=\/var\/empty"
+  ],
+  "label" : "console-off-final",
+  "measuredChildSystemMicroseconds" : 151497,
+  "measuredChildUserMicroseconds" : 113315,
+  "measuredReads" : [
+    {
+      "childSystemMicroseconds" : 2849,
+      "childUserMicroseconds" : 2177,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8588834
+    },
+    {
+      "childSystemMicroseconds" : 2947,
+      "childUserMicroseconds" : 2327,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8871834
+    },
+    {
+      "childSystemMicroseconds" : 2660,
+      "childUserMicroseconds" : 2102,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8173667
+    },
+    {
+      "childSystemMicroseconds" : 2995,
+      "childUserMicroseconds" : 2198,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 9001083
+    },
+    {
+      "childSystemMicroseconds" : 2608,
+      "childUserMicroseconds" : 1896,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8072125
+    },
+    {
+      "childSystemMicroseconds" : 2887,
+      "childUserMicroseconds" : 2050,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8531459
+    },
+    {
+      "childSystemMicroseconds" : 2608,
+      "childUserMicroseconds" : 1964,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 7975416
+    },
+    {
+      "childSystemMicroseconds" : 2717,
+      "childUserMicroseconds" : 1937,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8018000
+    },
+    {
+      "childSystemMicroseconds" : 2656,
+      "childUserMicroseconds" : 1981,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 7895084
+    },
+    {
+      "childSystemMicroseconds" : 2954,
+      "childUserMicroseconds" : 2206,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 9011125
+    },
+    {
+      "childSystemMicroseconds" : 2607,
+      "childUserMicroseconds" : 2039,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8195750
+    },
+    {
+      "childSystemMicroseconds" : 2942,
+      "childUserMicroseconds" : 2078,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8842625
+    },
+    {
+      "childSystemMicroseconds" : 2674,
+      "childUserMicroseconds" : 2021,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8001459
+    },
+    {
+      "childSystemMicroseconds" : 2876,
+      "childUserMicroseconds" : 2091,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8379584
+    },
+    {
+      "childSystemMicroseconds" : 2692,
+      "childUserMicroseconds" : 2050,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 7980625
+    },
+    {
+      "childSystemMicroseconds" : 2942,
+      "childUserMicroseconds" : 2085,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8810708
+    },
+    {
+      "childSystemMicroseconds" : 2491,
+      "childUserMicroseconds" : 1885,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 7457750
+    },
+    {
+      "childSystemMicroseconds" : 2750,
+      "childUserMicroseconds" : 1943,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8354667
+    },
+    {
+      "childSystemMicroseconds" : 2536,
+      "childUserMicroseconds" : 1922,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 7661792
+    },
+    {
+      "childSystemMicroseconds" : 2692,
+      "childUserMicroseconds" : 1954,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8236875
+    },
+    {
+      "childSystemMicroseconds" : 2472,
+      "childUserMicroseconds" : 1893,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 7732875
+    },
+    {
+      "childSystemMicroseconds" : 2690,
+      "childUserMicroseconds" : 1958,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8127750
+    },
+    {
+      "childSystemMicroseconds" : 2453,
+      "childUserMicroseconds" : 1789,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 7343584
+    },
+    {
+      "childSystemMicroseconds" : 2420,
+      "childUserMicroseconds" : 1776,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 7622375
+    },
+    {
+      "childSystemMicroseconds" : 2640,
+      "childUserMicroseconds" : 1835,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 7917792
+    },
+    {
+      "childSystemMicroseconds" : 2743,
+      "childUserMicroseconds" : 2021,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8187416
+    },
+    {
+      "childSystemMicroseconds" : 2611,
+      "childUserMicroseconds" : 2020,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 7999083
+    },
+    {
+      "childSystemMicroseconds" : 2724,
+      "childUserMicroseconds" : 2124,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 7782500
+    },
+    {
+      "childSystemMicroseconds" : 2981,
+      "childUserMicroseconds" : 2151,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8800250
+    },
+    {
+      "childSystemMicroseconds" : 2856,
+      "childUserMicroseconds" : 2129,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8497750
+    },
+    {
+      "childSystemMicroseconds" : 3056,
+      "childUserMicroseconds" : 2229,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8975375
+    },
+    {
+      "childSystemMicroseconds" : 2744,
+      "childUserMicroseconds" : 2104,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8196375
+    },
+    {
+      "childSystemMicroseconds" : 2973,
+      "childUserMicroseconds" : 2296,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8976875
+    },
+    {
+      "childSystemMicroseconds" : 2786,
+      "childUserMicroseconds" : 2060,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8806209
+    },
+    {
+      "childSystemMicroseconds" : 2891,
+      "childUserMicroseconds" : 2283,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8611458
+    },
+    {
+      "childSystemMicroseconds" : 2771,
+      "childUserMicroseconds" : 2109,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8408750
+    },
+    {
+      "childSystemMicroseconds" : 2696,
+      "childUserMicroseconds" : 2058,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 7870750
+    },
+    {
+      "childSystemMicroseconds" : 2925,
+      "childUserMicroseconds" : 2305,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8360250
+    },
+    {
+      "childSystemMicroseconds" : 2728,
+      "childUserMicroseconds" : 2125,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8297750
+    },
+    {
+      "childSystemMicroseconds" : 2948,
+      "childUserMicroseconds" : 2255,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8956042
+    },
+    {
+      "childSystemMicroseconds" : 2880,
+      "childUserMicroseconds" : 2060,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8892042
+    },
+    {
+      "childSystemMicroseconds" : 2926,
+      "childUserMicroseconds" : 2191,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8482833
+    },
+    {
+      "childSystemMicroseconds" : 2628,
+      "childUserMicroseconds" : 2054,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8033375
+    },
+    {
+      "childSystemMicroseconds" : 2841,
+      "childUserMicroseconds" : 2028,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8366791
+    },
+    {
+      "childSystemMicroseconds" : 2541,
+      "childUserMicroseconds" : 2004,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8068625
+    },
+    {
+      "childSystemMicroseconds" : 2823,
+      "childUserMicroseconds" : 2025,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8151875
+    },
+    {
+      "childSystemMicroseconds" : 2577,
+      "childUserMicroseconds" : 1926,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8002667
+    },
+    {
+      "childSystemMicroseconds" : 2808,
+      "childUserMicroseconds" : 2036,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8112917
+    },
+    {
+      "childSystemMicroseconds" : 2558,
+      "childUserMicroseconds" : 1951,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 7596500
+    },
+    {
+      "childSystemMicroseconds" : 2867,
+      "childUserMicroseconds" : 2181,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8640041
+    },
+    {
+      "childSystemMicroseconds" : 2787,
+      "childUserMicroseconds" : 2159,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8261167
+    },
+    {
+      "childSystemMicroseconds" : 2902,
+      "childUserMicroseconds" : 2244,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8678375
+    },
+    {
+      "childSystemMicroseconds" : 2619,
+      "childUserMicroseconds" : 1944,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8419166
+    },
+    {
+      "childSystemMicroseconds" : 2880,
+      "childUserMicroseconds" : 2090,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8513333
+    },
+    {
+      "childSystemMicroseconds" : 2669,
+      "childUserMicroseconds" : 1996,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8053125
+    }
+  ],
+  "measuredReadsRequested" : 55,
+  "measuredTotalWallNanoseconds" : 455804503,
+  "notes" : "Read-only fixed \/usr\/bin\/pmset -g via public posix_spawn; fixed environment; merged stdout\/stderr pipe captured serially; every child waited\/reaped. No shell or power writes. Output text is not recorded, only its SHA-256 and a strict SleepDisabled parse. Unknown is never treated as Off. Each command is bounded to 5 seconds; total invocations including warmups are capped at 60.",
+  "perCommandTimeoutSeconds" : 5,
+  "realUID" : 501,
+  "schemaVersion" : 1,
+  "startedAtUnixSeconds" : 1790205588.59952,
+  "totalReadLimitIncludesWarmups" : true,
+  "totalReadsRequested" : 60,
+  "warmupReads" : [
+    {
+      "childSystemMicroseconds" : 2859,
+      "childUserMicroseconds" : 1982,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 7958333
+    },
+    {
+      "childSystemMicroseconds" : 2905,
+      "childUserMicroseconds" : 2276,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8710666
+    },
+    {
+      "childSystemMicroseconds" : 3040,
+      "childUserMicroseconds" : 2295,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 9478167
+    },
+    {
+      "childSystemMicroseconds" : 2759,
+      "childUserMicroseconds" : 2097,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8435959
+    },
+    {
+      "childSystemMicroseconds" : 2677,
+      "childUserMicroseconds" : 2050,
+      "outputSHA256" : "e72ba41df4e98664e53fbbcea2b5c9a5e79018c786cbb54bc12caf243417b050",
+      "sleepDisabled" : "off",
+      "wallNanoseconds" : 8098208
+    }
+  ],
+  "warmupReadsRequested" : 5
+}
