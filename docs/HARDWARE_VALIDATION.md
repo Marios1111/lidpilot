@@ -201,13 +201,14 @@ repository. Verify the full sequence:
 3. Validate Sparkle 2.10.0 signed archive, feed, and release-note metadata,
    including immutable version-specific download bytes and failure-expiration
    behavior.
-4. Discover an update while Off, during Display, and during Smart/Closed.
-   Discovery may report availability, but installation must be refused until
-   the barrier proves Off, assertions released, lid open, helper quiesced, and
-   ownership read back.
-5. Start a manual check, cancel it, receive no update, fail cleanup, lose
-   network, close the lid, and interrupt the app. Confirm barrier persistence,
-   safe helper restoration, and no automatic session restart.
+4. Discover an update while Off. While any session is active, confirm that
+   manual and scheduled checks are deferred without presenting a modal alert
+   or interrupting assertion renewal. Installation requires the barrier to
+   prove Off, assertions released, lid open, helper quiesced, and ownership
+   read back.
+5. Start a manual check while Off, cancel it, receive no update, fail cleanup,
+   lose network, close the lid, and interrupt the app. Confirm barrier
+   persistence, safe helper restoration, and no automatic session restart.
 6. Install a valid update, verify the replacement helper identity/protocol/build,
    and verify that the updated app starts Off with preferences preserved.
 7. Run the documented uninstall path only after verified cleanup and helper
