@@ -7,7 +7,7 @@ Apple Silicon Macs running macOS 15 or later.
 
 Development lives at [Marios1111/lidpilot](https://github.com/Marios1111/lidpilot)
 on `dev`. V1 release validation is in progress; a stable signed download is not
-yet available. A signed and notarized [RC1 prerelease](https://github.com/Marios1111/lidpilot/releases/tag/v1.0.0-rc.1)
+yet available. A signed and notarized [RC3 prerelease](https://github.com/Marios1111/lidpilot/releases/tag/v1.0.0-rc.3)
 is available for supervised testing. Follow the [verification record](docs/VERIFICATION.md) for actual
 hardware, signing, and update results. The concept artwork in `design/` is a
 directional design artifact; it is not evidence of power behavior.
@@ -118,12 +118,13 @@ following gates:
 - G2: observe physical built-in panel/backlight behavior across open, closed,
   docked, external-display, and virtual-display topologies. The current code
   does not measure panel power.
-- G3: exercise real app/helper crashes, reconnects, delayed replies, command
-  timeouts, read-back failures, and recovery on Apple Silicon hardware.
+- G3: real app/helper crashes and helper lease expiry passed on the recorded
+  Mac; remaining reproducible delayed-reply, command-timeout, read-back and
+  restoration faults need final release evidence.
 - G4: validate signed peer authentication and the launchd/ServiceManagement
   lifecycle with real publisher-signed identities.
-- G5: validate signed/notarized packaging, Sparkle replacement, helper upgrade,
-  and uninstall with real release credentials.
+- G5: RC1→RC2 signed Sparkle replacement and helper upgrade passed; RC3's
+  active-session check fix and uninstall/cleanup need installed validation.
 
 The complete opt-in checklist is in
 [`docs/HARDWARE_VALIDATION.md`](docs/HARDWARE_VALIDATION.md), with the current
