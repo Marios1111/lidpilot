@@ -10,16 +10,16 @@ or update lifecycle has passed validation.
 | Area | V1 boundary | Current evidence/status |
 | --- | --- | --- |
 | Hardware | Apple Silicon Mac with a built-in lid, plus supported external-display topologies | M4 MacBook Air/built-in panel has G1 and bounded G2 evidence; other models/topologies are untested |
-| Operating system | macOS 15 or later | Source and project settings target macOS 15; each release must record the tested OS build |
-| Architecture | Native Swift 6, SwiftUI/AppKit, menu-bar app, arm64 | Debug/Release and CI passed; signed/notarized RC1–RC2 and their actual helpers ran on the recorded host; signed RC3 is pending installed validation |
+| Operating system | macOS 15 or later | CI builds and tests on macOS 15; installed hardware tests ran on the recorded macOS 27.2 beta host, not a macOS 15 machine |
+| Architecture | Native Swift 6, SwiftUI/AppKit, menu-bar app, arm64 | Debug/Release and macOS 15 CI passed; signed/notarized RC1–RC3 and their actual helpers ran on the recorded host |
 | Modes | Follow Lid, Keep Screen On, Keep Mac Running, and Off | Keep Screen On/Off observed; Follow Lid and Keep Mac Running continuity/reopen observed on the built-in display |
 | Sessions | Finite duration, absolute end time, indefinite session, explicit Stop | Core and Runtime logic evidence; delayed replies must not extend the hard deadline |
 | Safety | Thermal, battery floor, Low Power Mode, lid, topology, freshness, boot, and helper availability checks | Core and Runtime logic evidence; live sensor and physical behavior require opt-in validation |
 | Display control | App-scoped public macOS assertions | Built-in G1 manual/ambient brightness and no-idle-off observed; independent idle dimming is not provided |
 | Internal panel | Physical built-in panel/backlight behavior | Operator observed dark screen after about one minute closed under the current idle policy; immediate or universal shutdown is not claimed |
-| Closed-lid control | Authenticated helper lease around fixed `pmset` operations | Real ServiceManagement approval, signed helper and publisher/wrong-ID/ad-hoc/wrong-console enforcement passed; RC2 replacement helper acquired and released the override. Genuine different-team client remains untested |
+| Closed-lid control | Authenticated helper lease around fixed `pmset` operations | Real ServiceManagement approval, signed helper and publisher/wrong-ID/ad-hoc/wrong-console enforcement passed; RC2 and RC3 replacement helpers acquired the override. Genuine different-team client remains untested |
 | Recovery | Durable journal, read-back, ownership ambiguity, explicit recovery | Real GUI crash restored the override in 0.28 s. RC2 lease expiry and helper crash/restart restored it with no false Recovery; remaining fault paths and final-candidate repeat are open |
-| Updates | Sparkle 2 signed update path with an activation barrier | Real signed RC1→RC2 upgrade and helper replacement passed; RC3 is signed, notarized and publicly hosted. RC3 active-check behavior and uninstall are pending installed tests |
+| Updates | Sparkle 2 signed update path with an activation barrier | Real signed RC1→RC2 and RC2→RC3 upgrades, Off relaunch, matching helper acquisition and RC3 active-check disabling passed; updater fault paths and uninstall remain open |
 | Removal | Open-lid cleanup, verified helper unregistration, then app removal | Documented path; real installation cleanup is part of G5 |
 | Accessibility | Native SwiftUI/AppKit controls and labels | Keyboard flows, user-assisted VoiceOver speech, Light/Dark and contrast/transparency/motion settings checked; preferred-reading-size scaling is not claimed |
 | Diagnostics | Local, bounded, redacted diagnostics | Seven retention, redaction, storage, and malformed-input tests pass; native preview and local Save dialog export passed |

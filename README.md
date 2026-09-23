@@ -123,8 +123,10 @@ following gates:
   restoration faults need final release evidence.
 - G4: validate signed peer authentication and the launchd/ServiceManagement
   lifecycle with real publisher-signed identities.
-- G5: RC1→RC2 signed Sparkle replacement and helper upgrade passed; RC3's
-  active-session check fix and uninstall/cleanup need installed validation.
+- G5: signed RC1→RC2 and RC2→RC3 Sparkle replacements passed on the recorded
+  Mac. RC3 relaunched Off, its build-3 helper acquired a fresh lease, and
+  active-session update actions were disabled. Uninstall/cleanup and remaining
+  updater fault paths still need installed validation.
 
 The complete opt-in checklist is in
 [`docs/HARDWARE_VALIDATION.md`](docs/HARDWARE_VALIDATION.md), with the current
