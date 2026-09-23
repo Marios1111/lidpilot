@@ -3,6 +3,21 @@
 All notable LidPilot changes will be recorded here. This file describes the
 current development snapshot; it is not a release announcement.
 
+## 1.0.0 - release candidate 4
+
+RC4 removes a redundant fixed `pmset -g` read during each closed-lid helper
+lease renewal. The 10-second watchdog, 15-second app heartbeat, live reply
+read-back, and fixed privileged command boundary remain. A fresh clock check
+restores the owned override and rejects renewal if the lease or immutable
+session deadline expires between the watchdog preflight and renewal.
+
+This change follows a 600-second installed RC3 Keep Mac Running measurement:
+50.57 MiB mean combined physical footprint passed the 75 MiB target, but
+0.855% CPU of one core including reaped `pmset` children exceeded the 0.2%
+target. The RC4 CPU result is **not yet measured**. Its signed upgrade, physical
+display behavior, remaining recovery and authentication cases, and uninstall
+remain supervised validation gates. This is not the stable V1.0 release.
+
 ## 1.0.0 - release candidate 3
 
 This supervised candidate keeps update checks out of an active session. In
