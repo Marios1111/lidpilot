@@ -19,11 +19,22 @@ struct Sample: Codable {
     let elapsedSeconds: Double
     let processes: [Reading]
 }
+struct TargetCPU: Codable {
+    let pid: Int32
+    let ownUserTicks: UInt64
+    let ownSystemTicks: UInt64
+    let reapedChildUserTicks: UInt64
+    let reapedChildSystemTicks: UInt64
+    let inclusiveCPUPercentOfOneCore: Double
+}
 struct Report: Codable {
     let label: String
     let startedAt: Date
     let durationSeconds: Double
+    let machTimebaseNumerator: UInt32
+    let machTimebaseDenominator: UInt32
     let cpuPercentOfOneCoreIncludingReapedChildren: Double
+    let cpuByTarget: [TargetCPU]
     let meanCombinedPhysicalMiB: Double
     let maxSampledCombinedPhysicalMiB: Double
     let interruptWakeupsPerSecond: Double
@@ -68,7 +79,15 @@ do {
     }
     var timebase = mach_timebase_info_data_t()
     guard mach_timebase_info(&timebase) == KERN_SUCCESS else { throw NSError(domain: "clock", code: 1) }
+    guard timebase.numer > 0, timebase.denom > 0 else {
+        throw NSError(domain: "clock", code: 1,
+                      userInfo: [NSLocalizedDescriptionKey: "Mach returned an invalid timebase"])
+    }
     let secondsPerTick = Double(timebase.numer) / Double(timebase.denom) / 1_000_000_000
+    guard secondsPerTick.isFinite, secondsPerTick > 0 else {
+        throw NSError(domain: "clock", code: 1,
+                      userInfo: [NSLocalizedDescriptionKey: "Mach timebase cannot be converted to seconds"])
+    }
     let startedAt = Date()
     let start = mach_absolute_time()
     let initial = try pids.map(read)
@@ -86,26 +105,69 @@ do {
     }
     let elapsed = samples.last!.elapsedSeconds
     let final = samples.last!.processes
-    func delta(_ field: KeyPath<Reading, UInt64>) throws -> UInt64 {
+    guard elapsed.isFinite, elapsed > 0 else {
+        throw NSError(domain: "clock", code: 1,
+                      userInfo: [NSLocalizedDescriptionKey: "Elapsed measurement time is invalid"])
+    }
+    func difference(_ current: UInt64, _ previous: UInt64, field: String, pid: Int32? = nil) throws -> UInt64 {
+        guard current >= previous else {
+            let target = pid.map { " for PID \($0)" } ?? ""
+            throw NSError(domain: "counter", code: 1, userInfo: [NSLocalizedDescriptionKey:
+                "Nonmonotonic \(field) counter\(target); discard this run"])
+        }
+        return current - previous
+    }
+    func checkedAdd(_ lhs: UInt64, _ rhs: UInt64, field: String) throws -> UInt64 {
+        let (value, overflow) = lhs.addingReportingOverflow(rhs)
+        guard !overflow else {
+            throw NSError(domain: "counter", code: 1, userInfo: [NSLocalizedDescriptionKey:
+                "Overflow while summing \(field) counters; discard this run"])
+        }
+        return value
+    }
+    guard final.count == initial.count else {
+        throw NSError(domain: "process", code: 1, userInfo: [NSLocalizedDescriptionKey:
+            "The target process set changed; discard this run"])
+    }
+    func delta(_ field: KeyPath<Reading, UInt64>, name: String) throws -> UInt64 {
         var total: UInt64 = 0
         for (last, first) in zip(final, initial) {
-            guard last[keyPath: field] >= first[keyPath: field] else { throw NSError(domain: "counter", code: 1) }
-            total += last[keyPath: field] - first[keyPath: field]
+            let amount = try difference(last[keyPath: field], first[keyPath: field], field: name, pid: first.pid)
+            total = try checkedAdd(total, amount, field: name)
         }
         return total
     }
     // CPU accounting uses Mach absolute-time units. Include reaped power-command
     // children; do not substitute wall time or relabel these counters as ns.
-    let cpuTicks = try delta(\.userTicks) + delta(\.systemTicks) + delta(\.childUserTicks) + delta(\.childSystemTicks)
+    var cpuByTarget = [TargetCPU]()
+    var cpuTicks: UInt64 = 0
+    for (last, first) in zip(final, initial) {
+        let user = try difference(last.userTicks, first.userTicks, field: "user CPU", pid: first.pid)
+        let system = try difference(last.systemTicks, first.systemTicks, field: "system CPU", pid: first.pid)
+        let childUser = try difference(last.childUserTicks, first.childUserTicks,
+                                       field: "reaped-child user CPU", pid: first.pid)
+        let childSystem = try difference(last.childSystemTicks, first.childSystemTicks,
+                                         field: "reaped-child system CPU", pid: first.pid)
+        let targetTicks = try checkedAdd(try checkedAdd(user, system, field: "target CPU"),
+                                         try checkedAdd(childUser, childSystem, field: "reaped-child CPU"),
+                                         field: "inclusive target CPU")
+        cpuTicks = try checkedAdd(cpuTicks, targetTicks, field: "inclusive process-tree CPU")
+        cpuByTarget.append(TargetCPU(pid: first.pid, ownUserTicks: user, ownSystemTicks: system,
+                                     reapedChildUserTicks: childUser, reapedChildSystemTicks: childSystem,
+                                     inclusiveCPUPercentOfOneCore:
+                                        Double(targetTicks) * secondsPerTick / elapsed * 100))
+    }
     let memory = samples.map { $0.processes.reduce(0.0) { $0 + Double($1.physicalBytes) } / 1_048_576 }
     let report = Report(label: args[1], startedAt: startedAt, durationSeconds: elapsed,
+                        machTimebaseNumerator: timebase.numer, machTimebaseDenominator: timebase.denom,
                         cpuPercentOfOneCoreIncludingReapedChildren: Double(cpuTicks) * secondsPerTick / elapsed * 100,
+                        cpuByTarget: cpuByTarget,
                         meanCombinedPhysicalMiB: memory.reduce(0,+) / Double(memory.count),
                         maxSampledCombinedPhysicalMiB: memory.max()!,
-                        interruptWakeupsPerSecond: Double(try delta(\.interruptWakeups)) / elapsed,
-                        packageIdleWakeupsPerSecond: Double(try delta(\.idleWakeups)) / elapsed,
-                        reportedEnergyNanojoules: try delta(\.energyNanojoules),
-                        notes: "Public proc_pid_rusage V6; 5-second samples. Zero energy counters may mean unavailable accounting, not zero energy. This is not Activity Monitor's Energy Impact score. PID restarts or read failures invalidate the run. Physical footprint is sampled, not an absolute transient peak. Record mode, build, power and display state separately; this tool cannot verify them.",
+                        interruptWakeupsPerSecond: Double(try delta(\.interruptWakeups, name: "interrupt wakeup")) / elapsed,
+                        packageIdleWakeupsPerSecond: Double(try delta(\.idleWakeups, name: "package idle wakeup")) / elapsed,
+                        reportedEnergyNanojoules: try delta(\.energyNanojoules, name: "energy"),
+                        notes: "Public proc_pid_rusage V6; 5-second samples. CPU tick fields are converted using the recorded Mach timebase numerator/denominator. Per-target inclusive CPU includes that PID's reaped children and sums to the combined value when target process trees do not overlap. Zero energy counters may mean unavailable accounting, not zero energy. This is not Activity Monitor's Energy Impact score. PID restarts, nonmonotonic counters or read failures invalidate the run. Physical footprint is sampled, not an absolute transient peak. Record mode, build, power and display state separately; this tool cannot verify them.",
                         samples: samples)
     let encoder = JSONEncoder()
     encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
