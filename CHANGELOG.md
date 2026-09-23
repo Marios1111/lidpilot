@@ -6,7 +6,8 @@ current development snapshot; it is not a release announcement.
 ## 1.0.0 - release candidate 2
 
 This is a supervised V1.0 release candidate, not a stable release. RC2 fixes a
-stale helper approval error after approval completes in System Settings.
+stale helper approval error after approval completes in System Settings and
+handles already-expired macOS keep-awake assertions during cleanup.
 Physical display, recovery, helper authentication, performance, and the signed
 update lifecycle are still being validated. Use on an open, ventilated desk and
 read the verification record before enabling closed-lid support.
@@ -37,6 +38,10 @@ read the verification record before enabling closed-lid support.
 - Size onboarding to its content so introduction and safety text remain visible.
 - Clear a stale helper registration error after approval completes in System
   Settings.
+- Clear an expired, LidPilot-owned keep-awake assertion ID only after macOS
+  read-back confirms the assertion is absent. This addresses the false
+  Recovery required state found during the real helper lease-expiry test;
+  corrected-build hardware retesting remains a release gate.
 - Keep descriptor ownership local until recovery-directory validation succeeds,
   preventing a double close when an unsafe directory is rejected.
 
