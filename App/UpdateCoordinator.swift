@@ -51,9 +51,10 @@ import LidPilotRuntime
     func check() {
         guard configured, let standard, let model, !preparing, !installationCommitted,
               standard.updater.canCheckForUpdates else { return }
-        // A check during an active session can report availability, but shouldProceed refuses installation.
-        if model.controller.hasSession {
-            standard.checkForUpdates(nil)
+        // Sparkle can show a synchronous error alert after shouldProceed rejects an update.
+        // Its modal loop can delay our assertion renewal task until the alert is dismissed.
+        guard !model.controller.hasSession else {
+            status = "Turn LidPilot Off before checking for updates."
             return
         }
         preparing = true
@@ -84,6 +85,9 @@ import LidPilotRuntime
     func updater(_ updater: SPUUpdater, mayPerform updateCheck: SPUUpdateCheck) throws {
         guard model?.onboardingComplete == true else {
             throw updateError("Finish the welcome screen before checking for updates.")
+        }
+        guard model?.controller.hasSession == false else {
+            throw updateError("Turn LidPilot Off before checking for updates.")
         }
     }
 

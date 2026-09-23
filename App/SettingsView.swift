@@ -181,7 +181,8 @@ struct SettingsView: View {
                     Text(updater.status).font(.subheadline).foregroundStyle(.secondary)
                     Toggle("Check for updates automatically", isOn: Binding(get: { updater.automaticChecks }, set: { updater.automaticChecks = $0 }))
                         .disabled(!updater.configured)
-                    Button("Check for Updates…") { updater.check() }.disabled(!updater.canCheck)
+                    Button("Check for Updates…") { updater.check() }
+                        .disabled(!updater.canCheck || model.controller.hasSession)
                 }
             }
             Section {

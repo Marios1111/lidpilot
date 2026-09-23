@@ -127,7 +127,7 @@ struct PilotPanel: View {
                         .accessibilityLabel("Open Settings").help("Settings")
                     Menu {
                         Button("Check for Updates…") { model.updater?.check() }
-                            .disabled(model.updater?.canCheck != true)
+                            .disabled(model.updater?.canCheck != true || model.controller.hasSession)
                         Button("Welcome & Help") { openWindow(id: "welcome"); NSApp.activate(ignoringOtherApps: true) }
                         Divider()
                         Button("Quit LidPilot") { NSApp.terminate(nil) }.keyboardShortcut("q")
