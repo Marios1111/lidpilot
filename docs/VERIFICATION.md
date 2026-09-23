@@ -108,7 +108,11 @@ in Git. The unsigned packaging fixture is under
 ## Current release gates
 
 The [RC4 performance investigation](validation/2026-09-24-performance-investigation.md)
-tracks the inclusive CPU profile and public read-back research. The owner
+tracks the inclusive CPU profile and public read-back research. The
+[installed diagnostic RC5 record](validation/2026-09-24-rc5-profile.md) adds a
+complete 600-second instrumented run: **FAIL 0.614% inclusive CPU**, with 148
+reads attributed to scheduled watchdog (60), renewal admission (44), and fresh
+reply verification (44). This is diagnosis, not a runtime optimization. The owner
 reconfirmed that external-display/dock hardware and a separate signing-team
 identity are unavailable; their G2/G4 cases remain blocked.
 

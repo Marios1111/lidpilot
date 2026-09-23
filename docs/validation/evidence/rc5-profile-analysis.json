@@ -1,0 +1,106 @@
+{
+  "boundary_spans": [],
+  "counts_complete": true,
+  "cpu_percent_of_one_core": {
+    "app": 0.11988325118574422,
+    "app_reaped_children": 0.0,
+    "helper": 0.07138548709750415,
+    "helper_reaped_children": 0.42266009369954677
+  },
+  "duration_seconds": 600.0048946666666,
+  "event_counts": {
+    "handle": 44,
+    "handle_end": 44,
+    "heartbeat": 38,
+    "lease_renew": 44,
+    "observer": 10,
+    "pmset_span_begin": 148,
+    "pmset_span_end": 148,
+    "read_context": 148,
+    "readback": 148,
+    "reconcile": 96,
+    "reconcile_trigger": 48,
+    "spawn": 148,
+    "ui_timeline_render": 88,
+    "watchdog": 180,
+    "xpc": 132
+  },
+  "event_origins": {
+    "handle/-/-/-/renew": 44,
+    "handle_end/-/-/-/-": 44,
+    "heartbeat/-/fire/-/-": 38,
+    "lease_renew/-/-/-/-": 44,
+    "observer/iokit_interest/-/-/-": 6,
+    "observer/power_source/-/-/-": 4,
+    "pmset_span_begin/-/-/-/-": 60,
+    "pmset_span_begin/-/-/-/renew": 88,
+    "pmset_span_end/-/-/-/-": 60,
+    "pmset_span_end/-/-/-/renew": 88,
+    "read_context/-/-/-/-": 148,
+    "readback/-/-/-/-": 148,
+    "reconcile/-/begin/-/-": 48,
+    "reconcile/-/end/-/-": 48,
+    "reconcile_trigger/heartbeat/-/-/-": 38,
+    "reconcile_trigger/observer/-/-/-": 10,
+    "spawn/-/-/-/-": 148,
+    "ui_timeline_render/-/-/-/-": 88,
+    "watchdog/-/begin/-/-": 60,
+    "watchdog/-/end/-/-": 60,
+    "watchdog/-/fire/-/-": 60,
+    "xpc/-/-/complete/renew": 44,
+    "xpc/-/-/receive/renew": 44,
+    "xpc/-/-/send/renew": 44
+  },
+  "events_per_minute": {
+    "handle": 4.399964106070593,
+    "handle_end": 4.399964106070593,
+    "heartbeat": 3.7999690006973306,
+    "lease_renew": 4.399964106070593,
+    "observer": 0.9999918422887711,
+    "pmset_span_begin": 14.799879265873813,
+    "pmset_span_end": 14.799879265873813,
+    "read_context": 14.799879265873813,
+    "readback": 14.799879265873813,
+    "reconcile": 9.599921685972204,
+    "reconcile_trigger": 4.799960842986102,
+    "spawn": 14.799879265873813,
+    "ui_timeline_render": 8.799928212141186,
+    "watchdog": 17.99985316119788,
+    "xpc": 13.199892318211779
+  },
+  "limitations": [
+    "Profiling instrumentation overhead is included.",
+    "Commands crossing the window boundary need manual reconciliation.",
+    "No events before/after the measurement window must be checked against capture start/end.",
+    "Child command CPU is a separate getrusage measurement; compare it with recorder child counters."
+  ],
+  "pmset_by_path": {
+    "read/watchdog/watchdog": {
+      "calls": 60,
+      "calls_per_minute": 5.999951053732627,
+      "child_cpu_percent_of_one_core": 0.17700338937901686,
+      "child_system_us": 635710,
+      "child_user_us": 426319,
+      "duration_ns": 1566058164
+    },
+    "read/xpc/reply": {
+      "calls": 44,
+      "calls_per_minute": 4.399964106070593,
+      "child_cpu_percent_of_one_core": 0.12160350798560488,
+      "child_system_us": 432767,
+      "child_user_us": 296860,
+      "duration_ns": 1046363253
+    },
+    "read/xpc/watchdog": {
+      "calls": 44,
+      "calls_per_minute": 4.399964106070593,
+      "child_cpu_percent_of_one_core": 0.12580230706606838,
+      "child_system_us": 453505,
+      "child_user_us": 301315,
+      "duration_ns": 1200331121
+    }
+  },
+  "sequence_gaps": [],
+  "total_cpu_percent": 0.6139288319827951,
+  "unmatched_spans": []
+}
