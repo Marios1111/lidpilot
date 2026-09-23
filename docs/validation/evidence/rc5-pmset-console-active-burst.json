@@ -1,0 +1,451 @@
+{
+  "arguments" : [
+    "-g"
+  ],
+  "effectiveUID" : 501,
+  "endedAtUnixSeconds" : 1790205884.745645,
+  "executable" : "\/usr\/bin\/pmset",
+  "fixedEnvironment" : [
+    "PATH=\/usr\/bin:\/bin",
+    "LANG=C",
+    "LC_ALL=C",
+    "HOME=\/var\/empty"
+  ],
+  "label" : "console-active-burst",
+  "measuredChildSystemMicroseconds" : 155451,
+  "measuredChildUserMicroseconds" : 115929,
+  "measuredReads" : [
+    {
+      "childSystemMicroseconds" : 2984,
+      "childUserMicroseconds" : 2275,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8889833
+    },
+    {
+      "childSystemMicroseconds" : 2776,
+      "childUserMicroseconds" : 2131,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8131208
+    },
+    {
+      "childSystemMicroseconds" : 3156,
+      "childUserMicroseconds" : 2357,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 9341750
+    },
+    {
+      "childSystemMicroseconds" : 2688,
+      "childUserMicroseconds" : 1995,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 7815333
+    },
+    {
+      "childSystemMicroseconds" : 2961,
+      "childUserMicroseconds" : 2245,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8767958
+    },
+    {
+      "childSystemMicroseconds" : 2752,
+      "childUserMicroseconds" : 2029,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8332250
+    },
+    {
+      "childSystemMicroseconds" : 2919,
+      "childUserMicroseconds" : 2130,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8609583
+    },
+    {
+      "childSystemMicroseconds" : 2639,
+      "childUserMicroseconds" : 1998,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 7747125
+    },
+    {
+      "childSystemMicroseconds" : 2874,
+      "childUserMicroseconds" : 2133,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8275125
+    },
+    {
+      "childSystemMicroseconds" : 2882,
+      "childUserMicroseconds" : 1997,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 7941959
+    },
+    {
+      "childSystemMicroseconds" : 2876,
+      "childUserMicroseconds" : 2104,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8148000
+    },
+    {
+      "childSystemMicroseconds" : 2468,
+      "childUserMicroseconds" : 1847,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 7135209
+    },
+    {
+      "childSystemMicroseconds" : 2870,
+      "childUserMicroseconds" : 2241,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8613709
+    },
+    {
+      "childSystemMicroseconds" : 2697,
+      "childUserMicroseconds" : 2085,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8119042
+    },
+    {
+      "childSystemMicroseconds" : 2875,
+      "childUserMicroseconds" : 2205,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8625792
+    },
+    {
+      "childSystemMicroseconds" : 2591,
+      "childUserMicroseconds" : 1897,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 7588334
+    },
+    {
+      "childSystemMicroseconds" : 3113,
+      "childUserMicroseconds" : 2304,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8932208
+    },
+    {
+      "childSystemMicroseconds" : 2785,
+      "childUserMicroseconds" : 2044,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8123833
+    },
+    {
+      "childSystemMicroseconds" : 2921,
+      "childUserMicroseconds" : 2295,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8625583
+    },
+    {
+      "childSystemMicroseconds" : 2646,
+      "childUserMicroseconds" : 2062,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 7812208
+    },
+    {
+      "childSystemMicroseconds" : 2980,
+      "childUserMicroseconds" : 2144,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8451250
+    },
+    {
+      "childSystemMicroseconds" : 2597,
+      "childUserMicroseconds" : 1969,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 7760666
+    },
+    {
+      "childSystemMicroseconds" : 2787,
+      "childUserMicroseconds" : 1996,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8350917
+    },
+    {
+      "childSystemMicroseconds" : 2601,
+      "childUserMicroseconds" : 2003,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 7951334
+    },
+    {
+      "childSystemMicroseconds" : 2968,
+      "childUserMicroseconds" : 2158,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8539708
+    },
+    {
+      "childSystemMicroseconds" : 2677,
+      "childUserMicroseconds" : 2081,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 7957333
+    },
+    {
+      "childSystemMicroseconds" : 3093,
+      "childUserMicroseconds" : 2233,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8975250
+    },
+    {
+      "childSystemMicroseconds" : 2643,
+      "childUserMicroseconds" : 2077,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 7971584
+    },
+    {
+      "childSystemMicroseconds" : 2994,
+      "childUserMicroseconds" : 2275,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8669667
+    },
+    {
+      "childSystemMicroseconds" : 2862,
+      "childUserMicroseconds" : 2082,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8212500
+    },
+    {
+      "childSystemMicroseconds" : 2979,
+      "childUserMicroseconds" : 2312,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8677583
+    },
+    {
+      "childSystemMicroseconds" : 2618,
+      "childUserMicroseconds" : 2002,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 7700791
+    },
+    {
+      "childSystemMicroseconds" : 3041,
+      "childUserMicroseconds" : 2228,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8532208
+    },
+    {
+      "childSystemMicroseconds" : 2569,
+      "childUserMicroseconds" : 1995,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 7632583
+    },
+    {
+      "childSystemMicroseconds" : 2685,
+      "childUserMicroseconds" : 1914,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8327958
+    },
+    {
+      "childSystemMicroseconds" : 2483,
+      "childUserMicroseconds" : 1766,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 7331834
+    },
+    {
+      "childSystemMicroseconds" : 3118,
+      "childUserMicroseconds" : 2276,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 9199084
+    },
+    {
+      "childSystemMicroseconds" : 3356,
+      "childUserMicroseconds" : 2355,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 9183291
+    },
+    {
+      "childSystemMicroseconds" : 3039,
+      "childUserMicroseconds" : 2394,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 9104500
+    },
+    {
+      "childSystemMicroseconds" : 2859,
+      "childUserMicroseconds" : 2156,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8366417
+    },
+    {
+      "childSystemMicroseconds" : 3159,
+      "childUserMicroseconds" : 2397,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 9264667
+    },
+    {
+      "childSystemMicroseconds" : 2951,
+      "childUserMicroseconds" : 2264,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8636333
+    },
+    {
+      "childSystemMicroseconds" : 2990,
+      "childUserMicroseconds" : 2371,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 9008083
+    },
+    {
+      "childSystemMicroseconds" : 2929,
+      "childUserMicroseconds" : 2238,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 9006417
+    },
+    {
+      "childSystemMicroseconds" : 3002,
+      "childUserMicroseconds" : 2247,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8971250
+    },
+    {
+      "childSystemMicroseconds" : 2501,
+      "childUserMicroseconds" : 1879,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 7416875
+    },
+    {
+      "childSystemMicroseconds" : 2671,
+      "childUserMicroseconds" : 1884,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 7814709
+    },
+    {
+      "childSystemMicroseconds" : 2489,
+      "childUserMicroseconds" : 1771,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 7215458
+    },
+    {
+      "childSystemMicroseconds" : 2780,
+      "childUserMicroseconds" : 1931,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8345500
+    },
+    {
+      "childSystemMicroseconds" : 2335,
+      "childUserMicroseconds" : 1769,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 6938209
+    },
+    {
+      "childSystemMicroseconds" : 2597,
+      "childUserMicroseconds" : 1849,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 7751292
+    },
+    {
+      "childSystemMicroseconds" : 2488,
+      "childUserMicroseconds" : 1789,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 7265583
+    },
+    {
+      "childSystemMicroseconds" : 2986,
+      "childUserMicroseconds" : 2316,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8740208
+    },
+    {
+      "childSystemMicroseconds" : 2986,
+      "childUserMicroseconds" : 2127,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8723375
+    },
+    {
+      "childSystemMicroseconds" : 3165,
+      "childUserMicroseconds" : 2307,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 9218417
+    }
+  ],
+  "measuredReadsRequested" : 55,
+  "measuredTotalWallNanoseconds" : 456788876,
+  "notes" : "Read-only fixed \/usr\/bin\/pmset -g via public posix_spawn; fixed environment; merged stdout\/stderr pipe captured serially; every child waited\/reaped. No shell or power writes. Output text is not recorded, only its SHA-256 and a strict SleepDisabled parse. Unknown is never treated as Off. Each command is bounded to 5 seconds; total invocations including warmups are capped at 60.",
+  "perCommandTimeoutSeconds" : 5,
+  "realUID" : 501,
+  "schemaVersion" : 1,
+  "startedAtUnixSeconds" : 1790205884.2409492,
+  "totalReadLimitIncludesWarmups" : true,
+  "totalReadsRequested" : 60,
+  "warmupReads" : [
+    {
+      "childSystemMicroseconds" : 3328,
+      "childUserMicroseconds" : 2487,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 9496625
+    },
+    {
+      "childSystemMicroseconds" : 2981,
+      "childUserMicroseconds" : 2264,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8876000
+    },
+    {
+      "childSystemMicroseconds" : 2748,
+      "childUserMicroseconds" : 2143,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8598375
+    },
+    {
+      "childSystemMicroseconds" : 2773,
+      "childUserMicroseconds" : 2061,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8439833
+    },
+    {
+      "childSystemMicroseconds" : 2768,
+      "childUserMicroseconds" : 2075,
+      "outputSHA256" : "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+      "sleepDisabled" : "on",
+      "wallNanoseconds" : 8180167
+    }
+  ],
+  "warmupReadsRequested" : 5
+}

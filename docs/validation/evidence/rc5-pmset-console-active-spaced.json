@@ -1,0 +1,224 @@
+[
+  {
+    "arguments": [
+      "-g"
+    ],
+    "effectiveUID": 501,
+    "endedAtUnixSeconds": 1790205904.947578,
+    "executable": "/usr/bin/pmset",
+    "fixedEnvironment": [
+      "PATH=/usr/bin:/bin",
+      "LANG=C",
+      "LC_ALL=C",
+      "HOME=/var/empty"
+    ],
+    "label": "console-active-spaced",
+    "measuredChildSystemMicroseconds": 2899,
+    "measuredChildUserMicroseconds": 2064,
+    "measuredReads": [
+      {
+        "childSystemMicroseconds": 2899,
+        "childUserMicroseconds": 2064,
+        "outputSHA256": "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+        "sleepDisabled": "on",
+        "wallNanoseconds": 8313459
+      }
+    ],
+    "measuredReadsRequested": 1,
+    "measuredTotalWallNanoseconds": 8313459,
+    "notes": "Read-only fixed /usr/bin/pmset -g via public posix_spawn; fixed environment; merged stdout/stderr pipe captured serially; every child waited/reaped. No shell or power writes. Output text is not recorded, only its SHA-256 and a strict SleepDisabled parse. Unknown is never treated as Off. Each command is bounded to 5 seconds; total invocations including warmups are capped at 60.",
+    "perCommandTimeoutSeconds": 5,
+    "realUID": 501,
+    "schemaVersion": 1,
+    "startedAtUnixSeconds": 1790205904.9391131,
+    "totalReadLimitIncludesWarmups": true,
+    "totalReadsRequested": 1,
+    "warmupReads": [],
+    "warmupReadsRequested": 0
+  },
+  {
+    "arguments": [
+      "-g"
+    ],
+    "effectiveUID": 501,
+    "endedAtUnixSeconds": 1790205914.957897,
+    "executable": "/usr/bin/pmset",
+    "fixedEnvironment": [
+      "PATH=/usr/bin:/bin",
+      "LANG=C",
+      "LC_ALL=C",
+      "HOME=/var/empty"
+    ],
+    "label": "console-active-spaced",
+    "measuredChildSystemMicroseconds": 3336,
+    "measuredChildUserMicroseconds": 2232,
+    "measuredReads": [
+      {
+        "childSystemMicroseconds": 3336,
+        "childUserMicroseconds": 2232,
+        "outputSHA256": "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+        "sleepDisabled": "on",
+        "wallNanoseconds": 8855583
+      }
+    ],
+    "measuredReadsRequested": 1,
+    "measuredTotalWallNanoseconds": 8855583,
+    "notes": "Read-only fixed /usr/bin/pmset -g via public posix_spawn; fixed environment; merged stdout/stderr pipe captured serially; every child waited/reaped. No shell or power writes. Output text is not recorded, only its SHA-256 and a strict SleepDisabled parse. Unknown is never treated as Off. Each command is bounded to 5 seconds; total invocations including warmups are capped at 60.",
+    "perCommandTimeoutSeconds": 5,
+    "realUID": 501,
+    "schemaVersion": 1,
+    "startedAtUnixSeconds": 1790205914.9488358,
+    "totalReadLimitIncludesWarmups": true,
+    "totalReadsRequested": 1,
+    "warmupReads": [],
+    "warmupReadsRequested": 0
+  },
+  {
+    "arguments": [
+      "-g"
+    ],
+    "effectiveUID": 501,
+    "endedAtUnixSeconds": 1790205924.967381,
+    "executable": "/usr/bin/pmset",
+    "fixedEnvironment": [
+      "PATH=/usr/bin:/bin",
+      "LANG=C",
+      "LC_ALL=C",
+      "HOME=/var/empty"
+    ],
+    "label": "console-active-spaced",
+    "measuredChildSystemMicroseconds": 4992,
+    "measuredChildUserMicroseconds": 3831,
+    "measuredReads": [
+      {
+        "childSystemMicroseconds": 4992,
+        "childUserMicroseconds": 3831,
+        "outputSHA256": "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+        "sleepDisabled": "on",
+        "wallNanoseconds": 12844000
+      }
+    ],
+    "measuredReadsRequested": 1,
+    "measuredTotalWallNanoseconds": 12844000,
+    "notes": "Read-only fixed /usr/bin/pmset -g via public posix_spawn; fixed environment; merged stdout/stderr pipe captured serially; every child waited/reaped. No shell or power writes. Output text is not recorded, only its SHA-256 and a strict SleepDisabled parse. Unknown is never treated as Off. Each command is bounded to 5 seconds; total invocations including warmups are capped at 60.",
+    "perCommandTimeoutSeconds": 5,
+    "realUID": 501,
+    "schemaVersion": 1,
+    "startedAtUnixSeconds": 1790205924.9542751,
+    "totalReadLimitIncludesWarmups": true,
+    "totalReadsRequested": 1,
+    "warmupReads": [],
+    "warmupReadsRequested": 0
+  },
+  {
+    "arguments": [
+      "-g"
+    ],
+    "effectiveUID": 501,
+    "endedAtUnixSeconds": 1790205934.968596,
+    "executable": "/usr/bin/pmset",
+    "fixedEnvironment": [
+      "PATH=/usr/bin:/bin",
+      "LANG=C",
+      "LC_ALL=C",
+      "HOME=/var/empty"
+    ],
+    "label": "console-active-spaced",
+    "measuredChildSystemMicroseconds": 3903,
+    "measuredChildUserMicroseconds": 3032,
+    "measuredReads": [
+      {
+        "childSystemMicroseconds": 3903,
+        "childUserMicroseconds": 3032,
+        "outputSHA256": "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+        "sleepDisabled": "on",
+        "wallNanoseconds": 11646291
+      }
+    ],
+    "measuredReadsRequested": 1,
+    "measuredTotalWallNanoseconds": 11646291,
+    "notes": "Read-only fixed /usr/bin/pmset -g via public posix_spawn; fixed environment; merged stdout/stderr pipe captured serially; every child waited/reaped. No shell or power writes. Output text is not recorded, only its SHA-256 and a strict SleepDisabled parse. Unknown is never treated as Off. Each command is bounded to 5 seconds; total invocations including warmups are capped at 60.",
+    "perCommandTimeoutSeconds": 5,
+    "realUID": 501,
+    "schemaVersion": 1,
+    "startedAtUnixSeconds": 1790205934.9567208,
+    "totalReadLimitIncludesWarmups": true,
+    "totalReadsRequested": 1,
+    "warmupReads": [],
+    "warmupReadsRequested": 0
+  },
+  {
+    "arguments": [
+      "-g"
+    ],
+    "effectiveUID": 501,
+    "endedAtUnixSeconds": 1790205944.978977,
+    "executable": "/usr/bin/pmset",
+    "fixedEnvironment": [
+      "PATH=/usr/bin:/bin",
+      "LANG=C",
+      "LC_ALL=C",
+      "HOME=/var/empty"
+    ],
+    "label": "console-active-spaced",
+    "measuredChildSystemMicroseconds": 5366,
+    "measuredChildUserMicroseconds": 3915,
+    "measuredReads": [
+      {
+        "childSystemMicroseconds": 5366,
+        "childUserMicroseconds": 3915,
+        "outputSHA256": "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+        "sleepDisabled": "on",
+        "wallNanoseconds": 22505167
+      }
+    ],
+    "measuredReadsRequested": 1,
+    "measuredTotalWallNanoseconds": 22505167,
+    "notes": "Read-only fixed /usr/bin/pmset -g via public posix_spawn; fixed environment; merged stdout/stderr pipe captured serially; every child waited/reaped. No shell or power writes. Output text is not recorded, only its SHA-256 and a strict SleepDisabled parse. Unknown is never treated as Off. Each command is bounded to 5 seconds; total invocations including warmups are capped at 60.",
+    "perCommandTimeoutSeconds": 5,
+    "realUID": 501,
+    "schemaVersion": 1,
+    "startedAtUnixSeconds": 1790205944.9560652,
+    "totalReadLimitIncludesWarmups": true,
+    "totalReadsRequested": 1,
+    "warmupReads": [],
+    "warmupReadsRequested": 0
+  },
+  {
+    "arguments": [
+      "-g"
+    ],
+    "effectiveUID": 501,
+    "endedAtUnixSeconds": 1790205954.9783611,
+    "executable": "/usr/bin/pmset",
+    "fixedEnvironment": [
+      "PATH=/usr/bin:/bin",
+      "LANG=C",
+      "LC_ALL=C",
+      "HOME=/var/empty"
+    ],
+    "label": "console-active-spaced",
+    "measuredChildSystemMicroseconds": 4635,
+    "measuredChildUserMicroseconds": 3549,
+    "measuredReads": [
+      {
+        "childSystemMicroseconds": 4635,
+        "childUserMicroseconds": 3549,
+        "outputSHA256": "4147ffb605850fa7f2089b3180b8069913e64ff4c8df0cf2437e9129e02616ec",
+        "sleepDisabled": "on",
+        "wallNanoseconds": 12643250
+      }
+    ],
+    "measuredReadsRequested": 1,
+    "measuredTotalWallNanoseconds": 12643250,
+    "notes": "Read-only fixed /usr/bin/pmset -g via public posix_spawn; fixed environment; merged stdout/stderr pipe captured serially; every child waited/reaped. No shell or power writes. Output text is not recorded, only its SHA-256 and a strict SleepDisabled parse. Unknown is never treated as Off. Each command is bounded to 5 seconds; total invocations including warmups are capped at 60.",
+    "perCommandTimeoutSeconds": 5,
+    "realUID": 501,
+    "schemaVersion": 1,
+    "startedAtUnixSeconds": 1790205954.965523,
+    "totalReadLimitIncludesWarmups": true,
+    "totalReadsRequested": 1,
+    "warmupReads": [],
+    "warmupReadsRequested": 0
+  }
+]
