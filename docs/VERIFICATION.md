@@ -7,6 +7,7 @@ blocked by the gates below. The repository is now
 to `origin/dev`. Historical sections below describe their own dated checkpoints.
 The public [RC1](https://github.com/Marios1111/lidpilot/releases/tag/v1.0.0-rc.1)
 and [RC2](https://github.com/Marios1111/lidpilot/releases/tag/v1.0.0-rc.2)
+and [RC3](https://github.com/Marios1111/lidpilot/releases/tag/v1.0.0-rc.3)
 prereleases and [RC site/feed](https://marios1111.github.io/lidpilot/) are
 published for explicitly approved supervised testing. See
 [the current evidence record](validation/2026-09-23-closed-lid-and-lease.md)
@@ -113,8 +114,8 @@ in Git. The unsigned packaging fixture is under
 | G3 recovery | GUI SIGKILL restored the override within 0.28 s. Real RC2 lease expiry restored it by 64.7 s and the GUI paused without false Recovery. Root-helper crash/restart restored it in the first changed 22.9 s sample and kept it off through 119 s | Remaining safely reproducible read-back/restore failures and final-candidate repeat |
 | G4 identity/helper | Signed/notarized helper registered through ServiceManagement; publisher accepted, wrong-ID/ad-hoc and wrong-console clients rejected by explicit XPC logs; four malformed-wire cases rejected. RC2 replacement helper successfully acquired/released the override | Genuine different-team client unavailable; complete remaining lifecycle matrix |
 | Performance | Off 600 s: 0.102% CPU, 47.62 MiB mean; Keep Screen On 600 s: 0.079% CPU, 37.32 MiB mean. Both meet 0.2%/75 MiB targets on installed RC1 | Keep Mac Running ten-minute run, final-candidate review and measured UI timing |
-| G5 release/update | RC1 and RC2 are public prereleases; anonymous RC2 asset/hosted-feed hashes match. Real Sparkle RC1→RC2 installed signed build 2, relaunched Off, and re-registered a functioning build-2 helper. An active RC1 check refused installation but its modal alert starved assertion renewal; `236a8dc` disables checks during sessions | Ship/test the active-check fix in a newer signed RC, uninstall/cleanup, final candidate |
-| Final candidate | Installed RC2 passed real lease cleanup, helper crash/restart and signed RC1→RC2 upgrade; active-check fix `236a8dc` passed [CI 35894500968](https://github.com/Marios1111/lidpilot/actions/runs/35894500968), local tests and Debug/Release builds | Sign/install a newer RC to validate the active-check fix; complete remaining performance, hardware and release gates |
+| G5 release/update | RC1–RC3 are public prereleases with verified hosted hashes. Real Sparkle RC1→RC2 installed signed build 2, relaunched Off and re-registered a functioning helper. RC3 includes `236a8dc` to prevent active-session Sparkle modals; its signed archive/feed/notes and tamper rejection pass | Real installed RC2→RC3 update and active-check test, uninstall/cleanup, final candidate |
+| Final candidate | Installed RC2 passed real lease cleanup, helper crash/restart and signed RC1→RC2 upgrade. RC3 build 3 is Developer ID signed, notarized, stapled and public; [tag CI 35896814898](https://github.com/Marios1111/lidpilot/actions/runs/35896814898) passed | Install and validate RC3, complete remaining performance/hardware gates and stable-candidate checks |
 
 The earlier running-controller baseline was resolved through its normal quit
 path and independent Off read-back before LidPilot acquired ownership. No
