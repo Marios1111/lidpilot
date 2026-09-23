@@ -19,3 +19,18 @@ The first sampled `SleepDisabled=0` occurred 65.018 seconds after suspension. Th
 A bounded public-IOKit probe reproduced the mismatch: a one-second system assertion had no properties after expiry, but `IOPMAssertionRelease` returned `kIOReturnBadArgument` (`-536870206`), whereas RC1 accepted only success or `kIOReturnNotFound` (`-536870160`). The probe created no persistent assertion or `pmset` override. Corrected source must be rebuilt and the real lease-expiry path retested before this gate can pass. Helper-crash behavior and safely reproducible failed read-back/restore paths also remain open.
 
 The ignored local raw report is `release-private/validation/2026-09-23/lease-expiry-rc1.json`, SHA-256 `714a698409da9fddce8458449461a57141ca50c34d800d09e82c0b9694fd6e07`.
+
+## Performance: Keep Screen On, RC1
+
+The operator ran the public `proc_pid_rusage` recorder with administrator access to the installed app (PID 85339) and helper (PID 540), the popover closed, the lid open, AC connected, and a one-hour Keep Screen On session settled. It ran from 16:30:54 UTC for 600.004 seconds with 121 samples. The recorder rejects process replacement and read failures. At completion, the system/display assertions remained present and `SleepDisabled=0`; this was not a helper-backed mode. Native Turn Off then showed Off, and independent read-back showed no LidPilot assertions and `SleepDisabled=0`. This RC1 measurement is useful evidence, but the corrected candidate still needs its own acceptance review.
+
+| Metric | Result | Product target |
+| --- | ---: | --- |
+| Mean CPU, app/helper plus reaped children | 0.0793% of one core | PASS, ≤0.2% |
+| Mean combined physical footprint | 37.316 MiB | PASS, ≤75 MiB |
+| Maximum sampled combined physical footprint | 38.251 MiB | PASS, ≤75 MiB sampled |
+| Interrupt wakeups | 0.4267/s | Recorded; no numeric threshold |
+| Package-idle wakeups | 0.0783/s | Recorded; no numeric threshold |
+| Reported process energy counter delta | 111,670,531 nJ | Accounting value, not Activity Monitor Energy Impact |
+
+Raw report: `/private/tmp/lidpilot-keep-screen-on-rc1.json`, SHA-256 `895b061a79598d1e077de84157138a8ece624e87afcaa1626a6d36dfef45bc1d`. These are process counters, not whole-machine energy, and five-second footprint samples do not establish an absolute transient peak. Visible click-to-pending latency remains unmeasured.
