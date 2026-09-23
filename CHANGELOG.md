@@ -3,6 +3,14 @@
 All notable LidPilot changes will be recorded here. This file describes the
 current development snapshot; it is not a release announcement.
 
+## 1.0.0 - release candidate 6
+
+RC6 tests standard launchd scheduling for the helper while keeping its utility
+queues, watchdog cadence, leases, read-backs, and recovery unchanged. A bounded
+read-only comparison identified higher per-command CPU under Background
+classification. This is not yet an installed performance or energy pass; the
+0.2% gate remains open pending the full signed-candidate measurement.
+
 ## 1.0.0 - release candidate 5
 
 RC5 supports an explicitly instrumented local diagnostic build. Compile-time
