@@ -40,3 +40,18 @@ Raw report: `/private/tmp/lidpilot-keep-screen-on-rc1.json`, SHA-256 `895b061a79
 With the installed app Off, no LidPilot assertions and `SleepDisabled=0`, the operator ran the fixed inspect-only XPC probe as the existing `nobody` account. The probe's effective signature had identifier `com.lidpilot.app` and Team ID `L69774LN97`; the console user was `marios` (UID 501). Its output was `outcome=connection_interrupted; rejection_is_not_proven`, which is correctly inconclusive by itself. The concurrent macOS log explicitly recorded `Peer connection was rejected by the listener` for that probe PID. The helper listener checks the connection's effective UID against the current console UID before accepting a client, so the log plus signed identity and operator command support wrong-console rejection. No valid mutation request was sent, and the override remained off.
 
 The filtered local log is `release-private/validation/2026-09-23/wrong-console-xpc.log`, SHA-256 `33494b83da6c47ab65bf9a0da3764625c7f0e625d65a0a57c401026688387687`. The separately named Apple Development identity on this Mac still produces the **same** effective Team ID when signing this probe; it cannot serve as a genuine wrong-team test. That G4 case remains untested.
+
+## Corrected RC2: local candidate, pending live retest
+
+Runtime fix `e2037dc` treats an expired assertion's `kIOReturnBadArgument` as clearable only when the immediate public-IOKit properties read-back is absent. Other release errors and still-present assertions remain failures. The focused tests (3), full Runtime suite (54), Core suite (21), Debug and optimized Release builds, and static release checks passed. [CI run 35891274636](https://github.com/Marios1111/lidpilot/actions/runs/35891274636) passed at the fix revision. None of these checks substitutes for rerunning the installed lease-expiry case.
+
+The corrected arm64 app/helper build 2 was Developer ID signed. Apple accepted app submission `dcbb4234-11c7-446d-bc93-c69081414591` and DMG submission `c85fc2a9-cb78-4580-9e32-bc14d56ade4f`; both artifacts were stapled and validated. Gatekeeper accepted the app as a notarized Developer ID build. After the RC2 changelog was corrected, the unchanged notarized app/DMG were copied with metadata preserved into a fresh local stage, revalidated, and used to generate the final signed Sparkle archive, feed, and notes. The manifest hashes match every local file; a one-byte modified archive was rejected by signature verification. Private keys and credentials remained outside Git. This is local packaging evidence, not a published RC or a passed update lifecycle.
+
+| Final local artifact | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `LidPilot-1.0.0-rc.2.dmg` | 2,225,580 | `6483b00d409789405dbd03d0f413d695d433d5ff35e9e879a7cf8bf1c7352c9a` |
+| `LidPilot-1.0.0-rc.2.zip` | 1,897,765 | `de5ead807c4de9f12cd3efb4c176d31ec3d6fb9273b3f4bd042b055ddbc81f56` |
+| `appcast.xml` | 1,616 | `2337eb417a4421d3bb82b8132451f8cd7ead629263cadb5a1ffb5272eaa20233` |
+| Signed RC2 notes | 4,264 | `a3a195bb4ea01e09d6665642d0ac8e4bcee0a5700119c44d5063ccaabb25cb0a` |
+
+The final local manifest is SHA-256 `efcbd247974a2eb004d2d09398127c56b0de4eea9309f88c8689dd5b37402cf5`. It retains `hardwareValidation=pending`. The earlier notarized build-2 stage used obsolete notes and will not be published; no RC2 GitHub asset or Pages feed had been uploaded at this point.
