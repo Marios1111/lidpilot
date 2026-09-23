@@ -292,5 +292,7 @@ The pre-existing untracked source duplicate remained unchanged.
 
 The [September 24 RC4 record](validation/2026-09-24-rc4.md) records build 4
 CI, Developer ID signing, accepted notarization, stapling, signed Sparkle
-artifacts and hosted hash verification. RC4 installation and its ten-minute
-performance measurement remain pending; the RC3 CPU failure is not cleared.
+artifacts and hosted hash verification. Sparkle installed RC4, which relaunched
+with its override and assertions off; launchd reports helper build 4. Native
+confirmation, a fresh helper lease, and the ten-minute performance measurement
+remain pending; the RC3 CPU failure is not cleared.
