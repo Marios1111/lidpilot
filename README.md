@@ -123,13 +123,14 @@ following gates:
   restoration faults need final release evidence.
 - G4: validate signed peer authentication and the launchd/ServiceManagement
   lifecycle with real publisher-signed identities.
-- G5: signed RC1→RC2 and RC2→RC3 Sparkle replacements passed on the recorded
-  Mac. RC3 relaunched Off, its build-3 helper acquired a fresh lease, and
-  active-session update actions were disabled. Uninstall/cleanup and remaining
-  updater fault paths still need installed validation.
-- Performance: a ten-minute RC3 Keep Mac Running sample passed the 75 MiB
-  memory target but failed the 0.2% CPU target at 0.855%; fixed `pmset` child
-  processes account for most of the measured CPU. This remains a release blocker.
+- G5: signed RC1→RC2→RC3→RC4 Sparkle replacements passed on the recorded Mac.
+  RC4 relaunched Off, its build-4 helper acquired a fresh lease, and a canceled
+  update restored the previous helper. Uninstall/cleanup and remaining updater
+  fault paths still need installed validation.
+- Performance: a ten-minute RC4 Keep Mac Running sample passed the 75 MiB
+  memory target at 38.04 MiB mean but failed the 0.2% CPU target at 0.684%.
+  Fixed `pmset` child processes account for most of the measured CPU. This
+  remains a release blocker.
 
 The complete opt-in checklist is in
 [`docs/HARDWARE_VALIDATION.md`](docs/HARDWARE_VALIDATION.md), with the current
