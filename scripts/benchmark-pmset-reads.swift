@@ -36,6 +36,7 @@ private struct Report: Codable {
     let realUID: UInt32
     let effectiveUID: UInt32
     let fixedEnvironment: [String]
+    let executionQoS: String
     let perCommandTimeoutSeconds: Int
     let totalReadLimitIncludesWarmups: Bool
     let totalReadsRequested: Int
@@ -221,15 +222,16 @@ private func parserSelfTest() throws {
 
 do {
     var args = Array(CommandLine.arguments.dropFirst())
-    var total = 60, warmupCount = 5, label = "unspecified", selfTest = false
+    var total = 60, warmupCount = 5, label = "unspecified", executionQoS = "default", selfTest = false
     while !args.isEmpty {
         let key = args.removeFirst()
         switch key {
         case "--total-reads": guard !args.isEmpty, let n = Int(args.removeFirst()) else { throw Failure(message: "invalid --total-reads") }; total = n
         case "--warmups": guard !args.isEmpty, let n = Int(args.removeFirst()) else { throw Failure(message: "invalid --warmups") }; warmupCount = n
         case "--label": guard !args.isEmpty else { throw Failure(message: "--label requires a value") }; label = args.removeFirst()
+        case "--qos": guard !args.isEmpty else { throw Failure(message: "--qos requires default or utility") }; executionQoS = args.removeFirst()
         case "--self-test": selfTest = true
-        case "--help", "-h": throw Failure(message: "Usage: benchmark-pmset-reads [--total-reads 1...60] [--warmups 0...total-1] [--label TEXT] [--self-test]; JSON goes to stdout. Compile once and run the same binary as user and root.")
+        case "--help", "-h": throw Failure(message: "Usage: benchmark-pmset-reads [--total-reads 1...60] [--warmups 0...total-1] [--label TEXT] [--qos default|utility] [--self-test]; JSON goes to stdout. Compile once and run the same binary as user and root.")
         default: throw Failure(message: "unknown option: \(key)")
         }
     }
@@ -237,16 +239,25 @@ do {
     guard (1...maxReads).contains(total), (0..<total).contains(warmupCount), label.utf8.count <= 64 else {
         throw Failure(message: "total reads must be 1...60 (including warmups); warmups must be less than total; label max is 64 bytes")
     }
+    guard executionQoS == "default" || executionQoS == "utility" else {
+        throw Failure(message: "--qos requires default or utility")
+    }
     let startedAt = Date().timeIntervalSince1970
-    let warmups = try (0..<warmupCount).map { _ in try measuredRead() }
-    let reads = try (warmupCount..<total).map { _ in try measuredRead() }
+    let performReads = { () throws -> ([Read], [Read]) in
+        let warmups = try (0..<warmupCount).map { _ in try measuredRead() }
+        let reads = try (warmupCount..<total).map { _ in try measuredRead() }
+        return (warmups, reads)
+    }
+    let (warmups, reads) = try executionQoS == "utility"
+        ? DispatchQueue(label: "com.lidpilot.diagnostic.utility", qos: .utility).sync(execute: performReads)
+        : performReads()
     let endedAt = Date().timeIntervalSince1970
     let userCPU = try reads.reduce(UInt64(0)) { try add($0, $1.childUserMicroseconds, "user CPU") }
     let systemCPU = try reads.reduce(UInt64(0)) { try add($0, $1.childSystemMicroseconds, "system CPU") }
     let wall = try reads.reduce(UInt64(0)) { try add($0, $1.wallNanoseconds, "wall time") }
     let report = Report(schemaVersion: 1, label: label, executable: command, arguments: ["-g"],
         realUID: UInt32(getuid()), effectiveUID: UInt32(geteuid()), fixedEnvironment: fixedEnv,
-        perCommandTimeoutSeconds: 5, totalReadLimitIncludesWarmups: true,
+        executionQoS: executionQoS, perCommandTimeoutSeconds: 5, totalReadLimitIncludesWarmups: true,
         totalReadsRequested: total, warmupReadsRequested: warmupCount,
         measuredReadsRequested: total - warmupCount,
         startedAtUnixSeconds: startedAt, endedAtUnixSeconds: endedAt,

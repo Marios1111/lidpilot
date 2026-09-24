@@ -94,3 +94,28 @@ another controlled experiment targeting command scheduling/child CPU without
 replacing independent read-backs or reducing watchdog timing. A final
 uninstrumented 600-second installed result and energy/response check are still
 mandatory; no stable release is authorized.
+
+
+## Follow-up read-only QoS isolation
+
+The RC6 trace identifies the remaining origins and their direct child CPU:
+60 scheduled watchdog reads (0.164299% of one core), 42 renewal-admission
+reads (0.112736%), and 42 reply-time reads (0.087494%). These are fresh
+`pmset -g` observations. The scheduled watchdog and reply reads are required
+for the existing safety and drift guarantees; admission reads protect lease
+validation before renewal. Reusing a stale read for the reply is explicitly
+rejected by the regression test and would weaken drift detection.
+
+A bounded extension of the fixed, read-only benchmark compared queue QoS in
+otherwise identical disposable **Standard user LaunchAgents** while LidPilot
+was Off. Each ran 60 fixed reads (five warmups, 55 measured) at UID 501.
+Default QoS averaged **5.195 ms/read**; utility QoS averaged **5.760 ms/read**.
+All parsed states were Off. Both temporary jobs were booted out. This small
+controlled difference cannot explain the installed root helper's roughly
+15.18 ms/read, and it is not evidence for increasing production queue QoS.
+The root launchd job, fence descriptor, app activity and system load differ;
+actual child core placement remains unmeasured. No second optimization has
+been made. A supported, efficient live-state getter or another verified
+structural reduction would be needed before the 0.2% target can be claimed.
+Do not cache success, weaken the watchdog, drop independent post-write reads,
+or infer a performance pass from a microbenchmark.
