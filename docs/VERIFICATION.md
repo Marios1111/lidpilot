@@ -21,6 +21,22 @@ journal-phase, admission, and retry findings were fixed by the lead and covered
 by regression tests; it was not a second final reviewer. CodeGraph was used for
 focused context, with current source and builds as the final evidence.
 
+## Latest closeout — September 25
+
+The [audit closeout record](validation/2026-09-25-audit-closeout.md) records the
+owner's accepted dimming/panel/update limitations and narrowed built-in-display
+support. External/dock testing and genuine different-team testing are explicitly
+deferred evidence, not failed implementations or claimed passes. Exact signing
+requirements remain mandatory. Stable-OS runtime and other retained release
+gates remain open. The prolonged RC6 diagnostic Save dialog did not starve
+renewals; the independent save-file branch still needs confirmation.
+
+Latest retained automated snapshot: **79 tests** (21 Core, 58 Runtime), with
+Debug/Release CI passing at `f89cfec` on macOS 15.7.2 arm64. Latest public
+prerelease: **RC4**. RC5/RC6 are local diagnostic candidates. RC6's instrumented
+600-second CPU result remains **FAIL 0.543018%**; matched uninstrumented evidence
+is pending. These statements supersede historical checkpoint totals below.
+
 ## Feature checklist
 
 | Feature | Implementation | Remaining evidence |
@@ -116,14 +132,15 @@ reply verification (44). The [RC6 scheduling candidate](validation/2026-09-24-rc
 completed another 600-second installed run: **FAIL 0.543% inclusive CPU**,
 144 verified reads, and verified Off cleanup. The owner
 reconfirmed that external-display/dock hardware and a separate signing-team
-identity are unavailable; their G2/G4 cases remain blocked.
+identity are unavailable. The September 25 owner review defers these cases
+under the explicit support and security-evidence conditions recorded above.
 
 | Gate | Current evidence | Remaining mandatory work |
 | --- | --- | --- |
 | G1 display | PASS for Keep Screen On/Off on the recorded built-in display: manual/ambient brightness, two-minute idle observation, cleanup | Complete remaining mode/power/support-matrix observations; independent idle dimming is a documented limitation |
-| G2 closed lid | Follow Lid and Keep Mac Running workloads continued through recorded closed-lid intervals; operator saw the built-in screen darken and normal reopen | External/dock topologies unavailable; immediate or electrical panel shutdown is not claimed |
+| G2 closed lid | Follow Lid and Keep Mac Running workloads continued through recorded closed-lid intervals; operator saw the built-in screen darken and normal reopen | Owner-approved built-in-only V1 support; external/dock cases deferred, not passed. Immediate or electrical panel shutdown is not claimed |
 | G3 recovery | RC1 GUI SIGKILL restored the override within 0.28 s. RC2 lease expiry restored it by 64.7 s and the GUI paused without false Recovery; root-helper crash/restart restored it by the first changed 22.9 s sample. RC3 one-minute deadline ended Off; RC3 GUI SIGKILL restored the override by the first changed observer sample, with no re-enable through 90 s | Inspect RC3 post-crash UI; remaining safely reproducible read-back/restore failures and delayed/race paths |
-| G4 identity/helper | Signed/notarized helper registered through ServiceManagement; publisher accepted, wrong-ID/ad-hoc and wrong-console clients rejected by explicit XPC logs; four malformed-wire cases rejected. RC2–RC4 replacement helpers acquired the override; launchd reported RC4 parent bundle version 4 | Genuine different-team client unavailable; complete remaining lifecycle matrix |
+| G4 identity/helper | Signed/notarized helper registered through ServiceManagement; publisher accepted, wrong-ID/ad-hoc and wrong-console clients rejected by explicit XPC logs; four malformed-wire cases rejected. RC2–RC4 replacement helpers acquired the override; launchd reported RC4 parent bundle version 4 | Genuine different-team test deferred by owner review; preserve exact signing requirements and complete remaining lifecycle matrix |
 | Performance | Off 600 s: 0.102% CPU, 47.62 MiB mean; Keep Screen On 600 s: 0.079% CPU, 37.32 MiB mean on RC1. RC3 Keep Mac Running 600 s: **FAIL 0.855% CPU**. RC4 Keep Mac Running 600 s: **FAIL 0.684% CPU**, PASS 38.04 MiB mean; 0.519% CPU came from reaped fixed `pmset` children. Diagnostic RC5: **FAIL 0.614%**, 148 reads; RC6 Standard: **FAIL 0.543%**, 144 reads, 0.363% child CPU, 52.56 MiB mean | The ≤0.2% CPU target remains blocked; measure UI timing and make an evidence-based architecture/target decision without weakening read-back or watchdog |
 | G5 release/update | RC1–RC4 are public prereleases with verified hosted hashes. Real Sparkle RC1→RC2→RC3→RC4 installed signed builds 2–4; each relaunched Off with override/assertions released and its replacement helper acquired a new lease. RC3 disabled update checks while active; RC4 canceled check restored its previous helper. Signed archive/feed/notes and tamper rejection passed | Uninstall/cleanup, scheduled-check and interrupted/failing updater paths, final stable candidate |
 | Final candidate | Installed diagnostic RC5 build 5 is Developer ID signed, notarized and stapled; its full instrumented capture and cleanup are recorded above. The last public RC remains RC4 build 4; its signed upgrade, Off relaunch, matching helper lease, canceled-update cleanup and ten-minute measurement were recorded on the host. [Source CI 35905778548](https://github.com/Marios1111/lidpilot/actions/runs/35905778548) and [dev CI 35921628061](https://github.com/Marios1111/lidpilot/actions/runs/35921628061) passed | CPU target failed; recovery, hardware matrix, updater faults, uninstall and stable-candidate checks remain |
