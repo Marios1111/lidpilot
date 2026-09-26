@@ -132,6 +132,15 @@ in Git. The unsigned packaging fixture is under
 
 ## Current release gates
 
+**Owner revision — September 26:** V1 CPU acceptance is now **≤1.0% of
+one core**, including app, helper and children over the same installed 600-second
+measurement. Memory remains **≤75 MiB**. No sustained busy-loop/runaway behavior
+is acceptable, and safety/verification/watchdog/lease/fencing/conflict/recovery
+semantics must not be weakened. Record wakeups and UI response. Finish the
+bounded runner/UI checks and one final clean uninstrumented measurement before
+marking performance PASS. The old ≤0.2% budget becomes a V1.1/post-V1 goal.
+Historical FAIL labels below refer to the requirement in force when measured.
+
 The [RC4 performance investigation](validation/2026-09-24-performance-investigation.md)
 tracks the inclusive CPU profile and public read-back research. The
 [installed diagnostic RC5 record](validation/2026-09-24-rc5-profile.md) adds a
@@ -150,9 +159,9 @@ under the explicit support and security-evidence conditions recorded above.
 | G2 closed lid | Follow Lid and Keep Mac Running workloads continued through recorded closed-lid intervals; operator saw the built-in screen darken and normal reopen | Owner-approved built-in-only V1 support; external/dock cases deferred, not passed. Immediate or electrical panel shutdown is not claimed |
 | G3 recovery | RC1 GUI SIGKILL restored the override within 0.28 s. RC2 lease expiry restored it by 64.7 s and the GUI paused without false Recovery; root-helper crash/restart restored it by the first changed 22.9 s sample. RC3 one-minute deadline ended Off; RC3 GUI SIGKILL restored the override by the first changed observer sample, with no re-enable through 90 s | Inspect RC3 post-crash UI; remaining safely reproducible read-back/restore failures and delayed/race paths |
 | G4 identity/helper | Signed/notarized helper registered through ServiceManagement; publisher accepted, wrong-ID/ad-hoc and wrong-console clients rejected by explicit XPC logs; four malformed-wire cases rejected. RC2–RC4 replacement helpers acquired the override; launchd reported RC4 parent bundle version 4 | Genuine different-team test deferred by owner review; preserve exact signing requirements and complete remaining lifecycle matrix |
-| Performance | Off 600 s: 0.102% CPU, 47.62 MiB mean; Keep Screen On 600 s: 0.079% CPU, 37.32 MiB mean on RC1. RC3 Keep Mac Running 600 s: **FAIL 0.855% CPU**. RC4 Keep Mac Running 600 s: **FAIL 0.684% CPU**, PASS 38.04 MiB mean; 0.519% CPU came from reaped fixed `pmset` children. Diagnostic RC5: **FAIL 0.614%**, 148 reads; RC6 Standard: **FAIL 0.543%**, 144 reads, 0.363% child CPU, 52.56 MiB mean. Uninstrumented source-matched RC6: **FAIL 0.830470%**, app 0.355936%, helper 0.054073%, children 0.420460%, memory 63.32 MiB mean; beta OS build changed | The ≤0.2% CPU target remains blocked; measure UI timing and make an evidence-based architecture/target decision without weakening read-back or watchdog |
+| Performance | Off 600 s: 0.102% CPU, 47.62 MiB mean; Keep Screen On 600 s: 0.079% CPU, 37.32 MiB mean on RC1. RC3 Keep Mac Running 600 s: **FAIL 0.855% CPU**. RC4 Keep Mac Running 600 s: **FAIL 0.684% CPU**, PASS 38.04 MiB mean; 0.519% CPU came from reaped fixed `pmset` children. Diagnostic RC5: **FAIL 0.614%**, 148 reads; RC6 Standard: **FAIL 0.543%**, 144 reads, 0.363% child CPU, 52.56 MiB mean. Uninstrumented source-matched RC6: **FAIL 0.830470%**, app 0.355936%, helper 0.054073%, children 0.420460%, memory 63.32 MiB mean; beta OS build changed | Final clean uninstrumented ≤1.0% CPU / ≤75 MiB acceptance pending after bounded runner/UI checks; record wakeups/UI timing and verify no pathological behavior. No safety redesign for the old budget |
 | G5 release/update | RC1–RC4 are public prereleases with verified hosted hashes. Real Sparkle RC1→RC2→RC3→RC4 installed signed builds 2–4; each relaunched Off with override/assertions released and its replacement helper acquired a new lease. RC3 disabled update checks while active; RC4 canceled check restored its previous helper. Signed archive/feed/notes and tamper rejection passed | Uninstall/cleanup, scheduled-check and interrupted/failing updater paths, final stable candidate |
-| Final candidate | Installed diagnostic RC6 build 6 is Developer ID signed, notarized and stapled; its instrumented capture and cleanup are retained. The matching uninstrumented build completed its independent baseline and failed CPU at 0.830470%; memory passed at 63.32 MiB. The last public RC remains RC4 build 4; its signed upgrade, Off relaunch, matching helper lease, canceled-update cleanup and ten-minute measurement were recorded on the host. [Source CI 35905778548](https://github.com/Marios1111/lidpilot/actions/runs/35905778548) and [dev CI 35921628061](https://github.com/Marios1111/lidpilot/actions/runs/35921628061) passed | CPU target failed; recovery, hardware matrix, updater faults, uninstall and stable-candidate checks remain |
+| Final candidate | Installed diagnostic RC6 build 6 is Developer ID signed, notarized and stapled; its instrumented capture and cleanup are retained. The matching uninstrumented build completed its independent baseline and failed CPU at 0.830470%; memory passed at 63.32 MiB. The last public RC remains RC4 build 4; its signed upgrade, Off relaunch, matching helper lease, canceled-update cleanup and ten-minute measurement were recorded on the host. [Source CI 35905778548](https://github.com/Marios1111/lidpilot/actions/runs/35905778548) and [dev CI 35921628061](https://github.com/Marios1111/lidpilot/actions/runs/35921628061) passed | Revised performance acceptance pending; remaining lifecycle, updater faults, uninstall and stable-candidate checks remain |
 
 The earlier running-controller baseline was resolved through its normal quit
 path and independent Off read-back before LidPilot acquired ownership. No
@@ -347,3 +356,13 @@ in that experiment. A UI reduction alone is not promised to meet the full budget
 The 34-second Remotion landscape, vertical and 720p web exports are rendered.
 Website integration and playback review remain separate from application gates.
 Neither these exports nor source CI authorize a stable release.
+
+## Revised performance closeout checkpoint
+
+The owner explicitly revised the V1 engineering budget; prior raw measurements
+and their historical outcomes are preserved. The hidden-presentation candidate
+was not merged: a disposable native host missed an actual order-out visibility
+event, so its lifecycle was not robustly verified. That hypothesis is closed
+for V1. The only remaining targeted CPU fix is a demonstrated command-runner
+pathology, if reproduced. After the final clean acceptance passes, stop
+performance work and continue the other release gates.

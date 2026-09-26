@@ -179,10 +179,12 @@ recorded separately.
 ## Performance and accessibility acceptance
 
 On each release candidate, record a settled ten-minute active session with the
-popover closed and the workload excluded from measurements. The targets from
-the product specification are an average at or below 0.2% of one CPU core,
+popover closed and the workload excluded from measurements. The owner revised V1 acceptance on September 26 to average inclusive CPU
+at or below 1.0% of one core over 600 seconds (app, helper and children),
 combined app/helper physical footprint at or below 75 MiB, and visible UI
-feedback within 100 ms. Measure pending feedback separately from completion of
+feedback within 100 ms, without sustained busy-loop/runaway behavior or
+weakened safety semantics. The original 0.2% goal is deferred to post-V1
+optimization. Measure pending feedback separately from completion of
 a system change. Verify no per-second rendering while the popover is hidden.
 
 Also inspect keyboard navigation, VoiceOver, light/dark appearance, Increase

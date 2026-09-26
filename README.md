@@ -129,7 +129,9 @@ following gates:
   update restored the previous helper. Uninstall/cleanup and remaining updater
   fault paths still need installed validation.
 - Performance: the uninstrumented RC6 Keep Mac Running measurement passed memory
-  at 63.32 MiB mean but failed the hard ≤0.2% inclusive CPU target at 0.830470%.
+  at 63.32 MiB mean and measured 0.830470% inclusive CPU. It failed the former
+  0.2% budget; the owner revised V1 acceptance to ≤1.0% on September 26. A final
+  clean installed run and pathological-behavior checks remain pending.
   The source-matched baseline ran on a newer beta OS build than the earlier
   instrumented 0.543018% result. Child
   processes are included; compilation and mock tests cannot close this gate.

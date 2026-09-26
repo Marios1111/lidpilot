@@ -4,15 +4,17 @@ Initial implementation checkpoint (historical): implementation and safe automate
 
 ## Current continuation — September 26
 
-Source checks and CI pass at `3b5a1e6` (85 tests). Preserve the retained signed
-RC and physical evidence. Inclusive installed CPU remains failed at 0.830470%.
-The next bounded experiment isolates hidden SwiftUI presentation on exact RC6
-source, verifies native close/reopen behavior, then compares controlled A/B/A
-600-second runs without helper or safety changes. Close this hypothesis if the
-measurement is inconclusive rather than creating speculative release candidates.
-The permanent-domain migration is committed; polished site and completed
-Remotion exports are undergoing integration. Final lifecycle/accessibility and
-release checks follow only on a justified candidate. See `VERIFICATION.md`.
+Source checks and CI pass at `3b5a1e6` (85 tests); current committed source is
+`8338a8c`. Preserve all retained measurements and physical evidence. The owner
+revised V1 CPU acceptance to ≤1.0% inclusive over 600 seconds, with ≤75 MiB
+memory and no sustained pathological behavior; safety semantics are unchanged.
+The isolated hidden-UI candidate failed a native order-out lifecycle check and
+is not merged. Finish the bounded runner check, fix only a demonstrated defect,
+then make one final clean installed acceptance run and stop performance work
+once it passes. Continue lifecycle/accessibility/release gates afterward.
+The film is being reworked as an animated Remotion marketing story with
+ElevenLabs young-male narration. Domain/feed migration and initial site polish
+are committed; publication and final media checks remain separate.
 
 ## Outcome and fixed decisions
 

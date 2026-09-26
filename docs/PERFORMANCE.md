@@ -29,8 +29,12 @@ elapsed Mach-time interval. Values represent percent of one CPU core. Record
 sampled mean and maximum combined physical footprint; neither is a claim about
 every transient allocation. A process exit/read failure invalidates this run.
 
-Targets: average CPU at most 0.2% of one core; steady app/helper physical
-footprint at most 75 MiB. Keep pending UI feedback below 100 ms, measured
+V1 acceptance (owner revision, September 26): average inclusive CPU at most
+1.0% of one core over the installed 600-second run, including app, helper and
+children; steady app/helper physical footprint at most 75 MiB. There must be
+no sustained busy-loop or runaway behavior. Preserve all state verification,
+watchdog, lease, fencing, conflict and recovery semantics. The previous 0.2%
+aspirational budget is a V1.1/post-V1 optimization goal, not the V1 gate. Keep pending UI feedback below 100 ms, measured
 separately with an event/render trace. Do not infer rendered response latency
 from this process sampler or a computer-use round-trip duration.
 
