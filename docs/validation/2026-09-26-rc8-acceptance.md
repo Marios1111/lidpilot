@@ -56,3 +56,27 @@ confirmed Allow Notifications Off. Production defaults still contained
 notifications=0. This verifies graceful handling of this existing denied OS
 permission; notification delivery is not yet proven. Launch at login was On
 and was left unchanged. Separate FaceTime assertions were left untouched.
+
+## One-minute expiry and notification attempt
+
+With the owner's approval, macOS Allow Notifications and the app's notification
+preference were temporarily enabled. A one-minute custom Keep Screen On session
+created both native LidPilot assertions with bounded timeouts. The visible mode
+panel counted down and returned Off with “Your session has ended.” Independent
+read-back then showed SleepDisabled=0 and no LidPilot assertion. No closed-lid
+operation was used; unrelated Safari/FaceTime assertions remained untouched.
+
+The owner did not see or hear a session-finished notification. Automation could
+not attach to Notification Centre to inspect delivery. Therefore the notification
+presentation/delivery gate is **not passed**. Source inspection found no foreground
+notification delegate and no assigned notification sound; these are being corrected
+and will require a fresh installed notification test. This does not establish a
+background-delivery failure or explain every possible OS suppression condition.
+Both notification settings were restored Off; preferred mode/duration restored
+to Keep Mac Running / 30 min. Launch at login remained On.
+
+A separately signed development app was briefly launched Off for coexistence
+preflight, producing a second menu-bar icon. It was identified by its exact debug
+executable path and closed before the notification test. No development helper was
+registered and no development session started. Only the installed production app
+and helper remained. Full signed-helper coexistence is still pending.
