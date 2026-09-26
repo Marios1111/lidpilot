@@ -16,7 +16,7 @@ the Debug-only isolated capture harness. Supported session states are staged
 with simulated power controls; these screenshots are not hardware-test proof.
 Product captures omit the QA banner; interactive QA previews retain it.
 
-The 34-second Remotion film is silent and user-started, with a poster, English
+The 42-second Remotion film is narrated and user-started, with a poster, English
 WebVTT captions and a transcript. `preload="none"` avoids blocking the initial
 page with video bytes. Reduced Motion receives a still poster until explicit
 Play; hidden-page playback is paused. Full social masters stay outside Git.
@@ -30,3 +30,13 @@ Pages workflow. That workflow publishes `website/` unchanged and does not create
 a stable app release.
 
 Local preview: `python3 -m http.server 8766 --directory website`.
+
+## Stable Homebrew launch block
+
+The `#homebrew-install` section is staged with the native HTML `hidden`
+attribute. Keep it hidden until `Marios1111/homebrew-tap` contains the verified
+stable cask and `brew install --cask Marios1111/tap/lidpilot` has passed a real
+installation check. Removing `hidden` is a reviewed stable-publication step;
+ordinary RC Pages deployment must not advertise an unavailable command.
+The button writes only the displayed command to the clipboard on click,
+announces success or failure, and leaves the text selectable without JavaScript.

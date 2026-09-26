@@ -1,157 +1,119 @@
+<p align="center"><img src="website/assets/icon-light.png" alt="LidPilot icon" width="112"></p>
+
 # LidPilot
 
-LidPilot is a native macOS menu-bar utility for bounded keep-awake sessions. It
-supports lectures and other open-lid work, plus carefully controlled local work
-that should continue when a MacBook lid closes. It is written in Swift 6 for
-Apple Silicon Macs running macOS 15 or later.
+**Your Mac. On your time.**
 
-Development lives at [Marios1111/lidpilot](https://github.com/Marios1111/lidpilot)
-on `dev`. The product website is [lidpilot.app](https://lidpilot.app). V1 release validation is in progress; a stable signed download is not
-yet available. A signed and notarized [RC4 prerelease](https://github.com/Marios1111/lidpilot/releases/tag/v1.0.0-rc.4)
-is available for supervised testing. Follow the [verification record](docs/VERIFICATION.md) for actual
-hardware, signing, and update results. The concept artwork in `design/` is a
-directional design artifact; it is not evidence of power behavior.
+Keep your screen ready for a lecture. Leave a build, download, or local task
+running when you close the lid. LidPilot puts both workflows in one native
+Mac menu-bar app.
 
-## Modes
+**Free · Open source · Apple Silicon · macOS 15+ · No account · No analytics**
 
-The three modes are mutually exclusive. Selecting a preferred mode never starts
-a session; launch and launch-at-login always leave LidPilot Off.
+[Website](https://lidpilot.app/) · [Downloads](https://github.com/Marios1111/lidpilot/releases) · [Support](https://github.com/Marios1111/lidpilot/issues) · [MIT license](LICENSE)
 
-| User-facing mode | Internal mode | Behavior | Helper |
-| --- | --- | --- | --- |
-| Follow Lid | `smart` | Arm closed-lid support while open. Hold the system awake; hold the display only while the lid is open. | Required |
-| Keep Screen On | `display` | Use app-scoped macOS assertions for the system and display while the session is active. | Not required |
-| Keep Mac Running | `closed` | Hold the system awake while letting the display follow macOS policy. | Required |
+<p align="center"><img src="website/assets/follow-lid.png" alt="LidPilot's native panel showing Follow Lid, mode cards and a one-hour timer" width="370"></p>
 
-Off releases LidPilot's own assertions and helper lease after read-back. It does
-not clear another utility's sleep assertion or promise that the whole Mac is
-already asleep.
+## Get LidPilot
 
-Display sleep follows macOS policy after LidPilot releases its display hold.
-On the recorded M4 test, the built-in screen went dark about one minute after
-lid closure; immediate panel shutdown is not promised. Manual and ambient
-brightness worked in the tested Keep Screen On session, while the public display
-assertion suppressed both idle dimming and display-off. Other OS versions and
-display topologies need separate validation.
+The current public download is the signed and notarized
+[**v1.0.0-rc.4 prerelease**](https://github.com/Marios1111/lidpilot/releases/tag/v1.0.0-rc.4).
+Stable V1.0 is not published yet. The [verification ledger](docs/VERIFICATION.md)
+records release readiness; an RC is for supervised testing.
 
-Sessions can be 30 minutes, 1 hour, 2 hours, 4 hours, a custom duration, an
-absolute “until” time, or indefinite until the user stops them. Finite sessions
-use a monotonic clock and carry a hard deadline through the helper protocol.
-Switching modes preserves the existing deadline. Turn Off, safety, and deadline
-expiry invalidate older work so delayed activation cannot resurrect a session.
+1. Download the DMG from the release page and move **LidPilot.app** to **Applications**.
+2. Open LidPilot and choose a mode and session duration.
+3. For closed-lid modes, approve its signed helper through **Settings → Helper & Recovery**
+   and macOS's background-item approval flow.
 
-## Safety behavior
+LidPilot always starts **Off**, including at login and after an update.
+Keep Screen On does not require the helper.
 
-The policy engine fails closed when required observations are unknown, stale,
-from another boot, or in the future. Serious or critical thermal pressure ends
-every mode. On battery, the configurable floor is 10%, 20% (the default), or
-30%; reaching the floor ends the session. Follow Lid and Keep Mac Running pause
-on battery and Low Power Mode by default. Battery operation is an explicit
-choice and never bypasses the floor. Safety pauses require an explicit restart;
-LidPilot does not silently resume.
+**Homebrew:** included in the V1 launch plan. The stable cask and project tap
+are not published yet; installation instructions will appear here when the
+exact command has been tested. See the [Homebrew guide](docs/HOMEBREW.md).
 
-The app reports requested, effective, and observed state separately. A confirmed
-`SleepDisabled` flag means that macOS accepted the sampled system setting. It is
-not proof that the internal panel is physically off, that a workload completed,
-or that a Mac is safe in a bag.
+## Three modes. One place to stay in control.
 
-## Architecture
+| Mode | What it does |
+| --- | --- |
+| **Follow Lid** | Keeps your screen available while open and your Mac running while closed; checks its state again when you reopen. |
+| **Keep Screen On** | Keeps your Mac and display awake for lectures, reading, or reference material. Your brightness controls stay available. |
+| **Keep Mac Running** | Keeps your Mac working while allowing the display to follow macOS policy. Requires the approved helper. |
+| **Off** | Releases LidPilot's wake assertions and verifies cleanup of its owned sleep setting. |
 
-The pure policy and wire types live in [`Core/`](Core/). The app-side session
-coordinator and native integrations live in [`Runtime/`](Runtime/) and
-[`App/`](App/). Closed-lid support is a narrow, authenticated XPC path to the
-privileged helper in [`Helper/`](Helper/). Read the detailed contracts in
-[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md), [`docs/SAFETY.md`](docs/SAFETY.md),
-and [`docs/RECOVERY.md`](docs/RECOVERY.md).
+Choose **30 minutes, 1 hour, 2 hours, 4 hours, a custom duration, an end time,
+or indefinite**. Switching modes preserves the session deadline. Use **Turn Off**
+to end a session, or **Stop & Sleep** to verify cleanup before requesting sleep.
 
-The helper exposes typed inspect/acquire/renew/release/recover operations. It
-accepts no executable, shell string, client path, or arbitrary output request.
-The production driver has one fixed executable and fixed arguments:
-`/usr/bin/pmset -a disablesleep 1` and `0`. The helper journal is root-owned,
-permission checked, and written atomically before a mutation.
+## Built for a quiet menu bar
 
-## Development and safe testing
+- Native SwiftUI/AppKit interface, keyboard navigation, and VoiceOver labels.
+- Battery cutoff, thermal protection, Low Power Mode and charger policies.
+- Clear session, helper, and recovery status; local diagnostic export.
+- Optional session-end and safety notifications.
+- Launch at login, always Off. Signed Sparkle updates check while Off.
 
-Normal tests use mock clocks, samplers, assertions, helper transport, power
-drivers, and journals. They do not install or enable the helper and must not
-change this Mac's global power policy. Hardware tests require an explicit
-operator-controlled session and a recorded baseline. If another controller
-already owns `SleepDisabled=1`, stop it through its supported cleanup path and
-verify restoration before allowing LidPilot to acquire a lease. Never reset
-an unowned flag merely to make a test pass.
+No account, cloud service, analytics SDK, or access to your task contents.
+LidPilot keeps the Mac awake; it does not inspect AI agents, detect task completion,
+or automate individual processes.
 
-The supported project wrappers are:
+## Know the boundaries
+
+V1's validated display configuration is the **built-in MacBook display**.
+External displays, docks, and virtual displays remain unvalidated. Read the
+[support matrix](docs/SUPPORT_MATRIX.md) for the exact tested hardware and OS.
+
+Keeping the display awake also suppresses macOS's native idle dimming. Manual
+brightness remains available. After closing the lid, the built-in screen may
+take time to go dark—about a minute in recorded tests. LidPilot does not promise
+instant electrical panel shutdown.
+
+Keep a running Mac on a stable, ventilated surface. Battery and thermal
+safeguards are a backstop, not permission to run it inside a bag. A safety pause
+requires an explicit restart. Unknown or stale required state prevents activation.
+
+LidPilot cleans up only state it owns. Other apps can still keep your Mac awake;
+Off does not override them or guarantee the whole Mac is asleep.
+
+## Updates and uninstalling
+
+Use **Check for Updates** while LidPilot is Off. The app verifies cleanup and
+requires an open lid before installation; an updated app starts Off.
+
+Before removing or externally replacing LidPilot:
+
+1. Turn it Off and wait for confirmed cleanup.
+2. Disable **Launch at login** in Settings.
+3. Choose **Remove Helper…** in **Helper & Recovery** and wait for removal.
+4. Quit LidPilot, then remove or replace the app.
+
+This also applies before Homebrew uninstall, reinstall, or an upgrade that
+replaces the app. Resolve recovery warnings first. See [Uninstall](docs/UNINSTALL.md),
+[Recovery](docs/RECOVERY.md), and [Homebrew](docs/HOMEBREW.md).
+
+## Build and contribute
+
+Development happens on `dev`. The app uses Swift 6, SwiftUI/AppKit, IOKit,
+ServiceManagement, authenticated XPC, and Sparkle 2. A narrow signed helper
+controls one fixed sleep override; clients cannot submit shell commands.
+Read [Architecture](docs/ARCHITECTURE.md) and [Safety](docs/SAFETY.md) for the contracts.
+
+With Xcode and the repository's pinned project-generator dependencies installed:
 
 ```sh
 ./scripts/build.sh Debug
 ./scripts/build.sh Release
 ./scripts/test.sh
 ./scripts/verify.sh
-./scripts/smoke-ui.sh
-```
-
-For isolated native UI testing, run the Debug executable with `LIDPILOT_UI_TESTING=1`. This uses in-memory power/helper implementations, separate preferences, a visible preview badge, and a preview window. It cannot install the helper or change power policy; the harness is absent from Release builds. `scripts/smoke-ui.sh` uses that harness to render the native views and verify mock activation, cleanup, and normal app exit. Native menus, forms, keyboard navigation, and VoiceOver still require an unlocked interactive session.
-
-The wrappers run local build, test, and verification steps; a successful local
-run is not a signing, notarization, hardware, or publication result. The
-project check is:
-
-```sh
 ruby scripts/generate-project.rb --check
 ```
 
-The package-level Core tests can be run from `Core/` with SwiftPM. If Xcode's
-sandbox blocks its compiler module cache, use a disposable scratch directory
-and a local module-cache path; never work around that by installing the helper
-or changing power settings.
+Local builds are ad-hoc and are not distributable releases. Normal tests use
+in-memory power/helper implementations. `./scripts/smoke-ui.sh` exercises the
+isolated Debug UI harness without changing global power settings. Real hardware
+tests require a supervised baseline and the [hardware procedure](docs/HARDWARE_VALIDATION.md).
 
-## Known validation gates
-
-The logic and mock tests are useful evidence, but they do not replace the
-following gates:
-
-- G1: the tested display hold preserves manual and ambient brightness, but also
-  suppresses native idle dimming. This is an accepted V1 limitation; LidPilot
-  does not offer an independent dim-without-display-off control.
-- G2: V1 display support is limited to the tested built-in-display configuration.
-  Closed-lid workload continuity and delayed screen darkness were observed;
-  external, docked, and virtual-display cases remain unvalidated. The app does
-  not measure electrical panel power or promise immediate shutdown.
-- G3: real app/helper crashes and helper lease expiry passed on the recorded
-  Mac; remaining reproducible delayed-reply, command-timeout, read-back and
-  restoration faults need final release evidence.
-- G4: signed helper registration, replacement, and wrong-ID/ad-hoc/malformed/
-  wrong-console-client rejection have retained evidence. Genuine different-team
-  testing is deferred independent evidence; the exact production Team ID and
-  bundle signing requirements remain mandatory. Final lifecycle checks remain.
-- G5: signed RC1→RC2→RC3→RC4 Sparkle replacements passed on the recorded Mac.
-  RC4 relaunched Off, its build-4 helper acquired a fresh lease, and a canceled
-  update restored the previous helper. RC10 orderly uninstall, login-item cleanup
-  and same-signed-bundle restoration passed; updater fault paths remain open.
-- Performance: signed, uninstrumented RC10 completed the installed 600-second
-  full-process-tree capture: **0.799277% CPU**, **72.262662 MiB mean / 72.392181 MiB
-  sampled maximum**, passing revised ≤1.0% / ≤75 MiB limits. Children are included.
-  Interrupt/package-idle wakeups were 1.181662 / 0.158333 per second, with no
-  sustained runaway indicated. Native Off and independent cleanup were verified.
-  The original 100 ms visible-response measurement and final candidate remain open.
-
-
-The complete opt-in checklist is in
-[`docs/HARDWARE_VALIDATION.md`](docs/HARDWARE_VALIDATION.md), with the current
-support boundary in [`docs/SUPPORT_MATRIX.md`](docs/SUPPORT_MATRIX.md).
-
-## Privacy and scope
-
-LidPilot has no account, cloud service, analytics SDK, AI agent detection, CLI,
-remote control, Shortcuts integration, or workload transcript access in V1.
-Diagnostics are local, bounded, and redacted before export. The app observes
-only the power, lid, thermal, Low Power Mode, display-topology, assertion, and
-helper state needed for its stated behavior.
-
-Release, update-feed, signing, and publication constraints are documented in
-[`docs/RELEASING.md`](docs/RELEASING.md). The safe removal path is in
-[`docs/UNINSTALL.md`](docs/UNINSTALL.md). Contributions should follow
-[`CONTRIBUTING.md`](CONTRIBUTING.md), and security reports should follow
-[`SECURITY.md`](SECURITY.md).
-
-LidPilot is distributed under the [MIT License](LICENSE).
+See [CONTRIBUTING](CONTRIBUTING.md) for development, [SECURITY](SECURITY.md) for
+private vulnerability reporting, [CHANGELOG](CHANGELOG.md) for changes, and
+[Releasing](docs/RELEASING.md) for signing and publication.

@@ -861,3 +861,18 @@ video{
     --line:#8793a2
   }
 }
+
+/* Stable launch installation block. Native hidden stays authoritative. */
+.brew-install[hidden]{display:none}
+.brew-install{display:grid;grid-template-columns:1fr 1.4fr;gap:48px;padding-block:56px 100px;align-items:center}
+.brew-install h2{font-size:clamp(28px,4vw,44px);line-height:1.1;letter-spacing:-.04em;margin:12px 0 20px}
+.brew-install p{color:var(--muted);line-height:1.6}
+.brew-command-card{min-width:0;border:1px solid var(--line);border-radius:22px;padding:24px;background:var(--card)}
+.brew-command-header{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px;margin-bottom:24px}
+.brew-command-header button{font:inherit;color:inherit;background:transparent;border:1px solid var(--line);border-radius:9px;padding:9px 12px;cursor:pointer;min-height:44px}
+.brew-command-header button:hover{background:var(--line)}
+.brew-command-card code{display:block;user-select:all;overflow-wrap:anywhere;font:14px/1.7 ui-monospace,SFMono-Regular,Menlo,monospace}
+.brew-copy-status{font-size:13px;min-height:2.8em;margin:18px 0 0}
+.brew-command-card .brew-note{font-size:12px;margin:14px 0 0}
+.brew-note a{text-decoration:underline;text-underline-offset:3px}
+@media(max-width:700px){.brew-install{grid-template-columns:1fr;gap:24px;padding-block:30px 70px}.brew-command-card{padding:20px}}

@@ -20,3 +20,22 @@ for (const button of document.querySelectorAll('[data-mode]')) {
 // Film is user-started, never audible/autoplaying on arrival. Pause when hidden.
 const film = document.querySelector('#intro-film');
 document.addEventListener('visibilitychange', () => { if (document.hidden && film) film.pause(); });
+
+// Copy only on an explicit click. The selectable command remains usable if
+// clipboard permission is denied or JavaScript is unavailable.
+for (const button of document.querySelectorAll('[data-copy-command]')) {
+  button.addEventListener('click', async () => {
+    const command = document.getElementById(button.dataset.copyCommand);
+    const status = document.getElementById(button.getAttribute('aria-describedby'));
+    if (!command || !status) return;
+    button.disabled = true;
+    try {
+      await navigator.clipboard.writeText(command.textContent.trim());
+      status.textContent = 'Copied. Paste into Terminal when you’re ready.';
+    } catch {
+      status.textContent = 'Select the command and copy it manually.';
+    } finally {
+      button.disabled = false;
+    }
+  });
+}
