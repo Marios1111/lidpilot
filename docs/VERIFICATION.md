@@ -30,14 +30,13 @@ as the V1 validation host; remaining mandatory gates are not waived.
 The prolonged RC6 diagnostic Save dialog did not starve
 renewals; the independent save-file branch still needs confirmation.
 
-Current local checks: **85 tests** (21 Core, 64 Runtime),
-Debug and Release builds, package identity inspection, and isolated native smoke
-passed at `3b5a1e6`, including identity isolation, independent failed-read
+Current local checks: **86 tests** (21 Core, 65 Runtime) and Debug/Release builds pass at `4877adb`, including the [bounded EOF runner regression](validation/2026-09-26-runner-eof.md).
+Earlier package identity inspection and isolated native smoke checks passed at `3b5a1e6`, including identity isolation, independent failed-read
 recovery regressions and native product captures. They do not prove installed
 signed-helper coexistence. [CI at `3b5a1e6`](https://github.com/Marios1111/lidpilot/actions/runs/36265171164)
 also passed its tests and Debug/Release builds. Latest public
 prerelease: **RC4**. RC5/RC6 are local diagnostic candidates. The [uninstrumented installed RC6 baseline](validation/2026-09-26-rc6-uninstrumented.md)
-completed 600 seconds and **failed at 0.830470% inclusive CPU** (app 0.355936%,
+completed 600 seconds and **failed the former 0.2% budget at 0.830470% inclusive CPU** (app 0.355936%,
 helper 0.054073%, children 0.420460%); memory passed at 63.32 MiB. Its beta OS
 build differs from the earlier instrumented 0.543018% run, so the delta cannot
 be attributed to instrumentation alone. These statements supersede historical checkpoint totals below.

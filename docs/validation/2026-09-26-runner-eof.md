@@ -19,7 +19,7 @@ The regression now measures the synchronous caller thread using public Darwin
 THREAD_BASIC_INFO, and deallocates its Mach port.
 
 The lead full suite passes: 65 Runtime plus 21 Core tests (86 total), exit 0.
-Debug build passes, exit 0. Release build is pending at this checkpoint.
+Debug and Release builds pass, both exit 0.
 The reproduction does not prove ordinary pmset runs hit this edge case or
 quantify an installed CPU reduction. Final clean uninstrumented 600-second
 acceptance remains required under the owner’s ≤1.0% CPU / ≤75 MiB V1 gate.

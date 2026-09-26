@@ -13,6 +13,15 @@ current development snapshot; it is not a release announcement.
 - Cover failed independent verification and cleanup read-back recovery paths.
 - Treat boundary child accounting as incomplete rather than a performance pass.
 
+## 1.0.0 - release candidate 7
+
+RC7 is a clean, uninstrumented validation candidate containing development/production
+identity isolation, current product artwork and the reproduced child-output EOF
+busy-spin fix. It preserves all state reads, watchdog timing and recovery
+semantics. Installed acceptance measurement and lifecycle validation are pending;
+it is not a stable release. The owner-approved V1 gate is now ≤1.0% inclusive
+CPU and ≤75 MiB over the controlled 600-second installed run.
+
 ## 1.0.0 - release candidate 6
 
 RC6 tests standard launchd scheduling for the helper while keeping its utility
@@ -21,7 +30,7 @@ read-only comparison identified higher per-command CPU under Background
 classification. The installed instrumented 600-second run measured 0.543018% inclusive CPU
 and 52.56 MiB mean combined physical footprint: memory passed, CPU failed.
 The source-matched uninstrumented run on September 26 measured 0.830470% CPU
-and 63.32 MiB mean memory on a newer beta OS build. It also fails the CPU gate;
+and 63.32 MiB mean memory on a newer beta OS build. It also failed the former 0.2% CPU gate;
 this candidate is not a stable release or an energy pass.
 
 ## 1.0.0 - release candidate 5
