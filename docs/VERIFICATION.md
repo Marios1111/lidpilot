@@ -7,7 +7,7 @@ blocked by the gates below. The repository is now
 to `origin/dev`. Historical sections below describe their own dated checkpoints.
 The latest public prerelease is [RC4](https://github.com/Marios1111/lidpilot/releases/tag/v1.0.0-rc.4),
 available for supervised testing through the [product site](https://lidpilot.app).
-RC5 and RC6 are local diagnostic candidates. See the current gate table below,
+RC5/RC6 are local diagnostic candidates; RC7 is the current local clean acceptance candidate. See the current gate table below,
 the dated records in `validation/`, and [V1_RELEASE_PLAN.md](V1_RELEASE_PLAN.md).
 No stable release is claimed.
 
@@ -40,6 +40,22 @@ completed 600 seconds and **failed the former 0.2% budget at 0.830470% inclusive
 helper 0.054073%, children 0.420460%); memory passed at 63.32 MiB. Its beta OS
 build differs from the earlier instrumented 0.543018% run, so the delta cannot
 be attributed to instrumentation alone. These statements supersede historical checkpoint totals below.
+
+## Current installed RC7 result
+
+The [clean signed RC7 record](validation/2026-09-26-rc7-acceptance.md) is pinned to
+`f4deb6e7c1e888f781e5d42cca7007a8de97c192` (build 7). Its full 600-second installed
+capture **passes CPU at 0.903801%** under the owner-revised 1.0% gate, but
+**fails memory at 75.648805 MiB mean / 76.032715 MiB sampled maximum** against
+75 MiB. App/helper/children CPU is 0.244045 / 0.077764 / 0.581991%; interrupt/
+package-idle wakeups are 1.109997 / 0.135000 per second. UI-response timing and
+remaining lifecycle gates are open. Overall performance is not PASS.
+
+RC7 was Developer-ID signed, notarized and stapled; exact-source CI passed.
+Its replacement helper is Approved and acquired the real session. After the
+capture, Off was verified in native UI, SleepDisabled=0 and no LidPilot assertion.
+A bounded investigation of retained image storage is underway; no measured
+memory reduction is claimed yet. CPU optimization has stopped.
 
 ## Feature checklist
 

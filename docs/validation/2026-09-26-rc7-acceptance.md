@@ -36,7 +36,34 @@ Recorder SHA-256: `f6965c146bea609a59f487532f891f8f18effc1a9196ad5d3c5d792ba2beb
 App PID 62801, helper PID 63485 at preflight; output requested at
 `/private/tmp/lidpilot-keep-mac-running-rc7-acceptance.json`.
 
-Pending the controlled 600-second run. Acceptance requires inclusive app/helper/
-child CPU ≤1.0% of one core, memory ≤75 MiB and no pathological busy loop.
-Wakeups and UI response must be retained. Historical 0.2% failures are not
-retrospectively relabelled as passes. Verify Off and assertion cleanup afterward.
+The controlled run completed 600.001829 seconds, 121 samples, from
+2026-09-26 20:17:57 UTC. Raw report SHA-256:
+`d5876eeffc67d007275722adeeb7e3b75ef528468e0104b861e61eba53398082`.
+
+| Metric | Result |
+| --- | --- |
+| Full process tree CPU | 0.903800710% — PASS ≤1.0% |
+| App CPU | 0.244045180% |
+| Helper own CPU | 0.077764485% |
+| Helper reaped children CPU | 0.581991045% |
+| Combined physical memory mean | 75.648805 MiB — FAIL ≤75 MiB |
+| Combined sampled maximum | 76.032715 MiB |
+| App/helper mean footprint | 70.791273 / 4.857531 MiB |
+| Interrupt/package-idle wakeups | 1.109997 / 0.135000 per second |
+| Reported energy | 424,775,970 nJ; limited public counter, not Energy Impact |
+
+No process restart or invalid counter was reported. App sampled footprint
+remained within 70.61–71.16 MiB; no sustained growth is apparent. This does
+not prove every possible busy-loop path absent. The reproduced EOF spin is
+covered by its focused regression. UI-response timing remains pending.
+
+After capture the native panel showed the active Keep Mac Running session.
+Turn Off completed; UI reports Off/normal macOS behavior, independent `pmset`
+reports SleepDisabled=0, and no LidPilot assertion is listed. CPU work is closed
+under the revised gate; overall performance remains open for memory.
+
+An Off-state `vmmap -summary` attributes 16.2 MiB virtual / 11.5 MiB dirty to
+CG Image regions. Source inspection found an explicit 512-point application-icon
+raster copy made from the 1024-pixel named artwork, in addition to artwork used
+by 28–54-point in-app marks. This is a bounded memory attribution lead, not yet
+an installed reduction or a release pass.
