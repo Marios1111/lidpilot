@@ -4,6 +4,11 @@ import LidPilotRuntime
 
 struct PilotPanel: View {
     @Bindable var model: AppModel
+    #if DEBUG
+    // Product captures stage real UI without the QA-only banner. Interactive
+    // preview windows keep the notice; simulated power controls stay isolated.
+    var showsPreviewNotice = true
+    #endif
     @Environment(\.openWindow) private var openWindow
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
     @Environment(\.colorSchemeContrast) private var contrast
@@ -25,10 +30,12 @@ struct PilotPanel: View {
             }
             .padding(.bottom, 2)
 
-            if model.isPreview {
+            #if DEBUG
+            if model.isPreview && showsPreviewNotice {
                 Label("Preview · power controls are simulated", systemImage: "testtube.2")
                     .font(.system(size: 10)).foregroundStyle(.secondary)
             }
+            #endif
 
             VStack(spacing: 8) {
                 ForEach(Mode.allCases, id: \.self) { mode in

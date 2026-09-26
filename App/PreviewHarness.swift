@@ -79,17 +79,19 @@ final class PreviewMachine: RuntimeClock, PowerSampling, SleepFlagControlling, R
     await model.controller.refreshWhileOff()
     try render(PilotPanel(model: model), name: "panel-off-light", width: 370)
     try render(PilotPanel(model: model), name: "panel-off-dark", width: 370, scheme: .dark)
+    try render(PilotPanel(model: model, showsPreviewNotice: false), name: "product-off", width: 370)
     await model.controller.start(mode: .smart, duration: .seconds(3600), policy: model.policy)
     guard model.controller.phase == .active, model.controller.effectiveMode == .smart else {
         throw RuntimeFailure.unavailable("Mock session activation failed.")
     }
     try render(PilotPanel(model: model), name: "panel-active", width: 370)
+    try render(PilotPanel(model: model, showsPreviewNotice: false), name: "product-follow-lid", width: 370)
     await model.controller.stop()
     guard model.controller.phase == .off, model.controller.assertions == .off else {
         throw RuntimeFailure.unavailable("Mock cleanup failed.")
     }
-    // Product presentation uses the actual native views with the preview label
-    // intact. Each fixture activates and cleans up only simulated controls.
+    // QA artifacts retain their banner; separate product captures stage the
+    // same supported UI without QA chrome. Neither is hardware evidence.
     for (mode, name) in [(Mode.display, "keep-screen-on"), (.closed, "keep-mac-running")] {
         model.selectedMode = mode
         await model.controller.start(mode: mode, duration: .seconds(3600), policy: model.policy)
@@ -97,6 +99,7 @@ final class PreviewMachine: RuntimeClock, PowerSampling, SleepFlagControlling, R
             throw RuntimeFailure.unavailable("Product preview activation failed.")
         }
         try render(PilotPanel(model: model), name: name, width: 370)
+        try render(PilotPanel(model: model, showsPreviewNotice: false), name: "product-" + name, width: 370)
         await model.controller.stop()
         guard model.controller.phase == .off, model.controller.assertions == .off else {
             throw RuntimeFailure.unavailable("Product preview cleanup failed.")
