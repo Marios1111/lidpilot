@@ -91,3 +91,14 @@ SleepDisabled=0 and assertion enumeration contained no LidPilot owner. Other
 apps' assertions were preserved. Five-second inclusive CPU maximum was
 3.412561%, with no interval above 5%; no sustained runaway was indicated.
 UI latency remains unmeasured.
+
+## Diagnostic save branch
+
+While Off, native Diagnostics → Preview Export → Save Report was completed
+to `/private/tmp/LidPilot-RC10-diagnostics-validation-20260927.txt`. Independent
+file inspection confirmed 4628 bytes, UTF-8 report heading and truthful Off,
+Approved helper, external power, open lid, nominal thermal, assertions off,
+sleep flag off and physical panel power not measured. SHA-256:
+`22c48432a6b646a4aeedd5c3251c04c65f09a1939118d018332785a5e11af377`.
+The local event report is retained outside Git. This passes successful save;
+the earlier RC6 prolonged active-dialog renewal evidence remains separate.
