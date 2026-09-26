@@ -383,3 +383,8 @@ pathology, if reproduced. After the final clean acceptance passes, stop
 performance work and continue the other release gates.
 
 RC8 Off-state no-update and denied-notification checks are retained in the [RC8 validation record](validation/2026-09-26-rc8-acceptance.md). Notification delivery and interrupted/failing updater paths are not inferred from these successful branches.
+
+The [notification presentation correction](validation/2026-09-27-notification-presentation.md)
+passes 89 tests, Debug/Release and isolated mock-app smoke. Its public foreground
+delegate/default-sound path still requires a fresh signed installed delivery test;
+the RC8 operator observed no banner/sound during the prior foreground attempt.

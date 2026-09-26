@@ -189,8 +189,16 @@ enum DurationChoice: String, CaseIterable, Identifiable {
             let content = UNMutableNotificationContent()
             content.title = phase == .recovery ? "Cleanup needs attention" : (phase == .paused ? "LidPilot paused" : "Session finished")
             content.body = message
+            content.sound = .default
             let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
-            Task { try? await UNUserNotificationCenter.current().add(request) }
+            let center = UNUserNotificationCenter.current()
+            Task { [weak self] in
+                do {
+                    try await center.add(request)
+                } catch {
+                    self?.diagnostics.record(phase, "Could not queue a session notification: \(error.localizedDescription)")
+                }
+            }
         }
     }
 }

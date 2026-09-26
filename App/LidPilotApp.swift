@@ -1,5 +1,6 @@
 import SwiftUI
 import AppKit
+import UserNotifications
 import LidPilotCore
 import LidPilotRuntime
 
@@ -53,6 +54,11 @@ import LidPilotRuntime
     private var iconAppearanceObservation: NSKeyValueObservation?
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
+        // The center keeps its delegate weakly. SwiftUI's application adaptor
+        // retains this delegate for the lifetime of the process.
+        if model?.isPreview != true {
+            UNUserNotificationCenter.current().delegate = self
+        }
         // Update only on appearance changes, never on a timer. Finder retains
         // the default icon; the running app uses the matching native variant.
         iconAppearanceObservation = NSApp.observe(\.effectiveAppearance, options: [.initial, .new]) { _, _ in
@@ -112,6 +118,20 @@ import LidPilotRuntime
         // Returning now lets the current Swift concurrency job finish. A nested
         // AppKit terminate-later loop can otherwise starve its cleanup Task.
         return .terminateCancel
+    }
+}
+
+nonisolated extension AppDelegate: UNUserNotificationCenterDelegate {
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                willPresent notification: UNNotification,
+                                withCompletionHandler completionHandler: @escaping @Sendable (UNNotificationPresentationOptions) -> Void) {
+        Task { @MainActor [weak self] in
+            guard self?.model?.isPreview == false, self?.model?.notify == true else {
+                completionHandler([])
+                return
+            }
+            completionHandler([.banner, .list, .sound])
+        }
     }
 }
 
