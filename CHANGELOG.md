@@ -13,6 +13,14 @@ current development snapshot; it is not a release announcement.
 - Cover failed independent verification and cleanup read-back recovery paths.
 - Treat boundary child accounting as incomplete rather than a performance pass.
 
+## 1.0.0 - release candidate 9
+
+RC9 contains the foreground session-notification presentation/default-sound
+correction and main-actor updater capability observation fix. It retains RC8's
+bounded runtime-icon bitmap, existing helper identities and all safety semantics.
+This local candidate is for installed notification/lifecycle and final inclusive
+CPU/memory acceptance; no stable release or completed gate is claimed.
+
 ## 1.0.0 - release candidate 8
 
 RC8 tests a smaller resolved runtime icon after RC7 passed the revised CPU gate
