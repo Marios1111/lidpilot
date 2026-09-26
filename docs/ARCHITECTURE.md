@@ -159,9 +159,8 @@ The generated Xcode project pins Sparkle 2.10.0 and the app configuration
 requires signed feeds, pre-extraction verification, daily checks, and manual
 installation. Developer builds leave `SUFeedURL` and `SUPublicEDKey` empty.
 
-`UpdateCoordinator` uses one standard Sparkle controller. Background checks may
-discover an update while a session is active, but the install-capable callback
-rejects installation unless the app is Off, the update barrier is held, the lid
+`UpdateCoordinator` uses one standard Sparkle controller. Both automatic and
+manual checks wait until Off. The install-capable callback rejects installation unless the app is Off, the update barrier is held, the lid
 is open, assertions are off, and helper registration is absent or known stale.
 For a manual check it holds the barrier, performs verified cleanup, unregisters
 the helper, records interrupted-update state, and restores the helper after a
@@ -171,6 +170,27 @@ the user resolves it. A committed update restarts the new app Off.
 Signed archives, feed/notes, Developer ID identities, notarization, real helper
 replacement, and an update smoke test remain release gates. See
 [`docs/RELEASING.md`](RELEASING.md).
+
+## Development and production isolation
+
+Release retains the published identities `com.lidpilot.app` and
+`com.lidpilot.app.helper`. Debug uses `com.lidpilot.app.dev` and
+`com.lidpilot.app.dev.helper`. Bundle metadata, daemon label/plist, Mach service,
+and reciprocal signing requirements must match one exact known pair. Unknown
+or mixed identities fail closed; production never accepts a development client.
+The publisher Team requirement is unchanged.
+
+UserDefaults follows the distinct app bundle IDs. Diagnostics and recovery
+journals use separate `LidPilot` and `LidPilot Development` directories. Both
+helpers deliberately share the production `command.lock`: `SleepDisabled` is a
+single system-wide flag, so separate identities do not create separate power
+ownership. The shared fence serializes preflight/mutation/read-back transactions;
+an already-active unowned flag remains a conflict, not an invitation to clear it.
+
+The generator embeds only the selected configuration's daemon plist, checks all
+matching IDs, and removes a stale other-configuration plist only from the build
+product. Development builds disable Sparkle and do not install production feeds.
+Package/test evidence is distinct from live signed-helper coexistence.
 
 ## Verification boundary
 

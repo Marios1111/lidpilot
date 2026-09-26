@@ -15,7 +15,23 @@ PROJECT_PATH = ROOT.join("LidPilot.xcodeproj")
 PROJECT_RELATIVE_PATH = Pathname("LidPilot.xcodeproj")
 APP_IDENTIFIER = "com.lidpilot.app"
 HELPER_IDENTIFIER = "com.lidpilot.app.helper"
-HELPER_LABEL = "com.lidpilot.app.helper"
+DEVELOPMENT_APP_IDENTIFIER = "com.lidpilot.app.dev"
+DEVELOPMENT_HELPER_IDENTIFIER = "com.lidpilot.app.dev.helper"
+IDENTITIES = {
+  "Debug" => {
+    "app" => DEVELOPMENT_APP_IDENTIFIER,
+    "helper" => DEVELOPMENT_HELPER_IDENTIFIER,
+    "daemon_plist" => "#{DEVELOPMENT_HELPER_IDENTIFIER}.plist",
+    "daemon_template" => "Config/LaunchDaemons/#{DEVELOPMENT_HELPER_IDENTIFIER}.plist"
+  },
+  "Release" => {
+    "app" => APP_IDENTIFIER,
+    "helper" => HELPER_IDENTIFIER,
+    "daemon_plist" => "#{HELPER_IDENTIFIER}.plist",
+    "daemon_template" => "Config/LaunchDaemons/#{HELPER_IDENTIFIER}.plist"
+  }
+}.freeze
+DAEMON_TEMPLATE_PATHS = IDENTITIES.values.map { |identity| identity.fetch("daemon_template") }.uniq.freeze
 SPARKLE_URL = "https://github.com/sparkle-project/Sparkle"
 SPARKLE_VERSION = "2.10.0"
 
@@ -83,19 +99,29 @@ def configure_common_settings(config, release: false)
   config.build_settings["CODE_SIGN_IDENTITY"] = release ? "Developer ID Application" : "-"
 end
 
-def configure_target_settings(target, identifier, info_plist, helper: false)
+def configure_target_settings(target, info_plist, helper: false)
   target.build_configurations.each do |config|
     release = config.name == "Release"
+    identity = IDENTITIES.fetch(config.name)
     configure_common_settings(config, release: release)
     config.build_settings.merge!(
       "CODE_SIGN_ENTITLEMENTS" => "",
       "INFOPLIST_FILE" => info_plist,
       "INSTALL_PATH" => helper ? "$(CONTENTS_FOLDER_PATH)" : "$(LOCAL_APPS_DIR)",
       "LD_RUNPATH_SEARCH_PATHS" => ["$(inherited)", "@executable_path/../Frameworks"],
-      "PRODUCT_BUNDLE_IDENTIFIER" => identifier,
+      "PRODUCT_BUNDLE_IDENTIFIER" => helper ? identity.fetch("helper") : identity.fetch("app"),
       "PRODUCT_NAME" => helper ? "LidPilotHelper" : "LidPilot",
+      "LIDPILOT_APP_IDENTIFIER" => identity.fetch("app"),
+      "LIDPILOT_HELPER_IDENTIFIER" => identity.fetch("helper"),
+      "LIDPILOT_DAEMON_LABEL" => identity.fetch("helper"),
+      "LIDPILOT_DAEMON_PLIST_NAME" => identity.fetch("daemon_plist"),
+      "LIDPILOT_SERVICE_IDENTIFIER" => identity.fetch("helper"),
       "SKIP_INSTALL" => helper ? "YES" : "NO"
     )
+    # Release tooling supplies its feed and key explicitly. Never inherit a
+    # developer shell's values into either ordinary build configuration.
+    config.build_settings["SUFeedURL"] = ""
+    config.build_settings["SUPublicEDKey"] = ""
     if helper
       # A command-line tool has no wrapper by default. Embed the generated
       # Info.plist in its binary so the peer identity/team/version contract is
@@ -118,9 +144,43 @@ def project_invariants(project)
   raise "missing LidPilotHelper tool target" unless helper
 
   app_id = app.build_configurations.first.build_settings["PRODUCT_BUNDLE_IDENTIFIER"]
-  helper_id = helper.build_configurations.first.build_settings["PRODUCT_BUNDLE_IDENTIFIER"]
-  raise "unexpected app bundle identifier: #{app_id.inspect}" unless app_id == APP_IDENTIFIER
-  raise "unexpected helper bundle identifier: #{helper_id.inspect}" unless helper_id == HELPER_IDENTIFIER
+  raise "unexpected first app bundle identifier: #{app_id.inspect}" unless IDENTITIES.values.any? { |identity| identity.fetch("app") == app_id }
+  IDENTITIES.each do |configuration_name, identity|
+    app_config = app.build_configurations.find { |config| config.name == configuration_name }
+    helper_config = helper.build_configurations.find { |config| config.name == configuration_name }
+    raise "missing #{configuration_name} app build configuration" unless app_config
+    raise "missing #{configuration_name} helper build configuration" unless helper_config
+    raise "unexpected #{configuration_name} app bundle identifier" unless app_config.build_settings["PRODUCT_BUNDLE_IDENTIFIER"] == identity.fetch("app")
+    raise "unexpected #{configuration_name} helper bundle identifier" unless helper_config.build_settings["PRODUCT_BUNDLE_IDENTIFIER"] == identity.fetch("helper")
+    [app_config, helper_config].each do |config|
+      raise "#{configuration_name} app/helper identity settings disagree" unless
+        config.build_settings["LIDPILOT_APP_IDENTIFIER"] == identity.fetch("app") &&
+        config.build_settings["LIDPILOT_HELPER_IDENTIFIER"] == identity.fetch("helper")
+      raise "#{configuration_name} daemon settings disagree" unless
+        config.build_settings["LIDPILOT_DAEMON_LABEL"] == identity.fetch("helper") &&
+        config.build_settings["LIDPILOT_DAEMON_PLIST_NAME"] == identity.fetch("daemon_plist") &&
+        config.build_settings["LIDPILOT_SERVICE_IDENTIFIER"] == identity.fetch("helper")
+      raise "developer update feed defaults must be empty" unless
+        config.build_settings["SUFeedURL"].to_s.empty? && config.build_settings["SUPublicEDKey"].to_s.empty?
+    end
+    template = ROOT.join(identity.fetch("daemon_template"))
+    raise "LaunchDaemon template missing: #{template}" unless template.file?
+    contents = File.read(template)
+    raise "LaunchDaemon template label is wrong: #{template}" unless contents.include?("<string>#{identity.fetch("helper")}</string>")
+    raise "LaunchDaemon template service is wrong: #{template}" unless contents.include?("<key>#{identity.fetch("helper")}</key>")
+  end
+  daemon_phase = app.shell_script_build_phases.find { |phase| phase.name == "Embed Configuration LaunchDaemon" }
+  raise "configuration-specific LaunchDaemon embed phase is missing" unless daemon_phase
+  expected_inputs = DAEMON_TEMPLATE_PATHS.map { |path| "$(SRCROOT)/#{path}" }
+  raise "LaunchDaemon embed inputs are wrong" unless daemon_phase.input_paths.sort == expected_inputs.sort
+  expected_output = "$(TARGET_BUILD_DIR)/$(CONTENTS_FOLDER_PATH)/Library/LaunchDaemons/$(LIDPILOT_DAEMON_PLIST_NAME)"
+  raise "LaunchDaemon embed output is wrong" unless daemon_phase.output_paths == [expected_output]
+  IDENTITIES.each_value do |identity|
+    [identity.fetch("app"), identity.fetch("helper"), identity.fetch("daemon_plist"), identity.fetch("daemon_template")].each do |value|
+      raise "LaunchDaemon embed script is missing #{value}" unless daemon_phase.shell_script.include?(value)
+    end
+  end
+  raise "stale unconditional LaunchDaemon copy phase remains" if app.shell_script_build_phases.any? { |phase| phase.name == "Embed LaunchDaemon" }
 
   local_paths = project.root_object.package_references
     .select { |reference| reference.respond_to?(:relative_path) }
@@ -137,9 +197,50 @@ def project_invariants(project)
     raise "Sparkle must be pinned to exact version #{SPARKLE_VERSION}: #{requirement.inspect}"
   end
 
-  daemon = ROOT.join("Config/LaunchDaemons/#{HELPER_LABEL}.plist")
-  raise "LaunchDaemon template missing: #{daemon}" unless daemon.file?
   true
+end
+
+def daemon_embedding_script
+  <<~SH
+    set -eu
+    case "${CONFIGURATION:-}" in
+      Debug)
+        expected_app="#{IDENTITIES.fetch("Debug").fetch("app")}";
+        expected_helper="#{IDENTITIES.fetch("Debug").fetch("helper")}";
+        expected_plist="#{IDENTITIES.fetch("Debug").fetch("daemon_plist")}";
+        source_plist="${SRCROOT}/#{IDENTITIES.fetch("Debug").fetch("daemon_template")}" ;;
+      Release)
+        expected_app="#{IDENTITIES.fetch("Release").fetch("app")}";
+        expected_helper="#{IDENTITIES.fetch("Release").fetch("helper")}";
+        expected_plist="#{IDENTITIES.fetch("Release").fetch("daemon_plist")}";
+        source_plist="${SRCROOT}/#{IDENTITIES.fetch("Release").fetch("daemon_template")}" ;;
+      *) echo "Unsupported LidPilot configuration: ${CONFIGURATION:-missing}" >&2; exit 64 ;;
+    esac
+
+    [ "${PRODUCT_BUNDLE_IDENTIFIER:-}" = "$expected_app" ] || { echo "App identity does not match $CONFIGURATION" >&2; exit 1; }
+    [ "${LIDPILOT_APP_IDENTIFIER:-}" = "$expected_app" ] || { echo "Host identity does not match $CONFIGURATION" >&2; exit 1; }
+    [ "${LIDPILOT_HELPER_IDENTIFIER:-}" = "$expected_helper" ] || { echo "Helper identity does not match $CONFIGURATION" >&2; exit 1; }
+    [ "${LIDPILOT_DAEMON_LABEL:-}" = "$expected_helper" ] || { echo "Daemon label does not match $CONFIGURATION" >&2; exit 1; }
+    [ "${LIDPILOT_DAEMON_PLIST_NAME:-}" = "$expected_plist" ] || { echo "Daemon plist name does not match $CONFIGURATION" >&2; exit 1; }
+    [ "${LIDPILOT_SERVICE_IDENTIFIER:-}" = "$expected_helper" ] || { echo "XPC service identity does not match $CONFIGURATION" >&2; exit 1; }
+
+    destination_dir="${TARGET_BUILD_DIR}/${CONTENTS_FOLDER_PATH}/Library/LaunchDaemons"
+    destination="${destination_dir}/${expected_plist}"
+    /bin/mkdir -p "$destination_dir"
+    for stale_plist in "#{IDENTITIES.fetch("Debug").fetch("daemon_plist")}" "#{IDENTITIES.fetch("Release").fetch("daemon_plist")}"; do
+      if [ "$stale_plist" != "$expected_plist" ] && [ -e "${destination_dir}/${stale_plist}" ]; then
+        /bin/rm -f "${destination_dir}/${stale_plist}"
+      fi
+    done
+    /bin/cp "$source_plist" "$destination"
+    /usr/bin/plutil -lint "$destination" >/dev/null
+    actual_label=$(/usr/libexec/PlistBuddy -c 'Print :Label' "$destination")
+    actual_service=$(/usr/libexec/PlistBuddy -c "Print :MachServices:$expected_helper" "$destination")
+    [ "$actual_label" = "$expected_helper" ] && [ "$actual_service" = "true" ] || {
+      echo "Embedded LaunchDaemon identity does not match $CONFIGURATION" >&2
+      exit 1
+    }
+  SH
 end
 
 def generate
@@ -158,8 +259,8 @@ def generate
   project.build_configurations.each do |config|
     config.base_configuration_reference = xcconfig_reference
   end
-  configure_target_settings(app, APP_IDENTIFIER, "Config/App-Info.plist")
-  configure_target_settings(helper, HELPER_IDENTIFIER, "Config/Helper-Info.plist", helper: true)
+  configure_target_settings(app, "Config/App-Info.plist")
+  configure_target_settings(helper, "Config/Helper-Info.plist", helper: true)
 
   add_group_files(project, app, "App", "App", ".swift")
   add_group_files(project, helper, "Helper", "Helper", ".swift")
@@ -194,13 +295,17 @@ def generate
   app.build_phases << embed_helper
   add_copy_file(project, embed_helper, helper.product_reference, ["CodeSignOnCopy"])
 
-  daemon_reference = project.main_group.new_file("Config/LaunchDaemons/#{HELPER_LABEL}.plist")
-  launch_daemon_phase = project.new(Xcodeproj::Project::Object::PBXCopyFilesBuildPhase)
-  launch_daemon_phase.name = "Embed LaunchDaemon"
-  launch_daemon_phase.dst_subfolder_spec = "1"
-  launch_daemon_phase.dst_path = "Contents/Library/LaunchDaemons"
+  DAEMON_TEMPLATE_PATHS.each { |path| project.main_group.new_file(path) }
+  launch_daemon_phase = project.new(Xcodeproj::Project::Object::PBXShellScriptBuildPhase)
+  launch_daemon_phase.name = "Embed Configuration LaunchDaemon"
+  launch_daemon_phase.shell_path = "/bin/sh"
+  launch_daemon_phase.shell_script = daemon_embedding_script
+  launch_daemon_phase.input_paths = DAEMON_TEMPLATE_PATHS.map { |path| "$(SRCROOT)/#{path}" }
+  launch_daemon_phase.output_paths = [
+    "$(TARGET_BUILD_DIR)/$(CONTENTS_FOLDER_PATH)/Library/LaunchDaemons/$(LIDPILOT_DAEMON_PLIST_NAME)"
+  ]
+  launch_daemon_phase.always_out_of_date = "1"
   app.build_phases << launch_daemon_phase
-  add_copy_file(project, launch_daemon_phase, daemon_reference)
 
   # Make the app target's dependency graph explicit even when the helper has
   # no source files yet. Xcode will build the helper before the copy phase.
@@ -233,11 +338,19 @@ def check
     SPARKLE_VERSION,
     "PRODUCT_BUNDLE_IDENTIFIER = #{APP_IDENTIFIER}",
     "PRODUCT_BUNDLE_IDENTIFIER = #{HELPER_IDENTIFIER}",
+    "PRODUCT_BUNDLE_IDENTIFIER = #{DEVELOPMENT_APP_IDENTIFIER}",
+    "PRODUCT_BUNDLE_IDENTIFIER = #{DEVELOPMENT_HELPER_IDENTIFIER}",
+    "LIDPILOT_DAEMON_PLIST_NAME = #{IDENTITIES.fetch("Debug").fetch("daemon_plist")}",
+    "LIDPILOT_DAEMON_PLIST_NAME = #{IDENTITIES.fetch("Release").fetch("daemon_plist")}",
     "Config/App-Info.plist",
     "Config/Helper-Info.plist",
-    "Config/LaunchDaemons/#{HELPER_LABEL}.plist",
+    "Config/LaunchDaemons/#{IDENTITIES.fetch("Debug").fetch("daemon_plist")}",
+    "Config/LaunchDaemons/#{IDENTITIES.fetch("Release").fetch("daemon_plist")}",
     "Contents/Library/HelperTools",
-    "Contents/Library/LaunchDaemons",
+    "Library/LaunchDaemons",
+    "Embed Configuration LaunchDaemon",
+    "CONFIGURATION:-}",
+    "actual_label=$(/usr/libexec/PlistBuddy",
     "CREATE_INFOPLIST_SECTION_IN_BINARY = YES"
   ]
   missing = required_fragments.reject { |fragment| pbx.include?(fragment) }
@@ -247,7 +360,13 @@ def check
   source_fragments = (expected_app_sources + expected_helper_sources)
   missing_sources = source_fragments.reject { |source| pbx.include?(source) }
   raise "project is missing source references: #{missing_sources.join(", ")}" unless missing_sources.empty?
-  ["Config/App-Info.plist", "Config/Helper-Info.plist", "Config/LaunchDaemons/#{HELPER_LABEL}.plist", "Version.xcconfig"].each do |path|
+  config_inputs = [
+    "Config/App-Info.plist",
+    "Config/Helper-Info.plist",
+    *DAEMON_TEMPLATE_PATHS,
+    "Version.xcconfig"
+  ]
+  config_inputs.each do |path|
     raise "missing project input: #{path}" unless ROOT.join(path).file?
   end
   puts "project configuration is valid"

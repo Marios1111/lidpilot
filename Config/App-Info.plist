@@ -26,6 +26,8 @@
 	<true/>
 	<key>LidPilotTeamIdentifier</key>
 	<string>$(LidPilotTeamIdentifier)</string>
+	<key>LidPilotHelperIdentifier</key>
+	<string>$(LIDPILOT_HELPER_IDENTIFIER)</string>
 	<key>SUEnableAutomaticChecks</key>
 	<true/>
 	<key>SUScheduledCheckInterval</key>

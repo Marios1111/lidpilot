@@ -29,13 +29,17 @@ public protocol RecoveryStoring: Sendable {
     func clear() throws
 }
 
-/// The helper supplies the fixed production location. The XPC protocol accepts no paths.
+/// The helper identity selects a fixed recovery location. The XPC protocol accepts no paths.
 public final class RecoveryJournal: RecoveryStoring, @unchecked Sendable {
     private let directory: Int32
+    private let commandFenceDirectory: Int32
     private let owner: uid_t
     private let filename = "recovery.json"
 
     public static func privileged() throws -> RecoveryJournal {
+        guard let configuration = HelperIdentity.helperConfiguration() else {
+            throw RuntimeFailure.unavailable("The helper bundle identity is not recognized; privileged recovery is disabled.")
+        }
         for path in ["/Library", "/Library/Application Support"] {
             var info = stat()
             guard lstat(path, &info) == 0, info.st_mode & S_IFMT == S_IFDIR,
@@ -43,30 +47,35 @@ public final class RecoveryJournal: RecoveryStoring, @unchecked Sendable {
                 throw RuntimeFailure.unavailable("Recovery directory ancestry is not trusted.")
             }
         }
-        return try RecoveryJournal(directory: "/Library/Application Support/LidPilot", owner: 0)
+        return try RecoveryJournal(directory: configuration.recoveryDirectory,
+                                   commandFenceDirectory: configuration.commandFenceDirectory,
+                                   owner: 0)
     }
 
     // Internal initializer is also used by tests with a disposable directory and current uid.
-    init(directory path: String, owner: uid_t) throws {
+    init(directory path: String, commandFenceDirectory fencePath: String? = nil, owner: uid_t) throws {
         self.owner = owner
-        if mkdir(path, 0o700) != 0, errno != EEXIST { throw Self.failure("create directory") }
-        let openedDirectory = open(path, O_RDONLY | O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC)
-        guard openedDirectory >= 0 else { throw Self.failure("open directory") }
-        var info = stat()
-        guard fstat(openedDirectory, &info) == 0, info.st_uid == owner,
-              info.st_mode & S_IFMT == S_IFDIR, info.st_mode & 0o077 == 0 else {
-            close(openedDirectory)
-            throw RuntimeFailure.unavailable("Recovery directory ownership or permissions are unsafe.")
+        let journalDescriptor = try Self.openTrustedDirectory(path, owner: owner)
+        let fenceDescriptor: Int32
+        do {
+            fenceDescriptor = try Self.openTrustedDirectory(fencePath ?? path, owner: owner)
+        } catch {
+            close(journalDescriptor)
+            throw error
         }
         // Transfer FD ownership only after validation; throwing after assigning it
         // would run deinit and close the same descriptor again during unwinding.
-        directory = openedDirectory
+        directory = journalDescriptor
+        commandFenceDirectory = fenceDescriptor
     }
 
-    deinit { close(directory) }
+    deinit {
+        close(directory)
+        close(commandFenceDirectory)
+    }
 
     public func makePowerDriver() throws -> PMSetDriver {
-        try PMSetDriver(fence: CommandFence(directoryDescriptor: directory, owner: owner))
+        try PMSetDriver(fence: CommandFence(directoryDescriptor: commandFenceDirectory, owner: owner))
     }
 
     public func load() throws -> RecoveryRecord? {
@@ -116,5 +125,18 @@ public final class RecoveryJournal: RecoveryStoring, @unchecked Sendable {
 
     private static func failure(_ operation: String) -> RuntimeFailure {
         .unavailable("Cannot \(operation) in the recovery journal (errno \(errno)).")
+    }
+
+    private static func openTrustedDirectory(_ path: String, owner: uid_t) throws -> Int32 {
+        if mkdir(path, 0o700) != 0, errno != EEXIST { throw failure("create directory") }
+        let descriptor = open(path, O_RDONLY | O_DIRECTORY | O_NOFOLLOW | O_CLOEXEC)
+        guard descriptor >= 0 else { throw failure("open directory") }
+        var info = stat()
+        guard fstat(descriptor, &info) == 0, info.st_uid == owner,
+              info.st_mode & S_IFMT == S_IFDIR, info.st_mode & 0o077 == 0 else {
+            close(descriptor)
+            throw RuntimeFailure.unavailable("Recovery directory ownership or permissions are unsafe.")
+        }
+        return descriptor
     }
 }

@@ -3,8 +3,8 @@ import Observation
 import Sparkle
 import LidPilotRuntime
 
-/// Keep one standard Sparkle controller. Gate the whole install-capable cycle before presenting it.
-/// Background checks may discover updates during a session; they cannot enter the install path.
+/// Keep one standard Sparkle controller. Update checks are allowed only while LidPilot is Off.
+/// The whole install-capable cycle remains gated before Sparkle can present an update.
 @MainActor @Observable final class UpdateCoordinator: NSObject, SPUUpdaterDelegate {
     private weak var model: AppModel?
     private var standard: SPUStandardUpdaterController?
@@ -28,6 +28,14 @@ import LidPilotRuntime
         self.model = model
         build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "unconfigured"
         super.init()
+        guard let configuration = HelperIdentity.applicationConfiguration() else {
+            status = "Updates are unavailable for this app identity."
+            return
+        }
+        guard configuration.isProduction else {
+            status = "Updates are disabled in development builds."
+            return
+        }
         guard !model.isPreview, let feed = Bundle.main.object(forInfoDictionaryKey: "SUFeedURL") as? String,
               let url = URL(string: feed), url.scheme == "https", url.host?.hasSuffix(".github.io") == true,
               url.user == nil, url.password == nil, url.query == nil, url.fragment == nil,

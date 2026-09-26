@@ -21,9 +21,9 @@
 	<key>LSMinimumSystemVersion</key>
 	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
 	<key>LidPilotHostBundleIdentifier</key>
-	<string>com.lidpilot.app</string>
+	<string>$(LIDPILOT_APP_IDENTIFIER)</string>
 	<key>LidPilotHelperIdentifier</key>
-	<string>com.lidpilot.app.helper</string>
+	<string>$(LIDPILOT_HELPER_IDENTIFIER)</string>
 	<key>LidPilotProtocolVersion</key>
 	<string>1</string>
 	<key>LidPilotTeamIdentifier</key>

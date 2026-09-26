@@ -14,7 +14,9 @@ for script in scripts/*.rb; do
 done
 
 ruby scripts/generate-project.rb --check
-plutil -lint Config/App-Info.plist Config/Helper-Info.plist Config/LaunchDaemons/com.lidpilot.app.helper.plist >/dev/null
+plutil -lint Config/App-Info.plist Config/Helper-Info.plist \
+  Config/LaunchDaemons/com.lidpilot.app.helper.plist \
+  Config/LaunchDaemons/com.lidpilot.app.dev.helper.plist >/dev/null
 ruby scripts/validate_release_metadata.rb --self-test
 CLANG_MODULE_CACHE_PATH=/private/tmp/lidpilot-verify-module-cache xcrun swift scripts/verify_update_signature.swift --self-test
 

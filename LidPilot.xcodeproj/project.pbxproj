@@ -7,60 +7,48 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		00F0C609A156732221BAEEA79939D092 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3312D05CDCB3EC18642AE0A13A0EBCF4 /* Cocoa.framework */; };
-		03B89D761F44173A5A8BF079A8E8C752 /* DiagnosticsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64BCC2B63F3C8EEB3890AAA5FFF5EA25 /* DiagnosticsStore.swift */; };
-		10858BE635964D0E4E1ECF9F70ED0E79 /* PreviewHarness.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D473C0E73556BEFE338377A8529D078 /* PreviewHarness.swift */; };
-		1E68FFDCF169A3ED592ECD52177C406D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3312D05CDCB3EC18642AE0A13A0EBCF4 /* Cocoa.framework */; };
-		48164FE976C54372B37B4B7CD5083A6B /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6AE1BDB3CEE245724DE7768ECCF5C22 /* main.swift */; };
-		4A75B811CB5ACFCF41961DF5C4B15370 /* UpdateCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10474556CD70BD6A593DE4267146336 /* UpdateCoordinator.swift */; };
-		599CC7489B29523B667530171ECE4905 /* LidPilotCore in Frameworks */ = {isa = PBXBuildFile; productRef = BE2EE23B41BD42F8A04203A7440EE5FD /* LidPilotCore */; };
-		65F7494802A98F5F377608E5087DA370 /* HelperManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5C15A84A86CCC74EC6B0BA1C56A3FB /* HelperManager.swift */; };
-		6B4D7CCC20DD9F012DDFBA1024D2B068 /* LidPilotHelper in Embed LidPilotHelper */ = {isa = PBXBuildFile; fileRef = 359131119CEACA867BB1A149A009E57B /* LidPilotHelper */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		765C2008D32C08E39BA3B63AAF7272F6 /* com.lidpilot.app.helper.plist in Embed LaunchDaemon */ = {isa = PBXBuildFile; fileRef = 51CA11A1B500E15A115AD48237B27E18 /* com.lidpilot.app.helper.plist */; };
-		85A6DD675CCBD90074996121C2BE7D69 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 695D195D5D525F4DB366B6947EAF068C /* SettingsView.swift */; };
-		88B4BA3E9AA852852C595AA73D1E4D0C /* THIRD_PARTY_NOTICES.md in Resources */ = {isa = PBXBuildFile; fileRef = C5C171D0CE857EC169C86906C50199EE /* THIRD_PARTY_NOTICES.md */; };
-		8D30B7867A43F7B8AC7DE7A641C7DD1A /* LidPilotRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = BDEDD0A552E7F683FD91208F9AF20ADC /* LidPilotRuntime */; };
-		9A545C3C92156A151F6BBB88958FF7BC /* PilotPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 183E87B492785732A89AF28E53B4E65D /* PilotPanel.swift */; };
-		9E359B8B97C2E85F85781A8E8629FC29 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2F69F9CDDCCCD4D3C891C92EDAB0A7E /* AppModel.swift */; };
-		9FD3FA365C8A58B43EFD9A58697C48E1 /* LidPilotCore in Frameworks */ = {isa = PBXBuildFile; productRef = CEB9A52A9DE9E5980A2EA8FD191E049C /* LidPilotCore */; };
-		A357A3C719B3735D5F484C94733BBA19 /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09E9A6FDE13CF44918CBA0DE0961276B /* WelcomeView.swift */; };
-		A5261C5F16AFF72E1C6B4E56B67DCFC1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 16537F856E6E4DEAD23EBDFD03B1D97E /* Assets.xcassets */; };
-		CB3207CD24EA7A30213FE80B966CAF99 /* LidPilotRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = D331368E030DE86BF76B873B8D46E6BE /* LidPilotRuntime */; };
-		E1223BC9C8E74E6F2A0A1709FC19AF3F /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = A97FBA797376B4658DD96BF62C35B7FE /* Sparkle */; };
-		E80F543152ED58E3AAC0F9E3B138FF28 /* StateObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C137F18A18822F29FC235A07676AA12 /* StateObserver.swift */; };
-		EE692B39CB2A3CA19D71D4BE10FE3431 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 13F0F8D73796683FD58495963E905DC8 /* LICENSE */; };
-		FCAFFAE36C9A8EEE33F7CF6E9E5F5735 /* LidPilotApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1812A3ABF7D49E5CAD125E81D80C34B6 /* LidPilotApp.swift */; };
+		1957400DA52F128AFF94B1E9A87411DF /* LidPilotHelper in Embed LidPilotHelper */ = {isa = PBXBuildFile; fileRef = 359131119CEACA867BB1A149A009E57B /* LidPilotHelper */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		1E9C72062F6528A60D7ED6484E1B6C4F /* LidPilotRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 4E0A1276786028F89EFC056DD08A7196 /* LidPilotRuntime */; };
+		2F6DA1205E0EF62BF8F9FB6B35BF9B03 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 13F0F8D73796683FD58495963E905DC8 /* LICENSE */; };
+		3A944F9CB97C5D6F75561487B068DA45 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2F69F9CDDCCCD4D3C891C92EDAB0A7E /* AppModel.swift */; };
+		4DCDC470998060BDC1E950B5A0FD2E10 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 16537F856E6E4DEAD23EBDFD03B1D97E /* Assets.xcassets */; };
+		4E0FC268DC5DD417F368E0BC06E52CCC /* LidPilotCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3EBD6916D81A0B9344DC25417B708CB8 /* LidPilotCore */; };
+		5438D8E5FB86566C47B3F49B893C995F /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6AE1BDB3CEE245724DE7768ECCF5C22 /* main.swift */; };
+		58145B6E4856F1E9F03027329AF52641 /* PreviewHarness.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D473C0E73556BEFE338377A8529D078 /* PreviewHarness.swift */; };
+		63380978090156724F50142E01A9C821 /* UpdateCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10474556CD70BD6A593DE4267146336 /* UpdateCoordinator.swift */; };
+		69FE62435BF6B580FBB34DA2A475818B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3312D05CDCB3EC18642AE0A13A0EBCF4 /* Cocoa.framework */; };
+		6F2F9C4C2A025C1B44B89EC2D385A987 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 695D195D5D525F4DB366B6947EAF068C /* SettingsView.swift */; };
+		7915B1611CD2FD622A747F448FC3D1DE /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 7C767075C0C8A419EA1FDC2255CF9BB3 /* Sparkle */; };
+		80354C7B42590DC93CC2C0FB69645775 /* THIRD_PARTY_NOTICES.md in Resources */ = {isa = PBXBuildFile; fileRef = C5C171D0CE857EC169C86906C50199EE /* THIRD_PARTY_NOTICES.md */; };
+		8BBB39498E936E8F8D0790AD136CBDF1 /* StateObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C137F18A18822F29FC235A07676AA12 /* StateObserver.swift */; };
+		98EFC7FC708246331F99AA839B9BD95C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3312D05CDCB3EC18642AE0A13A0EBCF4 /* Cocoa.framework */; };
+		9EAA18F71B1A93C566BFC1C45CF03604 /* LidPilotApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1812A3ABF7D49E5CAD125E81D80C34B6 /* LidPilotApp.swift */; };
+		B2227A6336DB2D6D4481CFEAAB01C6E0 /* LidPilotCore in Frameworks */ = {isa = PBXBuildFile; productRef = 867E1F4A63C8EE9AB6A3070B571492A8 /* LidPilotCore */; };
+		BE272D6B2F440EDAF130E202617773BD /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09E9A6FDE13CF44918CBA0DE0961276B /* WelcomeView.swift */; };
+		C299E9F1D1BDAAF00BE7F1208F27FB2E /* PilotPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 183E87B492785732A89AF28E53B4E65D /* PilotPanel.swift */; };
+		C7C7F864B72AF65953985E10541E67E4 /* LidPilotRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 108A5A9EE95C987722A2D8D301EA5C02 /* LidPilotRuntime */; };
+		DD91410C098DA2F57364FB4B3B87D5A3 /* HelperManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5C15A84A86CCC74EC6B0BA1C56A3FB /* HelperManager.swift */; };
+		F65BAF8430764267412A0060649AC603 /* DiagnosticsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64BCC2B63F3C8EEB3890AAA5FFF5EA25 /* DiagnosticsStore.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		E3EB5338A6851FD7B68632E241E1BC90 /* PBXContainerItemProxy */ = {
+		2EE0C9CB34EE71113382456E920C648F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7E35FAB48B0F003348B9A6997BC3F935 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 44CB0E2D54099AF87389027D31B5CA04;
+			remoteGlobalIDString = 72077D9073496C62341494F0E41829D3;
 			remoteInfo = LidPilotHelper;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		6CB4E81B0EDCD532B34029129C972678 /* Embed LaunchDaemon */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = Contents/Library/LaunchDaemons;
-			dstSubfolderSpec = 1;
-			files = (
-				765C2008D32C08E39BA3B63AAF7272F6 /* com.lidpilot.app.helper.plist in Embed LaunchDaemon */,
-			);
-			name = "Embed LaunchDaemon";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C4E829EB25EC31949A18F1D7ECD6FAE3 /* Embed LidPilotHelper */ = {
+		64891C46201CD454906BAF127C600570 /* Embed LidPilotHelper */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = Contents/Library/HelperTools;
 			dstSubfolderSpec = 1;
 			files = (
-				6B4D7CCC20DD9F012DDFBA1024D2B068 /* LidPilotHelper in Embed LidPilotHelper */,
+				1957400DA52F128AFF94B1E9A87411DF /* LidPilotHelper in Embed LidPilotHelper */,
 			);
 			name = "Embed LidPilotHelper";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -82,6 +70,7 @@
 		7B5C15A84A86CCC74EC6B0BA1C56A3FB /* HelperManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HelperManager.swift; path = App/HelperManager.swift; sourceTree = "<group>"; };
 		7D473C0E73556BEFE338377A8529D078 /* PreviewHarness.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PreviewHarness.swift; path = App/PreviewHarness.swift; sourceTree = "<group>"; };
 		903D869E4E5535637963BB07C7DCA36B /* Version.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
+		9A4F9B02E3278110737E1002056860A2 /* com.lidpilot.app.dev.helper.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = com.lidpilot.app.dev.helper.plist; path = Config/LaunchDaemons/com.lidpilot.app.dev.helper.plist; sourceTree = "<group>"; };
 		A99A457A400AC7D14B0FC6E4B6AB8161 /* LidPilot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = LidPilot.app; path = LidPilot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B10474556CD70BD6A593DE4267146336 /* UpdateCoordinator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = UpdateCoordinator.swift; path = App/UpdateCoordinator.swift; sourceTree = "<group>"; };
 		C5C171D0CE857EC169C86906C50199EE /* THIRD_PARTY_NOTICES.md */ = {isa = PBXFileReference; includeInIndex = 1; path = THIRD_PARTY_NOTICES.md; sourceTree = "<group>"; };
@@ -90,24 +79,24 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		93FB97F2D77170F4F19469101C16149F /* Frameworks */ = {
+		0F77C9CAEC7D9C6F23C5D1839D1B64A6 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1E68FFDCF169A3ED592ECD52177C406D /* Cocoa.framework in Frameworks */,
-				8D30B7867A43F7B8AC7DE7A641C7DD1A /* LidPilotRuntime in Frameworks */,
-				9FD3FA365C8A58B43EFD9A58697C48E1 /* LidPilotCore in Frameworks */,
+				98EFC7FC708246331F99AA839B9BD95C /* Cocoa.framework in Frameworks */,
+				1E9C72062F6528A60D7ED6484E1B6C4F /* LidPilotRuntime in Frameworks */,
+				4E0FC268DC5DD417F368E0BC06E52CCC /* LidPilotCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		EC1740D42F7D9F20607BC8504E1C5CEA /* Frameworks */ = {
+		777762D7F5C0F5B412B242148117BA31 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				00F0C609A156732221BAEEA79939D092 /* Cocoa.framework in Frameworks */,
-				CB3207CD24EA7A30213FE80B966CAF99 /* LidPilotRuntime in Frameworks */,
-				599CC7489B29523B667530171ECE4905 /* LidPilotCore in Frameworks */,
-				E1223BC9C8E74E6F2A0A1709FC19AF3F /* Sparkle in Frameworks */,
+				69FE62435BF6B580FBB34DA2A475818B /* Cocoa.framework in Frameworks */,
+				C7C7F864B72AF65953985E10541E67E4 /* LidPilotRuntime in Frameworks */,
+				B2227A6336DB2D6D4481CFEAAB01C6E0 /* LidPilotCore in Frameworks */,
+				7915B1611CD2FD622A747F448FC3D1DE /* Sparkle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -150,6 +139,7 @@
 				16537F856E6E4DEAD23EBDFD03B1D97E /* Assets.xcassets */,
 				13F0F8D73796683FD58495963E905DC8 /* LICENSE */,
 				C5C171D0CE857EC169C86906C50199EE /* THIRD_PARTY_NOTICES.md */,
+				9A4F9B02E3278110737E1002056860A2 /* com.lidpilot.app.dev.helper.plist */,
 				51CA11A1B500E15A115AD48237B27E18 /* com.lidpilot.app.helper.plist */,
 			);
 			sourceTree = "<group>";
@@ -182,38 +172,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		3686D2FA445CA7B2FD82A156A3ADBF75 /* LidPilot */ = {
+		72077D9073496C62341494F0E41829D3 /* LidPilotHelper */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A4833CBB9678975C695D16F2DAE94BFE /* Build configuration list for PBXNativeTarget "LidPilot" */;
+			buildConfigurationList = D06D4B8ECA81E35FE9385D298D4121C0 /* Build configuration list for PBXNativeTarget "LidPilotHelper" */;
 			buildPhases = (
-				58C8097351EC27F1230B3B3BAB0A1BE9 /* Sources */,
-				EC1740D42F7D9F20607BC8504E1C5CEA /* Frameworks */,
-				040BA48D56417455307B262DA5D4BC6F /* Resources */,
-				C4E829EB25EC31949A18F1D7ECD6FAE3 /* Embed LidPilotHelper */,
-				6CB4E81B0EDCD532B34029129C972678 /* Embed LaunchDaemon */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				FD59791B103B8BA8FC60597B676B9F53 /* PBXTargetDependency */,
-			);
-			name = LidPilot;
-			packageProductDependencies = (
-				D331368E030DE86BF76B873B8D46E6BE /* LidPilotRuntime */,
-				BE2EE23B41BD42F8A04203A7440EE5FD /* LidPilotCore */,
-				A97FBA797376B4658DD96BF62C35B7FE /* Sparkle */,
-			);
-			productName = LidPilot;
-			productReference = A99A457A400AC7D14B0FC6E4B6AB8161 /* LidPilot.app */;
-			productType = "com.apple.product-type.application";
-		};
-		44CB0E2D54099AF87389027D31B5CA04 /* LidPilotHelper */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = FC86A0C646D1433446492508E4EC23AC /* Build configuration list for PBXNativeTarget "LidPilotHelper" */;
-			buildPhases = (
-				A90502F175E33A473323300265B51628 /* Sources */,
-				93FB97F2D77170F4F19469101C16149F /* Frameworks */,
-				1053EB05724FAF5A11CB029980946EBC /* Resources */,
+				5ED46701FD8D954E1D2D2DE93B71AAC9 /* Sources */,
+				0F77C9CAEC7D9C6F23C5D1839D1B64A6 /* Frameworks */,
+				7C24AEA570F9D795C5B642713F5A3DD9 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -221,12 +186,37 @@
 			);
 			name = LidPilotHelper;
 			packageProductDependencies = (
-				BDEDD0A552E7F683FD91208F9AF20ADC /* LidPilotRuntime */,
-				CEB9A52A9DE9E5980A2EA8FD191E049C /* LidPilotCore */,
+				4E0A1276786028F89EFC056DD08A7196 /* LidPilotRuntime */,
+				3EBD6916D81A0B9344DC25417B708CB8 /* LidPilotCore */,
 			);
 			productName = LidPilotHelper;
 			productReference = 359131119CEACA867BB1A149A009E57B /* LidPilotHelper */;
 			productType = "com.apple.product-type.tool";
+		};
+		8552BA7F9619A283E7F85A3E4E4299B1 /* LidPilot */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AE22009C753023FB38926229C85A4B47 /* Build configuration list for PBXNativeTarget "LidPilot" */;
+			buildPhases = (
+				F4D8A1741B0471030E03539D94CF7AD9 /* Sources */,
+				777762D7F5C0F5B412B242148117BA31 /* Frameworks */,
+				E90D6FBF5809A99FE8D3C5D912C4A709 /* Resources */,
+				64891C46201CD454906BAF127C600570 /* Embed LidPilotHelper */,
+				A3905DEE5FDB8022B5C6318406684A13 /* Embed Configuration LaunchDaemon */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				E28851075F1CA446BA9FA946EBACEE2D /* PBXTargetDependency */,
+			);
+			name = LidPilot;
+			packageProductDependencies = (
+				108A5A9EE95C987722A2D8D301EA5C02 /* LidPilotRuntime */,
+				867E1F4A63C8EE9AB6A3070B571492A8 /* LidPilotCore */,
+				7C767075C0C8A419EA1FDC2255CF9BB3 /* Sparkle */,
+			);
+			productName = LidPilot;
+			productReference = A99A457A400AC7D14B0FC6E4B6AB8161 /* LidPilot.app */;
+			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
@@ -248,86 +238,111 @@
 			mainGroup = A6BA33EB933E86EE78AC46A7B75D624B;
 			minimizedProjectReferenceProxies = 0;
 			packageReferences = (
-				898E021E43D4EC0A761F8EAF97B80805 /* XCLocalSwiftPackageReference "." */,
-				6E7FBB96751ED0A20BD5947AE6264553 /* XCLocalSwiftPackageReference "Core" */,
-				A72E08BD5979F279C2F1DE77F02A930A /* XCRemoteSwiftPackageReference "Sparkle" */,
+				8EA5BE31065355AF06DB1600D897984D /* XCLocalSwiftPackageReference "." */,
+				11B045C5071B83E0B7AE52F7B100BD4A /* XCLocalSwiftPackageReference "Core" */,
+				1AE884E465799F26FDE181C8A385BC11 /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 0A03C60FC0E26512B9583EE3E107513C /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				3686D2FA445CA7B2FD82A156A3ADBF75 /* LidPilot */,
-				44CB0E2D54099AF87389027D31B5CA04 /* LidPilotHelper */,
+				8552BA7F9619A283E7F85A3E4E4299B1 /* LidPilot */,
+				72077D9073496C62341494F0E41829D3 /* LidPilotHelper */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		040BA48D56417455307B262DA5D4BC6F /* Resources */ = {
+		7C24AEA570F9D795C5B642713F5A3DD9 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A5261C5F16AFF72E1C6B4E56B67DCFC1 /* Assets.xcassets in Resources */,
-				EE692B39CB2A3CA19D71D4BE10FE3431 /* LICENSE in Resources */,
-				88B4BA3E9AA852852C595AA73D1E4D0C /* THIRD_PARTY_NOTICES.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1053EB05724FAF5A11CB029980946EBC /* Resources */ = {
+		E90D6FBF5809A99FE8D3C5D912C4A709 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4DCDC470998060BDC1E950B5A0FD2E10 /* Assets.xcassets in Resources */,
+				2F6DA1205E0EF62BF8F9FB6B35BF9B03 /* LICENSE in Resources */,
+				80354C7B42590DC93CC2C0FB69645775 /* THIRD_PARTY_NOTICES.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		A3905DEE5FDB8022B5C6318406684A13 /* Embed Configuration LaunchDaemon */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Config/LaunchDaemons/com.lidpilot.app.dev.helper.plist",
+				"$(SRCROOT)/Config/LaunchDaemons/com.lidpilot.app.helper.plist",
+			);
+			name = "Embed Configuration LaunchDaemon";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(TARGET_BUILD_DIR)/$(CONTENTS_FOLDER_PATH)/Library/LaunchDaemons/$(LIDPILOT_DAEMON_PLIST_NAME)",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "set -eu\ncase \"${CONFIGURATION:-}\" in\n  Debug)\n    expected_app=\"com.lidpilot.app.dev\";\n    expected_helper=\"com.lidpilot.app.dev.helper\";\n    expected_plist=\"com.lidpilot.app.dev.helper.plist\";\n    source_plist=\"${SRCROOT}/Config/LaunchDaemons/com.lidpilot.app.dev.helper.plist\" ;;\n  Release)\n    expected_app=\"com.lidpilot.app\";\n    expected_helper=\"com.lidpilot.app.helper\";\n    expected_plist=\"com.lidpilot.app.helper.plist\";\n    source_plist=\"${SRCROOT}/Config/LaunchDaemons/com.lidpilot.app.helper.plist\" ;;\n  *) echo \"Unsupported LidPilot configuration: ${CONFIGURATION:-missing}\" >&2; exit 64 ;;\nesac\n\n[ \"${PRODUCT_BUNDLE_IDENTIFIER:-}\" = \"$expected_app\" ] || { echo \"App identity does not match $CONFIGURATION\" >&2; exit 1; }\n[ \"${LIDPILOT_APP_IDENTIFIER:-}\" = \"$expected_app\" ] || { echo \"Host identity does not match $CONFIGURATION\" >&2; exit 1; }\n[ \"${LIDPILOT_HELPER_IDENTIFIER:-}\" = \"$expected_helper\" ] || { echo \"Helper identity does not match $CONFIGURATION\" >&2; exit 1; }\n[ \"${LIDPILOT_DAEMON_LABEL:-}\" = \"$expected_helper\" ] || { echo \"Daemon label does not match $CONFIGURATION\" >&2; exit 1; }\n[ \"${LIDPILOT_DAEMON_PLIST_NAME:-}\" = \"$expected_plist\" ] || { echo \"Daemon plist name does not match $CONFIGURATION\" >&2; exit 1; }\n[ \"${LIDPILOT_SERVICE_IDENTIFIER:-}\" = \"$expected_helper\" ] || { echo \"XPC service identity does not match $CONFIGURATION\" >&2; exit 1; }\n\ndestination_dir=\"${TARGET_BUILD_DIR}/${CONTENTS_FOLDER_PATH}/Library/LaunchDaemons\"\ndestination=\"${destination_dir}/${expected_plist}\"\n/bin/mkdir -p \"$destination_dir\"\nfor stale_plist in \"com.lidpilot.app.dev.helper.plist\" \"com.lidpilot.app.helper.plist\"; do\n  if [ \"$stale_plist\" != \"$expected_plist\" ] && [ -e \"${destination_dir}/${stale_plist}\" ]; then\n    /bin/rm -f \"${destination_dir}/${stale_plist}\"\n  fi\ndone\n/bin/cp \"$source_plist\" \"$destination\"\n/usr/bin/plutil -lint \"$destination\" >/dev/null\nactual_label=$(/usr/libexec/PlistBuddy -c 'Print :Label' \"$destination\")\nactual_service=$(/usr/libexec/PlistBuddy -c \"Print :MachServices:$expected_helper\" \"$destination\")\n[ \"$actual_label\" = \"$expected_helper\" ] && [ \"$actual_service\" = \"true\" ] || {\n  echo \"Embedded LaunchDaemon identity does not match $CONFIGURATION\" >&2\n  exit 1\n}\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
-		58C8097351EC27F1230B3B3BAB0A1BE9 /* Sources */ = {
+		5ED46701FD8D954E1D2D2DE93B71AAC9 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9E359B8B97C2E85F85781A8E8629FC29 /* AppModel.swift in Sources */,
-				03B89D761F44173A5A8BF079A8E8C752 /* DiagnosticsStore.swift in Sources */,
-				65F7494802A98F5F377608E5087DA370 /* HelperManager.swift in Sources */,
-				FCAFFAE36C9A8EEE33F7CF6E9E5F5735 /* LidPilotApp.swift in Sources */,
-				9A545C3C92156A151F6BBB88958FF7BC /* PilotPanel.swift in Sources */,
-				10858BE635964D0E4E1ECF9F70ED0E79 /* PreviewHarness.swift in Sources */,
-				85A6DD675CCBD90074996121C2BE7D69 /* SettingsView.swift in Sources */,
-				E80F543152ED58E3AAC0F9E3B138FF28 /* StateObserver.swift in Sources */,
-				4A75B811CB5ACFCF41961DF5C4B15370 /* UpdateCoordinator.swift in Sources */,
-				A357A3C719B3735D5F484C94733BBA19 /* WelcomeView.swift in Sources */,
+				5438D8E5FB86566C47B3F49B893C995F /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A90502F175E33A473323300265B51628 /* Sources */ = {
+		F4D8A1741B0471030E03539D94CF7AD9 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				48164FE976C54372B37B4B7CD5083A6B /* main.swift in Sources */,
+				3A944F9CB97C5D6F75561487B068DA45 /* AppModel.swift in Sources */,
+				F65BAF8430764267412A0060649AC603 /* DiagnosticsStore.swift in Sources */,
+				DD91410C098DA2F57364FB4B3B87D5A3 /* HelperManager.swift in Sources */,
+				9EAA18F71B1A93C566BFC1C45CF03604 /* LidPilotApp.swift in Sources */,
+				C299E9F1D1BDAAF00BE7F1208F27FB2E /* PilotPanel.swift in Sources */,
+				58145B6E4856F1E9F03027329AF52641 /* PreviewHarness.swift in Sources */,
+				6F2F9C4C2A025C1B44B89EC2D385A987 /* SettingsView.swift in Sources */,
+				8BBB39498E936E8F8D0790AD136CBDF1 /* StateObserver.swift in Sources */,
+				63380978090156724F50142E01A9C821 /* UpdateCoordinator.swift in Sources */,
+				BE272D6B2F440EDAF130E202617773BD /* WelcomeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		FD59791B103B8BA8FC60597B676B9F53 /* PBXTargetDependency */ = {
+		E28851075F1CA446BA9FA946EBACEE2D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = LidPilotHelper;
-			target = 44CB0E2D54099AF87389027D31B5CA04 /* LidPilotHelper */;
-			targetProxy = E3EB5338A6851FD7B68632E241E1BC90 /* PBXContainerItemProxy */;
+			target = 72077D9073496C62341494F0E41829D3 /* LidPilotHelper */;
+			targetProxy = 2EE0C9CB34EE71113382456E920C648F /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		17BE64D4C83BFA021950873CC0D628D7 /* Debug */ = {
+		37E009FBE527BDEA6AD2CB98C10D0A7B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = arm64;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "";
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
 				CODE_SIGN_STYLE = Manual;
 				CREATE_INFOPLIST_SECTION_IN_BINARY = YES;
@@ -339,45 +354,20 @@
 				INFOPLIST_FILE = "Config/Helper-Info.plist";
 				INSTALL_PATH = "$(CONTENTS_FOLDER_PATH)";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LIDPILOT_APP_IDENTIFIER = com.lidpilot.app;
+				LIDPILOT_DAEMON_LABEL = com.lidpilot.app.helper;
+				LIDPILOT_DAEMON_PLIST_NAME = com.lidpilot.app.helper.plist;
+				LIDPILOT_HELPER_IDENTIFIER = com.lidpilot.app.helper;
+				LIDPILOT_SERVICE_IDENTIFIER = com.lidpilot.app.helper;
 				MACH_O_TYPE = mh_execute;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.lidpilot.app.helper;
 				PRODUCT_NAME = LidPilotHelper;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
-				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_VERSION = 6.0;
-				VERSIONING_SYSTEM = "apple-generic";
-			};
-			name = Debug;
-		};
-		260D161D8C5EC99E4679E5799E901153 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = arm64;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = "";
-				CODE_SIGN_IDENTITY = "Developer ID Application";
-				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
-				CODE_SIGN_STYLE = Manual;
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = "$(inherited)";
-				ENABLE_APP_SANDBOX = NO;
-				ENABLE_HARDENED_RUNTIME = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = "Config/App-Info.plist";
-				INSTALL_PATH = "$(LOCAL_APPS_DIR)";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = com.lidpilot.app;
-				PRODUCT_NAME = LidPilot;
-				SDKROOT = macosx;
-				SKIP_INSTALL = NO;
+				SUFeedURL = "";
+				SUPublicEDKey = "";
 				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 6.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -446,7 +436,46 @@
 			};
 			name = Debug;
 		};
-		8C8A090AE9BBF8B9BF5FCA73CC6EE7C9 /* Debug */ = {
+		B57ECD4799D32C40EB7714226F0B6B7D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_IDENTITY = "Developer ID Application";
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = "$(inherited)";
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Config/App-Info.plist";
+				INSTALL_PATH = "$(LOCAL_APPS_DIR)";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LIDPILOT_APP_IDENTIFIER = com.lidpilot.app;
+				LIDPILOT_DAEMON_LABEL = com.lidpilot.app.helper;
+				LIDPILOT_DAEMON_PLIST_NAME = com.lidpilot.app.helper.plist;
+				LIDPILOT_HELPER_IDENTIFIER = com.lidpilot.app.helper;
+				LIDPILOT_SERVICE_IDENTIFIER = com.lidpilot.app.helper;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lidpilot.app;
+				PRODUCT_NAME = LidPilot;
+				SDKROOT = macosx;
+				SKIP_INSTALL = NO;
+				SUFeedURL = "";
+				SUPublicEDKey = "";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
+		D8D5C5921C8F8912333613322B6CB198 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = arm64;
@@ -466,48 +495,24 @@
 				INFOPLIST_FILE = "Config/App-Info.plist";
 				INSTALL_PATH = "$(LOCAL_APPS_DIR)";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LIDPILOT_APP_IDENTIFIER = com.lidpilot.app.dev;
+				LIDPILOT_DAEMON_LABEL = com.lidpilot.app.dev.helper;
+				LIDPILOT_DAEMON_PLIST_NAME = com.lidpilot.app.dev.helper.plist;
+				LIDPILOT_HELPER_IDENTIFIER = com.lidpilot.app.dev.helper;
+				LIDPILOT_SERVICE_IDENTIFIER = com.lidpilot.app.dev.helper;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.lidpilot.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lidpilot.app.dev;
 				PRODUCT_NAME = LidPilot;
 				SDKROOT = macosx;
 				SKIP_INSTALL = NO;
+				SUFeedURL = "";
+				SUPublicEDKey = "";
 				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_VERSION = 6.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
-		};
-		9D2CC0FFABB81C16B6B597469B4DF50D /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = arm64;
-				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = "";
-				CODE_SIGN_IDENTITY = "Developer ID Application";
-				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
-				CODE_SIGN_STYLE = Manual;
-				CREATE_INFOPLIST_SECTION_IN_BINARY = YES;
-				CURRENT_PROJECT_VERSION = "$(inherited)";
-				ENABLE_APP_SANDBOX = NO;
-				ENABLE_HARDENED_RUNTIME = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = "Config/Helper-Info.plist";
-				INSTALL_PATH = "$(CONTENTS_FOLDER_PATH)";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
-				MACH_O_TYPE = mh_execute;
-				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = com.lidpilot.app.helper;
-				PRODUCT_NAME = LidPilotHelper;
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
-				SWIFT_STRICT_CONCURRENCY = complete;
-				SWIFT_VERSION = 6.0;
-				VERSIONING_SYSTEM = "apple-generic";
-			};
-			name = Release;
 		};
 		E8F4866ED30CBA9B9F590CDA11E3E90F /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -564,6 +569,44 @@
 			};
 			name = Release;
 		};
+		F59FF39A701876B4F4DF0D9303DB175D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
+				CODE_SIGN_STYLE = Manual;
+				CREATE_INFOPLIST_SECTION_IN_BINARY = YES;
+				CURRENT_PROJECT_VERSION = "$(inherited)";
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = "Config/Helper-Info.plist";
+				INSTALL_PATH = "$(CONTENTS_FOLDER_PATH)";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LIDPILOT_APP_IDENTIFIER = com.lidpilot.app.dev;
+				LIDPILOT_DAEMON_LABEL = com.lidpilot.app.dev.helper;
+				LIDPILOT_DAEMON_PLIST_NAME = com.lidpilot.app.dev.helper.plist;
+				LIDPILOT_HELPER_IDENTIFIER = com.lidpilot.app.dev.helper;
+				LIDPILOT_SERVICE_IDENTIFIER = com.lidpilot.app.dev.helper;
+				MACH_O_TYPE = mh_execute;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lidpilot.app.dev.helper;
+				PRODUCT_NAME = LidPilotHelper;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SUFeedURL = "";
+				SUPublicEDKey = "";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -576,20 +619,20 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A4833CBB9678975C695D16F2DAE94BFE /* Build configuration list for PBXNativeTarget "LidPilot" */ = {
+		AE22009C753023FB38926229C85A4B47 /* Build configuration list for PBXNativeTarget "LidPilot" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				260D161D8C5EC99E4679E5799E901153 /* Release */,
-				8C8A090AE9BBF8B9BF5FCA73CC6EE7C9 /* Debug */,
+				B57ECD4799D32C40EB7714226F0B6B7D /* Release */,
+				D8D5C5921C8F8912333613322B6CB198 /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		FC86A0C646D1433446492508E4EC23AC /* Build configuration list for PBXNativeTarget "LidPilotHelper" */ = {
+		D06D4B8ECA81E35FE9385D298D4121C0 /* Build configuration list for PBXNativeTarget "LidPilotHelper" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				9D2CC0FFABB81C16B6B597469B4DF50D /* Release */,
-				17BE64D4C83BFA021950873CC0D628D7 /* Debug */,
+				37E009FBE527BDEA6AD2CB98C10D0A7B /* Release */,
+				F59FF39A701876B4F4DF0D9303DB175D /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -597,18 +640,18 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		6E7FBB96751ED0A20BD5947AE6264553 /* XCLocalSwiftPackageReference "Core" */ = {
+		11B045C5071B83E0B7AE52F7B100BD4A /* XCLocalSwiftPackageReference "Core" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Core;
 		};
-		898E021E43D4EC0A761F8EAF97B80805 /* XCLocalSwiftPackageReference "." */ = {
+		8EA5BE31065355AF06DB1600D897984D /* XCLocalSwiftPackageReference "." */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = .;
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		A72E08BD5979F279C2F1DE77F02A930A /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+		1AE884E465799F26FDE181C8A385BC11 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sparkle-project/Sparkle";
 			requirement = {
@@ -619,30 +662,30 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		A97FBA797376B4658DD96BF62C35B7FE /* Sparkle */ = {
+		108A5A9EE95C987722A2D8D301EA5C02 /* LidPilotRuntime */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = A72E08BD5979F279C2F1DE77F02A930A /* XCRemoteSwiftPackageReference "Sparkle" */;
+			package = 8EA5BE31065355AF06DB1600D897984D /* XCLocalSwiftPackageReference "." */;
+			productName = LidPilotRuntime;
+		};
+		3EBD6916D81A0B9344DC25417B708CB8 /* LidPilotCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 11B045C5071B83E0B7AE52F7B100BD4A /* XCLocalSwiftPackageReference "Core" */;
+			productName = LidPilotCore;
+		};
+		4E0A1276786028F89EFC056DD08A7196 /* LidPilotRuntime */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8EA5BE31065355AF06DB1600D897984D /* XCLocalSwiftPackageReference "." */;
+			productName = LidPilotRuntime;
+		};
+		7C767075C0C8A419EA1FDC2255CF9BB3 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1AE884E465799F26FDE181C8A385BC11 /* XCRemoteSwiftPackageReference "Sparkle" */;
 			productName = Sparkle;
 		};
-		BDEDD0A552E7F683FD91208F9AF20ADC /* LidPilotRuntime */ = {
+		867E1F4A63C8EE9AB6A3070B571492A8 /* LidPilotCore */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 898E021E43D4EC0A761F8EAF97B80805 /* XCLocalSwiftPackageReference "." */;
-			productName = LidPilotRuntime;
-		};
-		BE2EE23B41BD42F8A04203A7440EE5FD /* LidPilotCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6E7FBB96751ED0A20BD5947AE6264553 /* XCLocalSwiftPackageReference "Core" */;
+			package = 11B045C5071B83E0B7AE52F7B100BD4A /* XCLocalSwiftPackageReference "Core" */;
 			productName = LidPilotCore;
-		};
-		CEB9A52A9DE9E5980A2EA8FD191E049C /* LidPilotCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 6E7FBB96751ED0A20BD5947AE6264553 /* XCLocalSwiftPackageReference "Core" */;
-			productName = LidPilotCore;
-		};
-		D331368E030DE86BF76B873B8D46E6BE /* LidPilotRuntime */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 898E021E43D4EC0A761F8EAF97B80805 /* XCLocalSwiftPackageReference "." */;
-			productName = LidPilotRuntime;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

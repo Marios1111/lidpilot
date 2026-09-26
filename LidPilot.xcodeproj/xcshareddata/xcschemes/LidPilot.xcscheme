@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3686D2FA445CA7B2FD82A156A3ADBF75"
+               BlueprintIdentifier = "8552BA7F9619A283E7F85A3E4E4299B1"
                BuildableName = "LidPilot.app"
                BlueprintName = "LidPilot"
                ReferencedContainer = "container:LidPilot.xcodeproj">
@@ -28,7 +28,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "44CB0E2D54099AF87389027D31B5CA04"
+               BlueprintIdentifier = "72077D9073496C62341494F0E41829D3"
                BuildableName = "LidPilotHelper"
                BlueprintName = "LidPilotHelper"
                ReferencedContainer = "container:LidPilot.xcodeproj">

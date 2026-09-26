@@ -9,9 +9,15 @@ import LidPilotRuntime
     var storageError: String? { log.storageError }
 
     init(persist: Bool = true) {
-        let url = persist ? (try? FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask,
-                                          appropriateFor: nil, create: true)
-            .appendingPathComponent("LidPilot/diagnostics.json")) : nil
+        let namespace = HelperIdentity.applicationConfiguration()?.userStateDirectoryName
+        let url: URL?
+        if persist, let namespace,
+           let support = try? FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask,
+                                                       appropriateFor: nil, create: true) {
+            url = support.appendingPathComponent(namespace, isDirectory: true).appendingPathComponent("diagnostics.json")
+        } else {
+            url = nil
+        }
         log = DiagnosticLog(fileURL: url)
     }
 

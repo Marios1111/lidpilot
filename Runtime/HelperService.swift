@@ -27,9 +27,12 @@ public final class HelperService: NSObject, NSXPCListenerDelegate, @unchecked Se
     private let peerRequirement: String
     private var watchdog: DispatchSourceTimer?
 
-    public init(engine: HelperEngine, team: String) throws {
+    public init(engine: HelperEngine, configuration: HelperIdentity.Configuration, team: String) throws {
+        guard HelperIdentity.helperConfiguration() == configuration else {
+            throw RuntimeFailure.unavailable("The helper bundle identity does not match its requested service configuration.")
+        }
         self.engine = engine
-        peerRequirement = try HelperIdentity.requirement(identifier: HelperIdentity.appID, team: team)
+        peerRequirement = try HelperIdentity.applicationRequirement(for: configuration, team: team)
         super.init()
     }
 
