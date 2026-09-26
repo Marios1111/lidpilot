@@ -7,7 +7,7 @@ blocked by the gates below. The repository is now
 to `origin/dev`. Historical sections below describe their own dated checkpoints.
 The latest public prerelease is [RC4](https://github.com/Marios1111/lidpilot/releases/tag/v1.0.0-rc.4),
 available for supervised testing through the [product site](https://lidpilot.app).
-RC5/RC6 are local diagnostic candidates; RC7 is the current local clean acceptance candidate. See the current gate table below,
+RC5/RC6 are local diagnostic candidates; signed uninstrumented RC8 is the current local acceptance candidate, awaiting the controlled AC capture. See the current gate table below,
 the dated records in `validation/`, and [V1_RELEASE_PLAN.md](V1_RELEASE_PLAN.md).
 No stable release is claimed.
 
@@ -30,7 +30,7 @@ as the V1 validation host; remaining mandatory gates are not waived.
 The prolonged RC6 diagnostic Save dialog did not starve
 renewals; the independent save-file branch still needs confirmation.
 
-Current local checks: **86 tests** (21 Core, 65 Runtime) and Debug/Release builds pass at `4877adb`, including the [bounded EOF runner regression](validation/2026-09-26-runner-eof.md).
+Current local checks: **89 tests** (21 Core, 68 Runtime) pass with the native journal regressions at `f83c900`; Debug/Release and isolated native smoke pass for the icon-memory fix at `6d38bd0`. Earlier checks include the [bounded EOF runner regression](validation/2026-09-26-runner-eof.md).
 Earlier package identity inspection and isolated native smoke checks passed at `3b5a1e6`, including identity isolation, independent failed-read
 recovery regressions and native product captures. They do not prove installed
 signed-helper coexistence. [CI at `3b5a1e6`](https://github.com/Marios1111/lidpilot/actions/runs/36265171164)
@@ -41,7 +41,7 @@ helper 0.054073%, children 0.420460%); memory passed at 63.32 MiB. Its beta OS
 build differs from the earlier instrumented 0.543018% run, so the delta cannot
 be attributed to instrumentation alone. These statements supersede historical checkpoint totals below.
 
-## Current installed RC7 result
+## Retained RC7 result and current RC8 candidate
 
 The [clean signed RC7 record](validation/2026-09-26-rc7-acceptance.md) is pinned to
 `f4deb6e7c1e888f781e5d42cca7007a8de97c192` (build 7). Its full 600-second installed
@@ -66,9 +66,9 @@ memory reduction is claimed yet. CPU optimization has stopped.
 | Sessions | 30m/1h/2h/4h/custom/until-time/indefinite; immutable hard deadlines; switch preserves deadline | Native preset/custom/until-time/indefinite interaction passed; physical timing remains gated |
 | Safety | Thermal protection, 10/20/30% battery cutoff, battery/LPM policies, charger/lid/display/wake observation, explicit restart after pause | Live sensor and workload continuity checks |
 | Closed-lid helper | Reciprocal signed XPC, console user restriction, fixed pmset operations, bounded child execution, leases/watchdog, journal and conflict handling | Real registration, identity rejection, GUI/helper crash cleanup, lease expiry and replacement helper verified across RC1–RC3; remaining G3/G4 cases open |
-| App lifecycle | Starts Off, login preference, helper approval, onboarding, notifications, verified quit and Stop & Sleep | Real helper approval and crash relaunch Off passed; login/notification/sleep paths remain |
+| App lifecycle | Starts Off, login preference, helper approval, onboarding, notifications, verified quit and Stop & Sleep | Real helper approval and crash relaunch Off passed; RC8 gracefully retained notifications Off under denied OS permission. Delivery, login and sleep paths remain |
 | Diagnostics/recovery | Local redacted bounded logs, export preview, cleanup/repair/removal UI, explicit ambiguous-state recovery | Prolonged Save-dialog renewals passed; deterministic saved-file confirmation and final regression remain |
-| Sparkle 2.10.0 | Manual/daily checks, signed feed/notes/archive configuration, active-session barrier, helper replacement and interrupted-update handling | Real RC1→RC2→RC3→RC4 signed upgrades and replacement helpers passed; updater fault paths and uninstall remain G5 |
+| Sparkle 2.10.0 | Manual/daily checks, signed feed/notes/archive configuration, active-session barrier, helper replacement and interrupted-update handling | Real RC1→RC2→RC3→RC4 signed upgrades and replacement helpers passed; RC8 no-update cycle restored its helper and cleared markers; updater fault paths and uninstall remain G5 |
 | Distribution/community | MIT and dependency notices, README, CONTRIBUTING, SECURITY, CHANGELOG, issue templates, CI, staged signed/notarized DMG tooling | Developer ID, private reporting, signed/notarized RC1–RC4 and public artifact hashes verified; stable release still gated |
 | Website | Static accessible Pages site, no trackers or build dependency | Manual RC publication passed; hosted signed feed bytes/signature verified |
 
@@ -176,7 +176,7 @@ under the explicit support and security-evidence conditions recorded above.
 | G4 identity/helper | Signed/notarized helper registered through ServiceManagement; publisher accepted, wrong-ID/ad-hoc and wrong-console clients rejected by explicit XPC logs; four malformed-wire cases rejected. RC2–RC4 replacement helpers acquired the override; launchd reported RC4 parent bundle version 4 | Genuine different-team test deferred by owner review; preserve exact signing requirements and complete remaining lifecycle matrix |
 | Performance | Off 600 s: 0.102% CPU, 47.62 MiB mean; Keep Screen On 600 s: 0.079% CPU, 37.32 MiB mean on RC1. RC3 Keep Mac Running 600 s: **FAIL 0.855% CPU**. RC4 Keep Mac Running 600 s: **FAIL 0.684% CPU**, PASS 38.04 MiB mean; 0.519% CPU came from reaped fixed `pmset` children. Diagnostic RC5: **FAIL 0.614%**, 148 reads; RC6 Standard: **FAIL 0.543%**, 144 reads, 0.363% child CPU, 52.56 MiB mean. Uninstrumented source-matched RC6: **FAIL 0.830470%**, app 0.355936%, helper 0.054073%, children 0.420460%, memory 63.32 MiB mean; beta OS build changed | Final clean uninstrumented ≤1.0% CPU / ≤75 MiB acceptance pending after bounded runner/UI checks; record wakeups/UI timing and verify no pathological behavior. No safety redesign for the old budget |
 | G5 release/update | RC1–RC4 are public prereleases with verified hosted hashes. Real Sparkle RC1→RC2→RC3→RC4 installed signed builds 2–4; each relaunched Off with override/assertions released and its replacement helper acquired a new lease. RC3 disabled update checks while active; RC4 canceled check restored its previous helper. Signed archive/feed/notes and tamper rejection passed | Uninstall/cleanup, scheduled-check and interrupted/failing updater paths, final stable candidate |
-| Final candidate | Installed diagnostic RC6 build 6 is Developer ID signed, notarized and stapled; its instrumented capture and cleanup are retained. The matching uninstrumented build completed its independent baseline and failed CPU at 0.830470%; memory passed at 63.32 MiB. The last public RC remains RC4 build 4; its signed upgrade, Off relaunch, matching helper lease, canceled-update cleanup and ten-minute measurement were recorded on the host. [Source CI 35905778548](https://github.com/Marios1111/lidpilot/actions/runs/35905778548) and [dev CI 35921628061](https://github.com/Marios1111/lidpilot/actions/runs/35921628061) passed | Revised performance acceptance pending; remaining lifecycle, updater faults, uninstall and stable-candidate checks remain |
+| Final candidate | Installed uninstrumented RC8 build 8 at `6d38bd0` is Developer ID signed, notarized and stapled; helper Approved/reachable and Off verified. Full suite: 89 tests. [Exact-source CI](https://github.com/Marios1111/lidpilot/actions/runs/36270408194) passed. RC7 CPU passed but memory failed; its bounded runtime-icon fix is in RC8. Latest public prerelease remains RC4 | Controlled RC8 600-second AC acceptance awaits charger availability; remaining lifecycle, updater faults, uninstall and final-candidate checks remain |
 
 The earlier running-controller baseline was resolved through its normal quit
 path and independent Off read-back before LidPilot acquired ownership. No
@@ -381,3 +381,5 @@ event, so its lifecycle was not robustly verified. That hypothesis is closed
 for V1. The only remaining targeted CPU fix is a demonstrated command-runner
 pathology, if reproduced. After the final clean acceptance passes, stop
 performance work and continue the other release gates.
+
+RC8 Off-state no-update and denied-notification checks are retained in the [RC8 validation record](validation/2026-09-26-rc8-acceptance.md). Notification delivery and interrupted/failing updater paths are not inferred from these successful branches.
