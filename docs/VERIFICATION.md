@@ -7,7 +7,7 @@ blocked by the gates below. The repository is now
 to `origin/dev`. Historical sections below describe their own dated checkpoints.
 The latest public prerelease is [RC4](https://github.com/Marios1111/lidpilot/releases/tag/v1.0.0-rc.4),
 available for supervised testing through the [product site](https://lidpilot.app).
-RC5/RC6 are local diagnostic candidates; signed uninstrumented RC9 is the current local acceptance candidate, retaining RC8’s memory fix and awaiting the controlled AC capture. See the current gate table below,
+RC5/RC6 are local diagnostic candidates; signed uninstrumented RC10 is the current local acceptance candidate, retaining RC8’s memory fix and correcting the reproduced RC9 XPC callback crash. See the current gate table below,
 the dated records in `validation/`, and [V1_RELEASE_PLAN.md](V1_RELEASE_PLAN.md).
 No stable release is claimed.
 
@@ -30,7 +30,7 @@ as the V1 validation host; remaining mandatory gates are not waived.
 The prolonged RC6 diagnostic Save dialog did not starve
 renewals; the independent save-file branch still needs confirmation.
 
-Current local checks: **89 tests** (21 Core, 68 Runtime) pass with the native journal regressions at `f83c900`; Debug/Release and isolated native smoke pass for the icon-memory fix at `6d38bd0`. Earlier checks include the [bounded EOF runner regression](validation/2026-09-26-runner-eof.md).
+Current local checks: **90 tests** (21 Core, 69 Runtime) pass, including the detached-executor XPC regression. Debug/Release builds pass for the callback correction and bounded notification diagnostics; [exact RC10 source CI](https://github.com/Marios1111/lidpilot/actions/runs/36275637607) passes. Retained earlier checks include isolated native smoke, native journal regressions, the icon-memory harness and the [bounded EOF runner regression](validation/2026-09-26-runner-eof.md).
 Earlier package identity inspection and isolated native smoke checks passed at `3b5a1e6`, including identity isolation, independent failed-read
 recovery regressions and native product captures. They do not prove installed
 signed-helper coexistence. [CI at `3b5a1e6`](https://github.com/Marios1111/lidpilot/actions/runs/36265171164)
@@ -41,7 +41,7 @@ helper 0.054073%, children 0.420460%); memory passed at 63.32 MiB. Its beta OS
 build differs from the earlier instrumented 0.543018% run, so the delta cannot
 be attributed to instrumentation alone. These statements supersede historical checkpoint totals below.
 
-## Retained RC7 result and current RC8 candidate
+## Retained RC7 performance result
 
 The [clean signed RC7 record](validation/2026-09-26-rc7-acceptance.md) is pinned to
 `f4deb6e7c1e888f781e5d42cca7007a8de97c192` (build 7). Its full 600-second installed
@@ -54,8 +54,9 @@ remaining lifecycle gates are open. Overall performance is not PASS.
 RC7 was Developer-ID signed, notarized and stapled; exact-source CI passed.
 Its replacement helper is Approved and acquired the real session. After the
 capture, Off was verified in native UI, SleepDisabled=0 and no LidPilot assertion.
-A bounded investigation of retained image storage is underway; no measured
-memory reduction is claimed yet. CPU optimization has stopped.
+The bounded runtime-icon correction was implemented in RC8 and retained in
+RC10. Its isolated harness showed reduced bitmap memory; final installed
+600-second memory acceptance remains pending. CPU optimization has stopped.
 
 ## Feature checklist
 
@@ -176,7 +177,7 @@ under the explicit support and security-evidence conditions recorded above.
 | G4 identity/helper | Signed/notarized helper registered through ServiceManagement; publisher accepted, wrong-ID/ad-hoc and wrong-console clients rejected by explicit XPC logs; four malformed-wire cases rejected. RC2–RC4 replacement helpers acquired the override; launchd reported RC4 parent bundle version 4 | Genuine different-team test deferred by owner review; preserve exact signing requirements and complete remaining lifecycle matrix |
 | Performance | Off 600 s: 0.102% CPU, 47.62 MiB mean; Keep Screen On 600 s: 0.079% CPU, 37.32 MiB mean on RC1. RC3 Keep Mac Running 600 s: **FAIL 0.855% CPU**. RC4 Keep Mac Running 600 s: **FAIL 0.684% CPU**, PASS 38.04 MiB mean; 0.519% CPU came from reaped fixed `pmset` children. Diagnostic RC5: **FAIL 0.614%**, 148 reads; RC6 Standard: **FAIL 0.543%**, 144 reads, 0.363% child CPU, 52.56 MiB mean. Uninstrumented source-matched RC6: **FAIL 0.830470%**, app 0.355936%, helper 0.054073%, children 0.420460%, memory 63.32 MiB mean; beta OS build changed | Final clean uninstrumented ≤1.0% CPU / ≤75 MiB acceptance pending after bounded runner/UI checks; record wakeups/UI timing and verify no pathological behavior. No safety redesign for the old budget |
 | G5 release/update | RC1–RC4 are public prereleases with verified hosted hashes. Real Sparkle RC1→RC2→RC3→RC4 installed signed builds 2–4; each relaunched Off with override/assertions released and its replacement helper acquired a new lease. RC3 disabled update checks while active; RC4 canceled check restored its previous helper. Signed archive/feed/notes and tamper rejection passed | Uninstall/cleanup, scheduled-check and interrupted/failing updater paths, final stable candidate |
-| Final candidate | Installed uninstrumented RC9 build 9 at `5a6ee45` is Developer ID signed, notarized and stapled; replacement helper Approved/reachable, parent bundle version 9 and Off verified. Full suite: 89 tests. [Exact-source CI](https://github.com/Marios1111/lidpilot/actions/runs/36273694261) passed. RC7 CPU passed but memory failed; RC8 memory correction is retained in RC9 | Controlled 600-second AC acceptance and remaining lifecycle/updater/uninstall/final-candidate checks remain; RC9 operator found no notification; delivery investigation remains open; RC9 no-update dismissal reproduced an XPC callback executor crash, remediation required |
+| Final candidate | Installed uninstrumented RC10 build 10 at `d74d767` is Developer ID signed, notarized and stapled; Gatekeeper accepted and bundle/helper signatures verified. Full suite: 90 tests. [Exact-source CI](https://github.com/Marios1111/lidpilot/actions/runs/36275637607) passed. RC9 was removed normally while Off with SleepDisabled=0; rollback retained | Replacement helper Approved/reachable and native Off verified; installed no-update crash regression passed. Notification delivery diagnosis, controlled 600-second acceptance and remaining lifecycle/uninstall/final-candidate checks remain |
 
 The earlier running-controller baseline was resolved through its normal quit
 path and independent Off read-back before LidPilot acquired ownership. No
@@ -389,4 +390,6 @@ passes 89 tests, Debug/Release and isolated mock-app smoke. Its public foregroun
 delegate/default-sound path still requires a fresh signed installed delivery test;
 the RC8 operator observed no banner/sound during the prior foreground attempt.
 
-The [RC9 local signed candidate record](validation/2026-09-27-rc9-validation.md) supersedes RC8 as the current installed validation candidate. Prior RC8 evidence is retained. No stable release or performance pass is claimed.
+The [RC9 signed candidate record](validation/2026-09-27-rc9-validation.md) retains its intermediate signing/helper checks, reproduced updater crash and negative notification observation. Prior RC8 evidence is retained. No stable release or performance pass is claimed.
+
+The [RC10 local lifecycle record](validation/2026-09-27-rc10-validation.md) is the latest installed candidate checkpoint; RC9’s reproduced crash and negative notification observation remain dated evidence, not passing results.
