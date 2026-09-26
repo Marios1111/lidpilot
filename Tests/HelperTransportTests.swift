@@ -3,6 +3,10 @@ import Testing
 import LidPilotCore
 @testable import LidPilotRuntime
 
+private enum XPCTransportCallbackTestFailure: Error, Equatable, Sendable {
+    case disconnected
+}
+
 struct HelperTransportTests {
     @Test func onlyExactProductionAndDevelopmentPairsResolve() throws {
         guard let production = HelperIdentity.configuration(
@@ -67,6 +71,20 @@ struct HelperTransportTests {
         #expect(productionHelperRequirement.contains("certificate leaf[subject.OU] = \"ABCDEFGHIJ\""))
         #expect(throws: (any Error).self) {
             try HelperIdentity.applicationRequirement(for: production, team: "\" or true")
+        }
+    }
+
+    @MainActor @Test func remoteObjectErrorCallbackResumesFromDetachedExecutor() async {
+        let expected = XPCTransportCallbackTestFailure.disconnected
+        do {
+            let _: Data = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Data, any Error>) in
+                let once = ReplyOnce(continuation)
+                let handler = XPCTransportCallbacks.remoteErrorHandler(for: once)
+                Task.detached(priority: .utility) { handler(expected) }
+            }
+            Issue.record("the remote error callback returned a reply")
+        } catch {
+            #expect((error as? XPCTransportCallbackTestFailure) == expected)
         }
     }
 

@@ -136,7 +136,7 @@ public enum HelperIdentity {
     func disconnect()
 }
 
-private final class ReplyOnce: @unchecked Sendable {
+final class ReplyOnce: @unchecked Sendable {
     private let lock = NSLock()
     private var continuation: CheckedContinuation<Data, any Error>?
     init(_ continuation: CheckedContinuation<Data, any Error>) { self.continuation = continuation }
@@ -146,6 +146,20 @@ private final class ReplyOnce: @unchecked Sendable {
         continuation = nil
         lock.unlock()
         waiting?.resume(with: result)
+    }
+}
+
+enum XPCTransportCallbacks {
+    static func remoteErrorHandler(for once: ReplyOnce) -> @Sendable (any Error) -> Void {
+        { error in once.finish(.failure(error)) }
+    }
+
+    static func replyHandler(for once: ReplyOnce) -> @Sendable (Data) -> Void {
+        { data in once.finish(.success(data)) }
+    }
+
+    static func timeoutHandler(for once: ReplyOnce) -> @Sendable () -> Void {
+        { once.finish(.failure(RuntimeFailure.unavailable("The helper did not reply in time."))) }
     }
 }
 
@@ -189,15 +203,14 @@ private final class ReplyOnce: @unchecked Sendable {
         do {
             let data: Data = try await withCheckedThrowingContinuation { continuation in
                 let once = ReplyOnce(continuation)
-                let proxy = channel.remoteObjectProxyWithErrorHandler { error in once.finish(.failure(error)) }
+                let proxy = channel.remoteObjectProxyWithErrorHandler(XPCTransportCallbacks.remoteErrorHandler(for: once))
                 guard let endpoint = proxy as? HelperXPCProtocol else {
                     once.finish(.failure(RuntimeFailure.unavailable("The helper interface is unavailable.")))
                     return
                 }
-                endpoint.exchange(payload) { once.finish(.success($0)) }
-                DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + 30) {
-                    once.finish(.failure(RuntimeFailure.unavailable("The helper did not reply in time.")))
-                }
+                endpoint.exchange(payload, reply: XPCTransportCallbacks.replyHandler(for: once))
+                DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + 30,
+                                                               execute: XPCTransportCallbacks.timeoutHandler(for: once))
             }
             let reply = try WireReply.decode(data)
             verifiedBuild = reply.helperBuild
