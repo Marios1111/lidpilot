@@ -10,10 +10,23 @@ for (const scene of story) {
   if (scene.from !== expectedFrom || !Number.isInteger(scene.duration) || scene.duration <= 0) {
     throw new Error(`Invalid film timeline at scene ${scene.id}`);
   }
+  for (const cue of scene.captionCues ?? []) {
+    if (
+      !Number.isInteger(cue.from) ||
+      !Number.isInteger(cue.duration) ||
+      cue.duration <= 0 ||
+      cue.from < scene.from ||
+      cue.from + cue.duration > scene.from + scene.duration ||
+      typeof cue.text !== "string" ||
+      cue.text.trim() === ""
+    ) {
+      throw new Error(`Invalid caption cue in scene ${scene.id}`);
+    }
+  }
   expectedFrom += scene.duration;
 }
-if (expectedFrom !== 1020) {
-  throw new Error(`Expected a 34-second film (1020 frames), found ${expectedFrom} frames`);
+if (expectedFrom !== 1260) {
+  throw new Error(`Expected a 42-second film (1260 frames), found ${expectedFrom} frames`);
 }
 
 const timecode = (frames) => {
@@ -25,12 +38,17 @@ const timecode = (frames) => {
   return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}.${String(milliseconds).padStart(3, "0")}`;
 };
 
+const cues = story.flatMap((scene) => {
+  if (scene.captionCues) return scene.captionCues;
+  return scene.caption ? [{ from: scene.from, duration: scene.duration, text: scene.caption }] : [];
+});
+
 const vtt = [
   "WEBVTT",
   "",
-  ...story.flatMap((scene) => [
-    `${timecode(scene.from)} --> ${timecode(scene.from + scene.duration)}`,
-    scene.caption,
+  ...cues.flatMap((cue) => [
+    `${timecode(cue.from)} --> ${timecode(cue.from + cue.duration)}`,
+    cue.text,
     "",
   ]),
 ].join("\n");
@@ -38,9 +56,9 @@ const vtt = [
 const transcript = [
   "LidPilot — product film transcript",
   "",
-  ...story.flatMap((scene) => [
-    `${timecode(scene.from).slice(3, 8)}–${timecode(scene.from + scene.duration).slice(3, 8)}`,
-    scene.caption,
+  ...cues.flatMap((cue) => [
+    `${timecode(cue.from).slice(3, 8)}–${timecode(cue.from + cue.duration).slice(3, 8)}`,
+    cue.text,
     "",
   ]),
 ].join("\n");

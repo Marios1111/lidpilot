@@ -6,6 +6,7 @@
   "private": true,
   "dependencies": {
     "@remotion/cli": "4.0.529",
+    "@remotion/media": "4.0.529",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "remotion": "4.0.529"
@@ -25,10 +26,10 @@
     "lint": "eslint src && tsc --noEmit",
     "sync:assets": "bash scripts/sync-native-assets.sh",
     "captions": "node scripts/export-captions.mjs",
-    "render:landscape-master": "remotion render src/index.ts LidPilotLandscape out/lidpilot-master-1920x1080.mp4 --codec=h264 --crf=16",
-    "render:vertical-master": "remotion render src/index.ts LidPilotVertical out/lidpilot-master-1080x1920.mp4 --codec=h264 --crf=16",
+    "render:landscape-master": "remotion render src/index.ts LidPilotLandscapeSocial out/lidpilot-master-1920x1080.mp4 --codec=h264 --crf=16",
+    "render:vertical-master": "remotion render src/index.ts LidPilotVerticalSocial out/lidpilot-master-1080x1920.mp4 --codec=h264 --crf=16",
     "render:web": "remotion render src/index.ts LidPilotLandscape web/lidpilot-720p.mp4 --scale=0.6666666667 --codec=h264 --crf=24",
-    "render:poster": "remotion still src/index.ts LidPilotLandscape web/lidpilot-poster.jpg --frame=60 --scale=0.6666666667 --image-format=jpeg"
+    "render:poster": "remotion still src/index.ts LidPilotLandscape web/lidpilot-poster.jpg --frame=1200 --scale=0.6666666667 --image-format=jpeg"
   },
   "sideEffects": [
     "*.css"

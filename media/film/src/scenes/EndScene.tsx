@@ -6,7 +6,23 @@ export const EndScene: React.FC = () => {
   const frame = useCurrentFrame();
   const { height, width } = useVideoConfig();
   const vertical = height > width;
-  const opacity = interpolate(frame, [6, 20], [0, 1], {
+  const reveal = interpolate(frame, [0, 36], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const iconScale = interpolate(frame, [0, 48], [0.68, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const nativeReveal = interpolate(frame, [0, 32], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const sourceReveal = interpolate(frame, [90, 118], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const closeReveal = interpolate(frame, [142, 190], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
@@ -17,46 +33,78 @@ export const EndScene: React.FC = () => {
         style={{
           alignItems: "center",
           justifyContent: "center",
-          padding: vertical ? "100px 84px" : "90px 150px",
+          padding: vertical ? "100px 74px" : "84px 130px",
           textAlign: "center",
-          opacity,
+          background:
+            "radial-gradient(ellipse at 50% 42%, #35404a 0%, #222a32 48%, #171d23 100%)",
         }}
       >
-        <Img
-          src={staticFile("native/icon-light.png")}
-          alt="LidPilot app icon"
-          style={{
-            width: vertical ? 112 : 96,
-            height: vertical ? 112 : 96,
-            borderRadius: vertical ? 27 : 23,
-          }}
-        />
-        <div style={{ marginTop: 25 }}>
+        <div style={{ opacity: reveal, scale: iconScale }}>
+          <Img
+            src={staticFile("native/icon-light.png")}
+            alt="LidPilot app icon"
+            style={{
+              width: vertical ? 112 : 90,
+              height: vertical ? 112 : 90,
+              borderRadius: vertical ? 27 : 22,
+              boxShadow: "0 18px 60px rgba(0, 0, 0, .28)",
+            }}
+          />
+        </div>
+        <div style={{ marginTop: vertical ? 28 : 23, opacity: reveal }}>
           <Wordmark light />
         </div>
         <div
           style={{
-            marginTop: vertical ? 66 : 48,
-            maxWidth: vertical ? 880 : 1440,
+            marginTop: vertical ? 53 : 43,
             color: "#ffffff",
-            fontSize: vertical ? 62 : 76,
-            lineHeight: 1.1,
-            fontWeight: 590,
-            letterSpacing: "-0.055em",
-            textWrap: "balance",
+            fontSize: vertical ? 61 : 70,
+            lineHeight: 1.08,
+            fontWeight: 570,
+            letterSpacing: "-0.06em",
+            opacity: nativeReveal,
+            translate: `0 ${interpolate(frame, [0, 32], [20, 0], {
+              extrapolateLeft: "clamp",
+              extrapolateRight: "clamp",
+            })}px`,
           }}
         >
           Native. Local.
-          <br />
+        </div>
+        <div
+          style={{
+            marginTop: vertical ? 12 : 10,
+            color: "#ffffff",
+            fontSize: vertical ? 55 : 64,
+            lineHeight: 1.08,
+            fontWeight: 570,
+            letterSpacing: "-0.06em",
+            opacity: sourceReveal,
+          }}
+        >
           Free and open source.
         </div>
         <div
           style={{
-            marginTop: vertical ? 37 : 28,
-            color: "#aebacc",
-            fontSize: vertical ? 44 : 49,
-            fontWeight: 520,
+            marginTop: vertical ? 30 : 24,
+            color: "#b5c0ca",
+            fontSize: vertical ? 37 : 40,
+            fontWeight: 430,
+            letterSpacing: "-0.025em",
+            opacity: closeReveal,
+          }}
+        >
+          Your Mac, on your time.
+        </div>
+        <div
+          style={{
+            position: "absolute",
+            bottom: vertical ? 350 : 170,
+            color: "#c2ccd2",
+            fontSize: vertical ? 37 : 40,
+            fontWeight: 540,
             letterSpacing: "-0.03em",
+            opacity: closeReveal,
           }}
         >
           lidpilot.app
