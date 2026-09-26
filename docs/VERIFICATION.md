@@ -46,8 +46,9 @@ renewals; the independent save-file branch still needs confirmation.
 
 Current local checks: **90 tests** (21 Core, 69 Runtime) pass, including the detached-executor XPC regression. Debug/Release builds pass for the callback correction and bounded notification diagnostics; [exact RC10 source CI](https://github.com/Marios1111/lidpilot/actions/runs/36275637607) passes. Retained earlier checks include isolated native smoke, native journal regressions, the icon-memory harness and the [bounded EOF runner regression](validation/2026-09-26-runner-eof.md).
 Earlier package identity inspection and isolated native smoke checks passed at `3b5a1e6`, including identity isolation, independent failed-read
-recovery regressions and native product captures. They do not prove installed
-signed-helper coexistence. [CI at `3b5a1e6`](https://github.com/Marios1111/lidpilot/actions/runs/36265171164)
+recovery regressions and native product captures. The [signed coexistence check](validation/2026-09-27-helper-coexistence.md) now
+verifies distinct production/development registrations and development XPC reachability
+while Off, followed by removal with production unchanged. It does not claim live simultaneous ownership. [CI at `3b5a1e6`](https://github.com/Marios1111/lidpilot/actions/runs/36265171164)
 also passed its tests and Debug/Release builds. Latest public
 prerelease: **RC4**. RC5/RC6 are local diagnostic candidates. The [uninstrumented installed RC6 baseline](validation/2026-09-26-rc6-uninstrumented.md)
 completed 600 seconds and **failed the former 0.2% budget at 0.830470% inclusive CPU** (app 0.355936%,
