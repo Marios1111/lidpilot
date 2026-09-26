@@ -47,15 +47,29 @@ final class PreviewMachine: RuntimeClock, PowerSampling, SleepFlagControlling, R
     let folder = URL(fileURLWithPath: directory, isDirectory: true)
     try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
     func render<V: View>(_ view: V, name: String, width: CGFloat, scheme: ColorScheme = .light) throws {
-        let renderer = ImageRenderer(content: view
+        // Render our own AppKit-backed view so native menus and Forms are not
+        // replaced by ImageRenderer's unsupported-control placeholders.
+        let host = NSHostingView(rootView: view
             .environment(\.colorScheme, scheme)
             .background(scheme == .dark ? Color(nsColor: .windowBackgroundColor) : .white))
-        renderer.proposedSize = ProposedViewSize(width: width, height: nil)
-        renderer.scale = 2
-        guard let image = renderer.nsImage, let tiff = image.tiffRepresentation,
-              let bitmap = NSBitmapImageRep(data: tiff),
-              let data = bitmap.representation(using: .png, properties: [:]) else {
+        host.setFrameSize(NSSize(width: width, height: 1))
+        let height = max(1, host.fittingSize.height)
+        let bounds = NSRect(x: 0, y: 0, width: width, height: height)
+        let window = NSWindow(contentRect: bounds, styleMask: [.borderless],
+                              backing: .buffered, defer: false)
+        window.appearance = NSAppearance(named: scheme == .dark ? .darkAqua : .aqua)
+        window.contentView = host
+        host.frame = bounds
+        window.orderFront(nil)
+        defer { window.orderOut(nil) }
+        host.layoutSubtreeIfNeeded()
+        window.displayIfNeeded()
+        guard let bitmap = host.bitmapImageRepForCachingDisplay(in: host.bounds) else {
             throw RuntimeFailure.unavailable("The native preview could not be rendered.")
+        }
+        host.cacheDisplay(in: host.bounds, to: bitmap)
+        guard let data = bitmap.representation(using: .png, properties: [:]) else {
+            throw RuntimeFailure.unavailable("The native preview could not be encoded.")
         }
         try data.write(to: folder.appendingPathComponent(name + ".png"), options: .atomic)
     }
@@ -73,6 +87,20 @@ final class PreviewMachine: RuntimeClock, PowerSampling, SleepFlagControlling, R
     await model.controller.stop()
     guard model.controller.phase == .off, model.controller.assertions == .off else {
         throw RuntimeFailure.unavailable("Mock cleanup failed.")
+    }
+    // Product presentation uses the actual native views with the preview label
+    // intact. Each fixture activates and cleans up only simulated controls.
+    for (mode, name) in [(Mode.display, "keep-screen-on"), (.closed, "keep-mac-running")] {
+        model.selectedMode = mode
+        await model.controller.start(mode: mode, duration: .seconds(3600), policy: model.policy)
+        guard model.controller.phase == .active, model.controller.effectiveMode == mode else {
+            throw RuntimeFailure.unavailable("Product preview activation failed.")
+        }
+        try render(PilotPanel(model: model), name: name, width: 370)
+        await model.controller.stop()
+        guard model.controller.phase == .off, model.controller.assertions == .off else {
+            throw RuntimeFailure.unavailable("Product preview cleanup failed.")
+        }
     }
     try render(SettingsView(model: model), name: "settings", width: 650)
     try render(WelcomeView(model: model), name: "welcome", width: 520)
