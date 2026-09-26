@@ -6,8 +6,8 @@ that should continue when a MacBook lid closes. It is written in Swift 6 for
 Apple Silicon Macs running macOS 15 or later.
 
 Development lives at [Marios1111/lidpilot](https://github.com/Marios1111/lidpilot)
-on `dev`. V1 release validation is in progress; a stable signed download is not
-yet available. A signed and notarized [RC3 prerelease](https://github.com/Marios1111/lidpilot/releases/tag/v1.0.0-rc.3)
+on `dev`. The product website is [lidpilot.app](https://lidpilot.app). V1 release validation is in progress; a stable signed download is not
+yet available. A signed and notarized [RC4 prerelease](https://github.com/Marios1111/lidpilot/releases/tag/v1.0.0-rc.4)
 is available for supervised testing. Follow the [verification record](docs/VERIFICATION.md) for actual
 hardware, signing, and update results. The concept artwork in `design/` is a
 directional design artifact; it is not evidence of power behavior.
@@ -110,27 +110,29 @@ or changing power settings.
 The logic and mock tests are useful evidence, but they do not replace the
 following gates:
 
-- G1: measure the native display assertion and determine whether the desired
-  inactivity dimming-without-display-off behavior is actually available. The
-  current implementation uses `preventUserIdleDisplaySleep`, which suppresses
-  normal idle dimming/display sleep while held; it does not provide a separate
-  native dimming control.
-- G2: observe physical built-in panel/backlight behavior across open, closed,
-  docked, external-display, and virtual-display topologies. The current code
-  does not measure panel power.
+- G1: the tested display hold preserves manual and ambient brightness, but also
+  suppresses native idle dimming. This is an accepted V1 limitation; LidPilot
+  does not offer an independent dim-without-display-off control.
+- G2: V1 display support is limited to the tested built-in-display configuration.
+  Closed-lid workload continuity and delayed screen darkness were observed;
+  external, docked, and virtual-display cases remain unvalidated. The app does
+  not measure electrical panel power or promise immediate shutdown.
 - G3: real app/helper crashes and helper lease expiry passed on the recorded
   Mac; remaining reproducible delayed-reply, command-timeout, read-back and
   restoration faults need final release evidence.
-- G4: validate signed peer authentication and the launchd/ServiceManagement
-  lifecycle with real publisher-signed identities.
+- G4: signed helper registration, replacement, and wrong-ID/ad-hoc/malformed/
+  wrong-console-client rejection have retained evidence. Genuine different-team
+  testing is deferred independent evidence; the exact production Team ID and
+  bundle signing requirements remain mandatory. Final lifecycle checks remain.
 - G5: signed RC1→RC2→RC3→RC4 Sparkle replacements passed on the recorded Mac.
   RC4 relaunched Off, its build-4 helper acquired a fresh lease, and a canceled
   update restored the previous helper. Uninstall/cleanup and remaining updater
   fault paths still need installed validation.
-- Performance: a ten-minute RC4 Keep Mac Running sample passed the 75 MiB
-  memory target at 38.04 MiB mean but failed the 0.2% CPU target at 0.684%.
-  Fixed `pmset` child processes account for most of the measured CPU. This
-  remains a release blocker.
+- Performance: the uninstrumented RC6 Keep Mac Running measurement passed memory
+  at 63.32 MiB mean but failed the hard ≤0.2% inclusive CPU target at 0.830470%.
+  The source-matched baseline ran on a newer beta OS build than the earlier
+  instrumented 0.543018% result. Child
+  processes are included; compilation and mock tests cannot close this gate.
 
 The complete opt-in checklist is in
 [`docs/HARDWARE_VALIDATION.md`](docs/HARDWARE_VALIDATION.md), with the current

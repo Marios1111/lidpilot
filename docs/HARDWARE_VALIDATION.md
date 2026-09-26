@@ -113,8 +113,11 @@ For each case, record lid transition timing, assertion state, sampled
 `SleepDisabled`, external-display behavior, built-in panel/backlight state,
 workload continuity, and recovery after reopening. Do not use a blanket
 display-sleep command that could blank an external or virtual display. The
-current app intentionally reports **Internal panel power: Not measured**;
-there is no G2 pass in this source snapshot.
+current app intentionally reports **Internal panel power: Not measured**.
+The dated validation records retain built-in-display continuity, delayed
+darkness, and reopening observations. Those observations do not pass the
+unavailable external/dock/virtual cases. The owner approved built-in-only V1
+display support on September 25; broader topologies are deferred evidence.
 
 ## G3 - real app/helper failure and recovery
 
@@ -153,8 +156,10 @@ arm64 app/helper bundle, and an approved ServiceManagement registration. Verify:
 - app and helper bundle identifiers are `com.lidpilot.app` and
   `com.lidpilot.app.helper`;
 - both sides require the expected Apple signing anchor and exact team;
-- a wrong identifier, wrong team, unsigned client, stale helper, wrong console
-  user, and second client are rejected;
+- a wrong identifier, unsigned client, stale helper, wrong console user, and
+  second client are rejected; retain genuine different-team testing when a
+  separate valid signing team is available (owner-reviewed deferred independent
+  evidence for V1, never a fabricated same-team substitute);
 - the helper admits only bounded typed operations and rejects wrong protocol,
   zero generation, missing/inconsistent payloads, display acquire, malformed
   data, and payloads over 16 KiB;
@@ -167,7 +172,9 @@ arm64 app/helper bundle, and an approved ServiceManagement registration. Verify:
 
 Do not weaken signing requirements for this gate. Mock `HelperIdentity` and
 wire tests establish rejection logic but do not establish real code-signing or
-launchd identity. G4 remains open until signed XPC evidence is retained.
+launchd identity. Real signed XPC and rejection evidence is already retained in the dated
+records; new identity-isolation and final-candidate lifecycle checks must be
+recorded separately.
 
 ## Performance and accessibility acceptance
 

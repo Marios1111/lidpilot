@@ -5,13 +5,11 @@ Source and local development builds are implemented; stable release remains
 blocked by the gates below. The repository is now
 [Marios1111/lidpilot](https://github.com/Marios1111/lidpilot), with `dev` connected
 to `origin/dev`. Historical sections below describe their own dated checkpoints.
-The public [RC1](https://github.com/Marios1111/lidpilot/releases/tag/v1.0.0-rc.1)
-and [RC2](https://github.com/Marios1111/lidpilot/releases/tag/v1.0.0-rc.2)
-and [RC3](https://github.com/Marios1111/lidpilot/releases/tag/v1.0.0-rc.3)
-prereleases and [RC site/feed](https://marios1111.github.io/lidpilot/) are
-published for explicitly approved supervised testing. See
-[the current evidence record](validation/2026-09-23-closed-lid-and-lease.md)
-and [V1_RELEASE_PLAN.md](V1_RELEASE_PLAN.md). No stable release is claimed.
+The latest public prerelease is [RC4](https://github.com/Marios1111/lidpilot/releases/tag/v1.0.0-rc.4),
+available for supervised testing through the [product site](https://lidpilot.app).
+RC5 and RC6 are local diagnostic candidates. See the current gate table below,
+the dated records in `validation/`, and [V1_RELEASE_PLAN.md](V1_RELEASE_PLAN.md).
+No stable release is claimed.
 
 Current release-validation owner: the selected GPT-6 Astra High lead. The initial
 implementation/UI owner was Astra Max. GPT-5.6 Luna Max handled
@@ -21,7 +19,7 @@ journal-phase, admission, and retry findings were fixed by the lead and covered
 by regression tests; it was not a second final reviewer. CodeGraph was used for
 focused context, with current source and builds as the final evidence.
 
-## Latest closeout — September 25
+## Latest closeout — September 26
 
 The [audit closeout record](validation/2026-09-25-audit-closeout.md) records the
 owner's accepted dimming/panel/update limitations and narrowed built-in-display
@@ -31,11 +29,17 @@ requirements remain mandatory. Stable-OS runtime and other retained release
 gates remain open. The prolonged RC6 diagnostic Save dialog did not starve
 renewals; the independent save-file branch still needs confirmation.
 
-Latest retained automated snapshot: **79 tests** (21 Core, 58 Runtime), with
-Debug/Release CI passing at `f89cfec` on macOS 15.7.2 arm64. Latest public
-prerelease: **RC4**. RC5/RC6 are local diagnostic candidates. RC6's instrumented
-600-second CPU result remains **FAIL 0.543018%**; matched uninstrumented evidence
-is pending. These statements supersede historical checkpoint totals below.
+Current local identity-isolation checks: **83 tests** (21 Core, 62 Runtime),
+Debug and Release builds, package identity inspection, and isolated native smoke
+passed. These cover identity commit `7cfd31c`, icon commit `c41acf3`, and preview
+commit `35ec58e` as applicable. They do not prove installed signed-helper
+coexistence. Latest retained remote CI: **79 tests** with Debug/Release passing
+at `f89cfec` on macOS 15.7.2 arm64; new CI is pending. Latest public
+prerelease: **RC4**. RC5/RC6 are local diagnostic candidates. The [uninstrumented installed RC6 baseline](validation/2026-09-26-rc6-uninstrumented.md)
+completed 600 seconds and **failed at 0.830470% inclusive CPU** (app 0.355936%,
+helper 0.054073%, children 0.420460%); memory passed at 63.32 MiB. Its beta OS
+build differs from the earlier instrumented 0.543018% run, so the delta cannot
+be attributed to instrumentation alone. These statements supersede historical checkpoint totals below.
 
 ## Feature checklist
 
@@ -47,9 +51,9 @@ is pending. These statements supersede historical checkpoint totals below.
 | Safety | Thermal protection, 10/20/30% battery cutoff, battery/LPM policies, charger/lid/display/wake observation, explicit restart after pause | Live sensor and workload continuity checks |
 | Closed-lid helper | Reciprocal signed XPC, console user restriction, fixed pmset operations, bounded child execution, leases/watchdog, journal and conflict handling | Real registration, identity rejection, GUI/helper crash cleanup, lease expiry and replacement helper verified across RC1–RC3; remaining G3/G4 cases open |
 | App lifecycle | Starts Off, login preference, helper approval, onboarding, notifications, verified quit and Stop & Sleep | Real helper approval and crash relaunch Off passed; login/notification/sleep paths remain |
-| Diagnostics/recovery | Local redacted bounded logs, export preview, cleanup/repair/removal UI, explicit ambiguous-state recovery | Native export passed; privileged recovery remains gated |
-| Sparkle 2.10.0 | Manual/daily checks, signed feed/notes/archive configuration, active-session barrier, helper replacement and interrupted-update handling | Real RC1→RC2→RC3 signed upgrades and replacement helpers passed; updater fault paths and uninstall remain G5 |
-| Distribution/community | MIT and dependency notices, README, CONTRIBUTING, SECURITY, CHANGELOG, issue templates, CI, staged signed/notarized DMG tooling | Developer ID, private reporting, signed/notarized RC1–RC3 and public artifact hashes verified; stable release still gated |
+| Diagnostics/recovery | Local redacted bounded logs, export preview, cleanup/repair/removal UI, explicit ambiguous-state recovery | Prolonged Save-dialog renewals passed; deterministic saved-file confirmation and final regression remain |
+| Sparkle 2.10.0 | Manual/daily checks, signed feed/notes/archive configuration, active-session barrier, helper replacement and interrupted-update handling | Real RC1→RC2→RC3→RC4 signed upgrades and replacement helpers passed; updater fault paths and uninstall remain G5 |
+| Distribution/community | MIT and dependency notices, README, CONTRIBUTING, SECURITY, CHANGELOG, issue templates, CI, staged signed/notarized DMG tooling | Developer ID, private reporting, signed/notarized RC1–RC4 and public artifact hashes verified; stable release still gated |
 | Website | Static accessible Pages site, no trackers or build dependency | Manual RC publication passed; hosted signed feed bytes/signature verified |
 
 No CLI, AI-agent detection, process automation, Shortcuts, widgets, remote
@@ -141,9 +145,9 @@ under the explicit support and security-evidence conditions recorded above.
 | G2 closed lid | Follow Lid and Keep Mac Running workloads continued through recorded closed-lid intervals; operator saw the built-in screen darken and normal reopen | Owner-approved built-in-only V1 support; external/dock cases deferred, not passed. Immediate or electrical panel shutdown is not claimed |
 | G3 recovery | RC1 GUI SIGKILL restored the override within 0.28 s. RC2 lease expiry restored it by 64.7 s and the GUI paused without false Recovery; root-helper crash/restart restored it by the first changed 22.9 s sample. RC3 one-minute deadline ended Off; RC3 GUI SIGKILL restored the override by the first changed observer sample, with no re-enable through 90 s | Inspect RC3 post-crash UI; remaining safely reproducible read-back/restore failures and delayed/race paths |
 | G4 identity/helper | Signed/notarized helper registered through ServiceManagement; publisher accepted, wrong-ID/ad-hoc and wrong-console clients rejected by explicit XPC logs; four malformed-wire cases rejected. RC2–RC4 replacement helpers acquired the override; launchd reported RC4 parent bundle version 4 | Genuine different-team test deferred by owner review; preserve exact signing requirements and complete remaining lifecycle matrix |
-| Performance | Off 600 s: 0.102% CPU, 47.62 MiB mean; Keep Screen On 600 s: 0.079% CPU, 37.32 MiB mean on RC1. RC3 Keep Mac Running 600 s: **FAIL 0.855% CPU**. RC4 Keep Mac Running 600 s: **FAIL 0.684% CPU**, PASS 38.04 MiB mean; 0.519% CPU came from reaped fixed `pmset` children. Diagnostic RC5: **FAIL 0.614%**, 148 reads; RC6 Standard: **FAIL 0.543%**, 144 reads, 0.363% child CPU, 52.56 MiB mean | The ≤0.2% CPU target remains blocked; measure UI timing and make an evidence-based architecture/target decision without weakening read-back or watchdog |
+| Performance | Off 600 s: 0.102% CPU, 47.62 MiB mean; Keep Screen On 600 s: 0.079% CPU, 37.32 MiB mean on RC1. RC3 Keep Mac Running 600 s: **FAIL 0.855% CPU**. RC4 Keep Mac Running 600 s: **FAIL 0.684% CPU**, PASS 38.04 MiB mean; 0.519% CPU came from reaped fixed `pmset` children. Diagnostic RC5: **FAIL 0.614%**, 148 reads; RC6 Standard: **FAIL 0.543%**, 144 reads, 0.363% child CPU, 52.56 MiB mean. Uninstrumented source-matched RC6: **FAIL 0.830470%**, app 0.355936%, helper 0.054073%, children 0.420460%, memory 63.32 MiB mean; beta OS build changed | The ≤0.2% CPU target remains blocked; measure UI timing and make an evidence-based architecture/target decision without weakening read-back or watchdog |
 | G5 release/update | RC1–RC4 are public prereleases with verified hosted hashes. Real Sparkle RC1→RC2→RC3→RC4 installed signed builds 2–4; each relaunched Off with override/assertions released and its replacement helper acquired a new lease. RC3 disabled update checks while active; RC4 canceled check restored its previous helper. Signed archive/feed/notes and tamper rejection passed | Uninstall/cleanup, scheduled-check and interrupted/failing updater paths, final stable candidate |
-| Final candidate | Installed diagnostic RC5 build 5 is Developer ID signed, notarized and stapled; its full instrumented capture and cleanup are recorded above. The last public RC remains RC4 build 4; its signed upgrade, Off relaunch, matching helper lease, canceled-update cleanup and ten-minute measurement were recorded on the host. [Source CI 35905778548](https://github.com/Marios1111/lidpilot/actions/runs/35905778548) and [dev CI 35921628061](https://github.com/Marios1111/lidpilot/actions/runs/35921628061) passed | CPU target failed; recovery, hardware matrix, updater faults, uninstall and stable-candidate checks remain |
+| Final candidate | Installed diagnostic RC6 build 6 is Developer ID signed, notarized and stapled; its instrumented capture and cleanup are retained. The matching uninstrumented build completed its independent baseline and failed CPU at 0.830470%; memory passed at 63.32 MiB. The last public RC remains RC4 build 4; its signed upgrade, Off relaunch, matching helper lease, canceled-update cleanup and ten-minute measurement were recorded on the host. [Source CI 35905778548](https://github.com/Marios1111/lidpilot/actions/runs/35905778548) and [dev CI 35921628061](https://github.com/Marios1111/lidpilot/actions/runs/35921628061) passed | CPU target failed; recovery, hardware matrix, updater faults, uninstall and stable-candidate checks remain |
 
 The earlier running-controller baseline was resolved through its normal quit
 path and independent Off read-back before LidPilot acquired ownership. No

@@ -8,8 +8,11 @@ current development snapshot; it is not a release announcement.
 RC6 tests standard launchd scheduling for the helper while keeping its utility
 queues, watchdog cadence, leases, read-backs, and recovery unchanged. A bounded
 read-only comparison identified higher per-command CPU under Background
-classification. This is not yet an installed performance or energy pass; the
-0.2% gate remains open pending the full signed-candidate measurement.
+classification. The installed instrumented 600-second run measured 0.543018% inclusive CPU
+and 52.56 MiB mean combined physical footprint: memory passed, CPU failed.
+The source-matched uninstrumented run on September 26 measured 0.830470% CPU
+and 63.32 MiB mean memory on a newer beta OS build. It also fails the CPU gate;
+this candidate is not a stable release or an energy pass.
 
 ## 1.0.0 - release candidate 5
 
@@ -20,7 +23,8 @@ Release builds exclude it. No read, timer, lease, or safety policy is removed.
 
 This candidate investigates RC4's measured 0.684% inclusive CPU against the
 hard 0.2% target. It is not a performance pass or stable V1.0 release. Installed
-profiling, subsequent optimization, and remaining release gates are pending.
+profiling measured 0.613929% inclusive CPU and 148 fixed reads in 600 seconds.
+Remaining release gates are tracked in `docs/VERIFICATION.md`.
 
 ## 1.0.0 - release candidate 4
 
