@@ -1,0 +1,36 @@
+{
+  "name": "lidpilot-film",
+  "version": "1.0.0",
+  "description": "Caption-led LidPilot product film",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@remotion/cli": "4.0.529",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.529"
+  },
+  "devDependencies": {
+    "@remotion/eslint-config-flat": "4.0.529",
+    "@types/react": "19.2.7",
+    "@types/web": "0.0.166",
+    "eslint": "9.19.0",
+    "prettier": "3.8.1",
+    "typescript": "5.9.3"
+  },
+  "scripts": {
+    "dev": "remotion studio",
+    "build": "remotion bundle",
+    "upgrade": "remotion upgrade",
+    "lint": "eslint src && tsc --noEmit",
+    "sync:assets": "bash scripts/sync-native-assets.sh",
+    "captions": "node scripts/export-captions.mjs",
+    "render:landscape-master": "remotion render src/index.ts LidPilotLandscape out/lidpilot-master-1920x1080.mp4 --codec=h264 --crf=16",
+    "render:vertical-master": "remotion render src/index.ts LidPilotVertical out/lidpilot-master-1080x1920.mp4 --codec=h264 --crf=16",
+    "render:web": "remotion render src/index.ts LidPilotLandscape web/lidpilot-720p.mp4 --scale=0.6666666667 --codec=h264 --crf=24",
+    "render:poster": "remotion still src/index.ts LidPilotLandscape web/lidpilot-poster.jpg --frame=60 --scale=0.6666666667 --image-format=jpeg"
+  },
+  "sideEffects": [
+    "*.css"
+  ]
+}

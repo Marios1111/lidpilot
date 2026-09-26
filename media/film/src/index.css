@@ -1,0 +1,19 @@
+html,
+body,
+#root {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background: #f4f4f1;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+  color: #191d23;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+}

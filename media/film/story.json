@@ -1,0 +1,44 @@
+[
+  {
+    "id": "opening",
+    "from": 0,
+    "duration": 120,
+    "caption": "Your Mac. On your time."
+  },
+  {
+    "id": "screen",
+    "from": 120,
+    "duration": 150,
+    "caption": "Stay with the lecture.\nBrightness stays yours."
+  },
+  {
+    "id": "running",
+    "from": 270,
+    "duration": 150,
+    "caption": "Leave the work running.\nBuilds. Downloads. Long tasks."
+  },
+  {
+    "id": "follow",
+    "from": 420,
+    "duration": 180,
+    "caption": "Follow Lid connects both.\nOpen for focus. Closed for work."
+  },
+  {
+    "id": "timer",
+    "from": 600,
+    "duration": 150,
+    "caption": "Set your time.\n30 minutes. A few hours. Until you stop."
+  },
+  {
+    "id": "off",
+    "from": 750,
+    "duration": 120,
+    "caption": "Safety stays awake.\nYou stay in control. Always starts Off."
+  },
+  {
+    "id": "end",
+    "from": 870,
+    "duration": 150,
+    "caption": "Native. Local. Free and open source.\nlidpilot.app"
+  }
+]

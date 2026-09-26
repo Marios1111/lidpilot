@@ -15,3 +15,11 @@ xcuserdata/
 *.key
 *.mobileprovision
 release-private/
+
+# LidPilot Remotion renders and browser cache; keep source and 720p web output.
+media/film/node_modules/
+media/film/.remotion/
+media/film/.cache/
+media/film/build/
+media/film/out/
+media/film/.tmp/
