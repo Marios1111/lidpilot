@@ -98,8 +98,13 @@ mutate the setting. If the flag changes unexpectedly while a lease is active,
 the helper stops or enters recovery rather than repeatedly fighting another
 controller.
 
-The flag is not a reference-counted per-app API. A read-back of `on` proves
-only the sampled setting. It does not prove that LidPilot is the sole writer,
+The flag is not a reference-counted per-app API. A fresh `pmset -g` read-back of
+`on` confirms the configuration reported by macOS's CLI. Apple's published
+[implementation](https://github.com/apple-oss-distributions/IOKitUser/blob/323ead896d04424f87184d8f6ff0cce811aab106/pwr_mgt.subproj/IOPMEnergyPrefs.c) reads a system-wide preferences dictionary; this is not a
+documented synchronous acknowledgment of kernel application. The shipped OS
+binary was not independently reverse-engineered. Preserve independent reads
+after writes and before replies, but do not describe them as a stronger applied
+state guarantee. A read also does not prove that LidPilot is the sole writer,
 that the panel is physically off, or that a user-requested sleep cannot be
 affected by another program.
 

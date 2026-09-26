@@ -78,7 +78,7 @@ def analyze(log_path, measurement, app_pid, helper_pid):
             'total_cpu_percent': measurement['cpuPercentOfOneCoreIncludingReapedChildren'],
             'event_origins': dict(origins), 'event_counts': dict(counts), 'events_per_minute': {k: v * 60 / duration for k, v in counts.items()},
             'pmset_by_path': dict(paths), 'sequence_gaps': gaps,
-            'counts_complete': not gaps and not unmatched, 'boundary_spans': boundary, 'unmatched_spans': unmatched,
+            'counts_complete': not gaps and not unmatched and not boundary, 'boundary_spans': boundary, 'unmatched_spans': unmatched,
             'limitations': ['Profiling instrumentation overhead is included.',
                            'Commands crossing the window boundary need manual reconciliation.',
                            'No events before/after the measurement window must be checked against capture start/end.',

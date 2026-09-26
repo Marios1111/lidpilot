@@ -33,7 +33,9 @@ launch checks cleanup before allowing new activation.
 
 The helper does not depend on a live UI countdown. Its maximum renewable lease
 is 60 seconds, the intended app heartbeat is 15 seconds, and an independent
-watchdog checks every 10 seconds. A disconnected client, expired deadline,
+watchdog schedules a check every 10 seconds. Serialized command work and OS
+scheduling can delay execution; this is not a hard real-time sampling promise.
+A disconnected client, expired deadline,
 unknown safety observation, serious/critical thermal state, failed read, or
 unexpected flag drift causes the helper to attempt restoration. The fixed
 `pmset` child has a five-second execution limit and a bounded 0.25-second kill/reap window. If death cannot be confirmed, its inherited lock fences later recovery until the child exits. The live helper reopens the same validated lock inode on retry; it never explicitly unlocks an unverified child.

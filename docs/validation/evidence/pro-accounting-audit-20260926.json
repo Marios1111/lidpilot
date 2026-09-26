@@ -1,0 +1,98 @@
+{
+  "source_zip_sha256": "b7cea93dd5cd18555d3e1a86926b96b339aacc519cfcd14cdc611c9b444aa483",
+  "manifest_entries_verified": 83,
+  "measured_source": "5a44e31a0e7a90cf3fb20476c265fff05522cec3",
+  "current_local_head": "5e9420ed1eb9fba9045b05f4b0c701a66fe6b57b",
+  "measurements": {
+    "rc5-profile-measurement.json": {
+      "duration_seconds": 600.0048946666666,
+      "timebase_numerator": 125,
+      "timebase_denominator": 3,
+      "targets": [
+        {
+          "pid": 38090,
+          "own_cpu_seconds": 0.719305375,
+          "reaped_child_cpu_seconds": 0.0,
+          "own_cpu_percent_one_core": 0.11988325118574425,
+          "reaped_child_cpu_percent_one_core": 0.0
+        },
+        {
+          "pid": 38487,
+          "own_cpu_seconds": 0.42831641666666664,
+          "reaped_child_cpu_seconds": 2.53598125,
+          "own_cpu_percent_one_core": 0.07138548709750415,
+          "reaped_child_cpu_percent_one_core": 0.42266009369954677
+        }
+      ],
+      "cpu_seconds": 3.6836030416666663,
+      "cpu_percent_one_core": 0.6139288319827951,
+      "reported_cpu_percent": 0.6139288319827951,
+      "samples": 121,
+      "mean_physical_mib": 52.28196293854516,
+      "max_sampled_physical_mib": 52.517112731933594,
+      "pid_start_identity_consistent": true,
+      "all_sample_counters_monotonic": true,
+      "wall_minus_monotonic_seconds": 0.0037973594717186643
+    },
+    "rc6-profile-measurement.json": {
+      "duration_seconds": 600.0004927083332,
+      "timebase_numerator": 125,
+      "timebase_denominator": 3,
+      "targets": [
+        {
+          "pid": 47686,
+          "own_cpu_seconds": 0.71728525,
+          "reaped_child_cpu_seconds": 0.0,
+          "own_cpu_percent_one_core": 0.11954744349663063,
+          "reaped_child_cpu_percent_one_core": 0.0
+        },
+        {
+          "pid": 49022,
+          "own_cpu_seconds": 0.3609764166666667,
+          "reaped_child_cpu_seconds": 2.179847125,
+          "own_cpu_percent_one_core": 0.06016268670668263,
+          "reaped_child_cpu_percent_one_core": 0.36330755582556623
+        }
+      ],
+      "cpu_seconds": 3.2581087916666664,
+      "cpu_percent_one_core": 0.5430176860288795,
+      "reported_cpu_percent": 0.5430176860288795,
+      "samples": 121,
+      "mean_physical_mib": 52.56088855837987,
+      "max_sampled_physical_mib": 52.813987731933594,
+      "pid_start_identity_consistent": true,
+      "all_sample_counters_monotonic": true,
+      "wall_minus_monotonic_seconds": 0.004894597880138463
+    },
+    "rc6-uninstrumented-performance.json": {
+      "duration_seconds": 600.0009912083333,
+      "timebase_numerator": 125,
+      "timebase_denominator": 3,
+      "targets": [
+        {
+          "pid": 36984,
+          "own_cpu_seconds": 2.135622,
+          "reaped_child_cpu_seconds": 0.0,
+          "own_cpu_percent_one_core": 0.3559364119881039,
+          "reaped_child_cpu_percent_one_core": 0.0
+        },
+        {
+          "pid": 38078,
+          "own_cpu_seconds": 0.3244412916666667,
+          "reaped_child_cpu_seconds": 2.5227635,
+          "own_cpu_percent_one_core": 0.05407345928100536,
+          "reaped_child_cpu_percent_one_core": 0.42045988872775747
+        }
+      ],
+      "cpu_seconds": 4.982826791666667,
+      "cpu_percent_one_core": 0.8304697599968667,
+      "reported_cpu_percent": 0.8304697599968665,
+      "samples": 121,
+      "mean_physical_mib": 63.3195633060676,
+      "max_sampled_physical_mib": 63.54838562011719,
+      "pid_start_identity_consistent": true,
+      "all_sample_counters_monotonic": true,
+      "wall_minus_monotonic_seconds": 0.001727717142784968
+    }
+  }
+}

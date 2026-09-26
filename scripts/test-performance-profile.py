@@ -32,7 +32,9 @@ class ProfileTests(unittest.TestCase):
             self.assertEqual(report['pmset_by_path']['read/unknown/reply']['calls_per_minute'], 0.1)
             events[1]['wall_time'] = -0.1
             write()
-            self.assertEqual(module.analyze(p, record, 10, 20)['boundary_spans'], ['s1'])
+            boundary_report = module.analyze(p, record, 10, 20)
+            self.assertEqual(boundary_report['boundary_spans'], ['s1'])
+            self.assertFalse(boundary_report['counts_complete'])
             events[1]['wall_time'] = 1.5
             events[1]['span_id'] = 'missing-end'
             write()
