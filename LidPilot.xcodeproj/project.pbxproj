@@ -7,26 +7,36 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1957400DA52F128AFF94B1E9A87411DF /* LidPilotHelper in Embed LidPilotHelper */ = {isa = PBXBuildFile; fileRef = 359131119CEACA867BB1A149A009E57B /* LidPilotHelper */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		1957400DA52F128AFF94B1E9A87411DF /* LidPilotHelper in Embed LidPilotHelper */ = {isa = PBXBuildFile; fileRef = E34BBCA77B1FF1F8EBB167FA26CA08FD /* LidPilotHelper */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		1E9C72062F6528A60D7ED6484E1B6C4F /* LidPilotRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 4E0A1276786028F89EFC056DD08A7196 /* LidPilotRuntime */; };
+		25D96BEE6BD090BCAF9BDB5AA9771E1F /* HelperManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5C15A84A86CCC74EC6B0BA1C56A3FB /* HelperManager.swift */; };
 		2F6DA1205E0EF62BF8F9FB6B35BF9B03 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 13F0F8D73796683FD58495963E905DC8 /* LICENSE */; };
+		376A7993534ADF3CAFF332508083FE42 /* LidPilotCore in Frameworks */ = {isa = PBXBuildFile; productRef = A9039249DF6F34AA43572EE84B380D97 /* LidPilotCore */; };
 		3A944F9CB97C5D6F75561487B068DA45 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2F69F9CDDCCCD4D3C891C92EDAB0A7E /* AppModel.swift */; };
+		45DA10E928ADADAB0B0CF6AB59BA0DE9 /* DiagnosticsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64BCC2B63F3C8EEB3890AAA5FFF5EA25 /* DiagnosticsStore.swift */; };
+		4B00616BE9B72FB91916A32E6FFC608E /* StateObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C137F18A18822F29FC235A07676AA12 /* StateObserver.swift */; };
 		4DCDC470998060BDC1E950B5A0FD2E10 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 16537F856E6E4DEAD23EBDFD03B1D97E /* Assets.xcassets */; };
 		4E0FC268DC5DD417F368E0BC06E52CCC /* LidPilotCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3EBD6916D81A0B9344DC25417B708CB8 /* LidPilotCore */; };
 		5438D8E5FB86566C47B3F49B893C995F /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6AE1BDB3CEE245724DE7768ECCF5C22 /* main.swift */; };
 		58145B6E4856F1E9F03027329AF52641 /* PreviewHarness.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D473C0E73556BEFE338377A8529D078 /* PreviewHarness.swift */; };
 		63380978090156724F50142E01A9C821 /* UpdateCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10474556CD70BD6A593DE4267146336 /* UpdateCoordinator.swift */; };
+		6377D7957DF5882BDE2588278ADE735E /* LidPilotRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = A012268BA173E0F195BF03EAE9E3C2C5 /* LidPilotRuntime */; };
 		69FE62435BF6B580FBB34DA2A475818B /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3312D05CDCB3EC18642AE0A13A0EBCF4 /* Cocoa.framework */; };
 		6F2F9C4C2A025C1B44B89EC2D385A987 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 695D195D5D525F4DB366B6947EAF068C /* SettingsView.swift */; };
 		7915B1611CD2FD622A747F448FC3D1DE /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 7C767075C0C8A419EA1FDC2255CF9BB3 /* Sparkle */; };
+		7B6DF1DDD7D2E21719A7973F4D4D0A25 /* UpdateCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC9A1A945AD4DA839ECB1C5D4F7C6BD6 /* UpdateCoordinatorTests.swift */; };
 		80354C7B42590DC93CC2C0FB69645775 /* THIRD_PARTY_NOTICES.md in Resources */ = {isa = PBXBuildFile; fileRef = C5C171D0CE857EC169C86906C50199EE /* THIRD_PARTY_NOTICES.md */; };
+		81DDF6374F0AD89B2583B7BEEADCCA14 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3312D05CDCB3EC18642AE0A13A0EBCF4 /* Cocoa.framework */; };
 		8BBB39498E936E8F8D0790AD136CBDF1 /* StateObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C137F18A18822F29FC235A07676AA12 /* StateObserver.swift */; };
+		97316B8A8265EB5E13F1E24935BCFC14 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 86A62831FEC2BB3487683DC0221D9BE2 /* Sparkle */; };
 		98EFC7FC708246331F99AA839B9BD95C /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3312D05CDCB3EC18642AE0A13A0EBCF4 /* Cocoa.framework */; };
 		9EAA18F71B1A93C566BFC1C45CF03604 /* LidPilotApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1812A3ABF7D49E5CAD125E81D80C34B6 /* LidPilotApp.swift */; };
 		B2227A6336DB2D6D4481CFEAAB01C6E0 /* LidPilotCore in Frameworks */ = {isa = PBXBuildFile; productRef = 867E1F4A63C8EE9AB6A3070B571492A8 /* LidPilotCore */; };
 		BE272D6B2F440EDAF130E202617773BD /* WelcomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09E9A6FDE13CF44918CBA0DE0961276B /* WelcomeView.swift */; };
+		BF9EFB51760B061991DDDF0A574810BD /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2F69F9CDDCCCD4D3C891C92EDAB0A7E /* AppModel.swift */; };
 		C299E9F1D1BDAAF00BE7F1208F27FB2E /* PilotPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 183E87B492785732A89AF28E53B4E65D /* PilotPanel.swift */; };
 		C7C7F864B72AF65953985E10541E67E4 /* LidPilotRuntime in Frameworks */ = {isa = PBXBuildFile; productRef = 108A5A9EE95C987722A2D8D301EA5C02 /* LidPilotRuntime */; };
+		D80D2005B53D0DDADE77DE3EA606D2BA /* UpdateCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B10474556CD70BD6A593DE4267146336 /* UpdateCoordinator.swift */; };
 		DD91410C098DA2F57364FB4B3B87D5A3 /* HelperManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B5C15A84A86CCC74EC6B0BA1C56A3FB /* HelperManager.swift */; };
 		F65BAF8430764267412A0060649AC603 /* DiagnosticsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64BCC2B63F3C8EEB3890AAA5FFF5EA25 /* DiagnosticsStore.swift */; };
 /* End PBXBuildFile section */
@@ -62,20 +72,22 @@
 		1812A3ABF7D49E5CAD125E81D80C34B6 /* LidPilotApp.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = LidPilotApp.swift; path = App/LidPilotApp.swift; sourceTree = "<group>"; };
 		183E87B492785732A89AF28E53B4E65D /* PilotPanel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PilotPanel.swift; path = App/PilotPanel.swift; sourceTree = "<group>"; };
 		3312D05CDCB3EC18642AE0A13A0EBCF4 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.0.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
-		359131119CEACA867BB1A149A009E57B /* LidPilotHelper */ = {isa = PBXFileReference; includeInIndex = 0; name = LidPilotHelper; path = LidPilotHelper; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C137F18A18822F29FC235A07676AA12 /* StateObserver.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = StateObserver.swift; path = App/StateObserver.swift; sourceTree = "<group>"; };
+		4E0649C43CE788781890699CC971932E /* LidPilotAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; name = LidPilotAppTests.xctest; path = LidPilotAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		51CA11A1B500E15A115AD48237B27E18 /* com.lidpilot.app.helper.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = com.lidpilot.app.helper.plist; path = Config/LaunchDaemons/com.lidpilot.app.helper.plist; sourceTree = "<group>"; };
+		57851A22BB7279CC6083A865FAB23D94 /* LidPilot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = LidPilot.app; path = LidPilot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		64BCC2B63F3C8EEB3890AAA5FFF5EA25 /* DiagnosticsStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DiagnosticsStore.swift; path = App/DiagnosticsStore.swift; sourceTree = "<group>"; };
 		695D195D5D525F4DB366B6947EAF068C /* SettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SettingsView.swift; path = App/SettingsView.swift; sourceTree = "<group>"; };
 		7B5C15A84A86CCC74EC6B0BA1C56A3FB /* HelperManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HelperManager.swift; path = App/HelperManager.swift; sourceTree = "<group>"; };
 		7D473C0E73556BEFE338377A8529D078 /* PreviewHarness.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PreviewHarness.swift; path = App/PreviewHarness.swift; sourceTree = "<group>"; };
 		903D869E4E5535637963BB07C7DCA36B /* Version.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
 		9A4F9B02E3278110737E1002056860A2 /* com.lidpilot.app.dev.helper.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = com.lidpilot.app.dev.helper.plist; path = Config/LaunchDaemons/com.lidpilot.app.dev.helper.plist; sourceTree = "<group>"; };
-		A99A457A400AC7D14B0FC6E4B6AB8161 /* LidPilot.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = LidPilot.app; path = LidPilot.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B10474556CD70BD6A593DE4267146336 /* UpdateCoordinator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = UpdateCoordinator.swift; path = App/UpdateCoordinator.swift; sourceTree = "<group>"; };
 		C5C171D0CE857EC169C86906C50199EE /* THIRD_PARTY_NOTICES.md */ = {isa = PBXFileReference; includeInIndex = 1; path = THIRD_PARTY_NOTICES.md; sourceTree = "<group>"; };
 		D6AE1BDB3CEE245724DE7768ECCF5C22 /* main.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = main.swift; path = Helper/main.swift; sourceTree = "<group>"; };
 		E2F69F9CDDCCCD4D3C891C92EDAB0A7E /* AppModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppModel.swift; path = App/AppModel.swift; sourceTree = "<group>"; };
+		E34BBCA77B1FF1F8EBB167FA26CA08FD /* LidPilotHelper */ = {isa = PBXFileReference; includeInIndex = 0; name = LidPilotHelper; path = LidPilotHelper; sourceTree = BUILT_PRODUCTS_DIR; };
+		EC9A1A945AD4DA839ECB1C5D4F7C6BD6 /* UpdateCoordinatorTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = UpdateCoordinatorTests.swift; path = AppTests/UpdateCoordinatorTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,6 +98,17 @@
 				98EFC7FC708246331F99AA839B9BD95C /* Cocoa.framework in Frameworks */,
 				1E9C72062F6528A60D7ED6484E1B6C4F /* LidPilotRuntime in Frameworks */,
 				4E0FC268DC5DD417F368E0BC06E52CCC /* LidPilotCore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		27594AA15A8062E26643A2601D2EA5F0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				81DDF6374F0AD89B2583B7BEEADCCA14 /* Cocoa.framework in Frameworks */,
+				6377D7957DF5882BDE2588278ADE735E /* LidPilotRuntime in Frameworks */,
+				376A7993534ADF3CAFF332508083FE42 /* LidPilotCore in Frameworks */,
+				97316B8A8265EB5E13F1E24935BCFC14 /* Sparkle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -111,13 +134,12 @@
 			name = Helper;
 			sourceTree = "<group>";
 		};
-		0A03C60FC0E26512B9583EE3E107513C /* Products */ = {
+		2314CD72036A865C10E6F9F253F57FFA /* AppTests */ = {
 			isa = PBXGroup;
 			children = (
-				A99A457A400AC7D14B0FC6E4B6AB8161 /* LidPilot.app */,
-				359131119CEACA867BB1A149A009E57B /* LidPilotHelper */,
+				EC9A1A945AD4DA839ECB1C5D4F7C6BD6 /* UpdateCoordinatorTests.swift */,
 			);
-			name = Products;
+			name = AppTests;
 			sourceTree = "<group>";
 		};
 		49DA8F2554E0F3C22444E788CE2C526A /* Frameworks */ = {
@@ -131,11 +153,12 @@
 		A6BA33EB933E86EE78AC46A7B75D624B = {
 			isa = PBXGroup;
 			children = (
-				0A03C60FC0E26512B9583EE3E107513C /* Products */,
+				FACC0C1ED516E3A2FC45E9A37AD93DFE /* Products */,
 				49DA8F2554E0F3C22444E788CE2C526A /* Frameworks */,
 				903D869E4E5535637963BB07C7DCA36B /* Version.xcconfig */,
 				FF4442C60F88033B5388CB13746FFE5D /* App */,
 				004DDE3C3F331730992BBF333BDC6276 /* Helper */,
+				2314CD72036A865C10E6F9F253F57FFA /* AppTests */,
 				16537F856E6E4DEAD23EBDFD03B1D97E /* Assets.xcassets */,
 				13F0F8D73796683FD58495963E905DC8 /* LICENSE */,
 				C5C171D0CE857EC169C86906C50199EE /* THIRD_PARTY_NOTICES.md */,
@@ -150,6 +173,16 @@
 				3312D05CDCB3EC18642AE0A13A0EBCF4 /* Cocoa.framework */,
 			);
 			name = "OS X";
+			sourceTree = "<group>";
+		};
+		FACC0C1ED516E3A2FC45E9A37AD93DFE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				57851A22BB7279CC6083A865FAB23D94 /* LidPilot.app */,
+				E34BBCA77B1FF1F8EBB167FA26CA08FD /* LidPilotHelper */,
+				4E0649C43CE788781890699CC971932E /* LidPilotAppTests.xctest */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 		FF4442C60F88033B5388CB13746FFE5D /* App */ = {
@@ -172,6 +205,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		101367711CE79C512DC83EA1545771FD /* LidPilotAppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3D7961D7171BFFAAA069838BB33A3FC0 /* Build configuration list for PBXNativeTarget "LidPilotAppTests" */;
+			buildPhases = (
+				3A3452410E2093BDEF03E1057E5CB382 /* Sources */,
+				27594AA15A8062E26643A2601D2EA5F0 /* Frameworks */,
+				18654291747AB66A2C620CF8D8C26551 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LidPilotAppTests;
+			packageProductDependencies = (
+				A012268BA173E0F195BF03EAE9E3C2C5 /* LidPilotRuntime */,
+				A9039249DF6F34AA43572EE84B380D97 /* LidPilotCore */,
+				86A62831FEC2BB3487683DC0221D9BE2 /* Sparkle */,
+			);
+			productName = LidPilotAppTests;
+			productReference = 4E0649C43CE788781890699CC971932E /* LidPilotAppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		72077D9073496C62341494F0E41829D3 /* LidPilotHelper */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = D06D4B8ECA81E35FE9385D298D4121C0 /* Build configuration list for PBXNativeTarget "LidPilotHelper" */;
@@ -190,7 +245,7 @@
 				3EBD6916D81A0B9344DC25417B708CB8 /* LidPilotCore */,
 			);
 			productName = LidPilotHelper;
-			productReference = 359131119CEACA867BB1A149A009E57B /* LidPilotHelper */;
+			productReference = E34BBCA77B1FF1F8EBB167FA26CA08FD /* LidPilotHelper */;
 			productType = "com.apple.product-type.tool";
 		};
 		8552BA7F9619A283E7F85A3E4E4299B1 /* LidPilot */ = {
@@ -215,7 +270,7 @@
 				7C767075C0C8A419EA1FDC2255CF9BB3 /* Sparkle */,
 			);
 			productName = LidPilot;
-			productReference = A99A457A400AC7D14B0FC6E4B6AB8161 /* LidPilot.app */;
+			productReference = 57851A22BB7279CC6083A865FAB23D94 /* LidPilot.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -243,17 +298,25 @@
 				1AE884E465799F26FDE181C8A385BC11 /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
 			preferredProjectObjectVersion = 77;
-			productRefGroup = 0A03C60FC0E26512B9583EE3E107513C /* Products */;
+			productRefGroup = FACC0C1ED516E3A2FC45E9A37AD93DFE /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				8552BA7F9619A283E7F85A3E4E4299B1 /* LidPilot */,
 				72077D9073496C62341494F0E41829D3 /* LidPilotHelper */,
+				101367711CE79C512DC83EA1545771FD /* LidPilotAppTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		18654291747AB66A2C620CF8D8C26551 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7C24AEA570F9D795C5B642713F5A3DD9 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -299,6 +362,19 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		3A3452410E2093BDEF03E1057E5CB382 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D80D2005B53D0DDADE77DE3EA606D2BA /* UpdateCoordinator.swift in Sources */,
+				25D96BEE6BD090BCAF9BDB5AA9771E1F /* HelperManager.swift in Sources */,
+				BF9EFB51760B061991DDDF0A574810BD /* AppModel.swift in Sources */,
+				45DA10E928ADADAB0B0CF6AB59BA0DE9 /* DiagnosticsStore.swift in Sources */,
+				4B00616BE9B72FB91916A32E6FFC608E /* StateObserver.swift in Sources */,
+				7B6DF1DDD7D2E21719A7973F4D4D0A25 /* UpdateCoordinatorTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		5ED46701FD8D954E1D2D2DE93B71AAC9 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -475,6 +551,35 @@
 			};
 			name = Release;
 		};
+		BE3B28106510D05262CB5E33A7D0B0DF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = "$(inherited)";
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lidpilot.app.tests;
+				PRODUCT_NAME = LidPilotAppTests;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = LIDPILOT_TESTING;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
 		D8D5C5921C8F8912333613322B6CB198 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -513,6 +618,35 @@
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
+		};
+		DB4058FC5A9F2942DB0DD53EE8BB6B02 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = "$(inherited)";
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lidpilot.app.tests;
+				PRODUCT_NAME = LidPilotAppTests;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = LIDPILOT_TESTING;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_VERSION = 6.0;
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
 		};
 		E8F4866ED30CBA9B9F590CDA11E3E90F /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -610,6 +744,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		3D7961D7171BFFAAA069838BB33A3FC0 /* Build configuration list for PBXNativeTarget "LidPilotAppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DB4058FC5A9F2942DB0DD53EE8BB6B02 /* Release */,
+				BE3B28106510D05262CB5E33A7D0B0DF /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		A10E772ECF1D3B0704A2EA7A93052F57 /* Build configuration list for PBXProject "LidPilot" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -683,6 +826,21 @@
 			productName = Sparkle;
 		};
 		867E1F4A63C8EE9AB6A3070B571492A8 /* LidPilotCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 11B045C5071B83E0B7AE52F7B100BD4A /* XCLocalSwiftPackageReference "Core" */;
+			productName = LidPilotCore;
+		};
+		86A62831FEC2BB3487683DC0221D9BE2 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1AE884E465799F26FDE181C8A385BC11 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+		A012268BA173E0F195BF03EAE9E3C2C5 /* LidPilotRuntime */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8EA5BE31065355AF06DB1600D897984D /* XCLocalSwiftPackageReference "." */;
+			productName = LidPilotRuntime;
+		};
+		A9039249DF6F34AA43572EE84B380D97 /* LidPilotCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 11B045C5071B83E0B7AE52F7B100BD4A /* XCLocalSwiftPackageReference "Core" */;
 			productName = LidPilotCore;

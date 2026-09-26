@@ -17,6 +17,15 @@ APP_IDENTIFIER = "com.lidpilot.app"
 HELPER_IDENTIFIER = "com.lidpilot.app.helper"
 DEVELOPMENT_APP_IDENTIFIER = "com.lidpilot.app.dev"
 DEVELOPMENT_HELPER_IDENTIFIER = "com.lidpilot.app.dev.helper"
+APP_TEST_IDENTIFIER = "com.lidpilot.app.tests"
+APP_TEST_SOURCES = [
+  "App/UpdateCoordinator.swift",
+  "App/HelperManager.swift",
+  "App/AppModel.swift",
+  "App/DiagnosticsStore.swift",
+  "App/StateObserver.swift",
+  "AppTests/UpdateCoordinatorTests.swift"
+].freeze
 IDENTITIES = {
   "Debug" => {
     "app" => DEVELOPMENT_APP_IDENTIFIER,
@@ -136,12 +145,48 @@ def configure_target_settings(target, info_plist, helper: false)
   end
 end
 
+def configure_app_test_target(target)
+  target.build_configurations.each do |config|
+    configure_common_settings(config)
+    config.build_settings.merge!(
+      "CODE_SIGN_ENTITLEMENTS" => "",
+      "CODE_SIGN_IDENTITY" => "-",
+      "CODE_SIGN_STYLE" => "Manual",
+      "GENERATE_INFOPLIST_FILE" => "YES",
+      "LD_RUNPATH_SEARCH_PATHS" => ["$(inherited)", "@executable_path/../Frameworks", "@loader_path/../Frameworks"],
+      "PRODUCT_BUNDLE_IDENTIFIER" => APP_TEST_IDENTIFIER,
+      "PRODUCT_NAME" => "LidPilotAppTests",
+      "SKIP_INSTALL" => "YES",
+      "SWIFT_ACTIVE_COMPILATION_CONDITIONS" => "LIDPILOT_TESTING",
+      "ENABLE_TESTABILITY" => "YES"
+    )
+    # This is a hostless XCTest bundle containing only explicit coordinator
+    # sources. In particular, no app launch invokes AppModel or ServiceManagement.
+    config.build_settings.delete("TEST_HOST")
+    config.build_settings.delete("BUNDLE_LOADER")
+  end
+end
+
 def project_invariants(project)
   targets = project.targets.to_h { |target| [target.name, target] }
   app = targets["LidPilot"]
   helper = targets["LidPilotHelper"]
+  app_tests = targets["LidPilotAppTests"]
   raise "missing LidPilot application target" unless app
   raise "missing LidPilotHelper tool target" unless helper
+  raise "missing hostless LidPilotAppTests bundle target" unless app_tests
+  raise "LidPilotAppTests is not a unit-test bundle" unless app_tests.product_type == "com.apple.product-type.bundle.unit-test"
+  app_tests.build_configurations.each do |config|
+    settings = config.build_settings
+    raise "#{config.name} app tests must use the dedicated bundle identifier" unless settings["PRODUCT_BUNDLE_IDENTIFIER"] == APP_TEST_IDENTIFIER
+    raise "#{config.name} app tests must compile the coordinator injection seam" unless settings["SWIFT_ACTIVE_COMPILATION_CONDITIONS"] == "LIDPILOT_TESTING"
+    raise "#{config.name} app tests must generate an Info.plist" unless settings["GENERATE_INFOPLIST_FILE"] == "YES"
+    raise "#{config.name} app test bundle must be hostless" if settings.key?("TEST_HOST") || settings.key?("BUNDLE_LOADER")
+  end
+  test_source_paths = app_tests.source_build_phase.files_references.map(&:path)
+  raise "LidPilotAppTests source set changed: #{test_source_paths.sort.inspect}" unless test_source_paths.sort == APP_TEST_SOURCES.sort
+  raise "LidPilotAppTests source leaked into the shipping app target" if
+    app.source_build_phase.files_references.any? { |reference| reference.path == "AppTests/UpdateCoordinatorTests.swift" }
 
   app_id = app.build_configurations.first.build_settings["PRODUCT_BUNDLE_IDENTIFIER"]
   raise "unexpected first app bundle identifier: #{app_id.inspect}" unless IDENTITIES.values.any? { |identity| identity.fetch("app") == app_id }
@@ -195,6 +240,10 @@ def project_invariants(project)
   requirement = sparkle.requirement
   unless requirement && requirement["kind"] == "exactVersion" && requirement["version"] == SPARKLE_VERSION
     raise "Sparkle must be pinned to exact version #{SPARKLE_VERSION}: #{requirement.inspect}"
+  end
+  ["LidPilotRuntime", "LidPilotCore", "Sparkle"].each do |product_name|
+    raise "LidPilotAppTests is missing #{product_name}" unless
+      app_tests.package_product_dependencies.any? { |dependency| dependency.product_name == product_name }
   end
 
   true
@@ -251,9 +300,11 @@ def generate
 
   app = project.new_target(:application, "LidPilot", :osx, "15.0")
   helper = project.new_target(:tool, "LidPilotHelper", :osx, "15.0")
+  app_tests = project.new_target(:unit_test_bundle, "LidPilotAppTests", :osx, "15.0")
   helper.product_type = "com.apple.product-type.tool"
   app.product_reference.name = "LidPilot.app"
   helper.product_reference.name = "LidPilotHelper"
+  app_tests.product_reference.name = "LidPilotAppTests.xctest"
 
   xcconfig_reference = project.main_group.new_file("Version.xcconfig")
   project.build_configurations.each do |config|
@@ -261,9 +312,17 @@ def generate
   end
   configure_target_settings(app, "Config/App-Info.plist")
   configure_target_settings(helper, "Config/Helper-Info.plist", helper: true)
+  configure_app_test_target(app_tests)
 
   add_group_files(project, app, "App", "App", ".swift")
   add_group_files(project, helper, "Helper", "Helper", ".swift")
+  app_test_group = project.main_group.find_subpath("AppTests", true)
+  app_test_group.name = "AppTests"
+  app_references = app.source_build_phase.files_references.to_h { |reference| [reference.path, reference] }
+  test_references = APP_TEST_SOURCES.map do |path|
+    app_references[path] || app_test_group.new_file(path)
+  end
+  app_tests.add_file_references(test_references)
   ["App/Assets.xcassets", "LICENSE", "THIRD_PARTY_NOTICES.md"].each do |path|
     app.resources_build_phase.add_file_reference(project.main_group.new_file(path))
   end
@@ -280,6 +339,9 @@ def generate
   sparkle_package.requirement = { "kind" => "exactVersion", "version" => SPARKLE_VERSION }
   project.root_object.package_references << sparkle_package
   add_package_product(app, sparkle_package, "Sparkle")
+  ["LidPilotRuntime", "LidPilotCore", "Sparkle"].zip([root_package, core_package, sparkle_package]).each do |product_name, package|
+    add_package_product(app_tests, package, product_name)
+  end
 
   # xcodeproj's UUID generator includes PBXContainerItemProxy references in
   # the dependency path.  Those references contain the target/root UUIDs, so
@@ -315,7 +377,7 @@ def generate
 
   project.predictabilize_uuids
   scheme = Xcodeproj::XCScheme.new
-  scheme.configure_with_targets(app, nil)
+  scheme.configure_with_targets(app, app_tests)
   scheme.add_build_target(helper)
   PROJECT_PATH.mkpath
   scheme.save_as(PROJECT_RELATIVE_PATH.to_s, "LidPilot", true)
@@ -333,6 +395,9 @@ def check
   required_fragments = [
     "LidPilotRuntime",
     "LidPilotCore",
+    APP_TEST_IDENTIFIER,
+    "LidPilotAppTests.xctest",
+    "LIDPILOT_TESTING",
     SPARKLE_URL,
     "exactVersion",
     SPARKLE_VERSION,
@@ -357,7 +422,7 @@ def check
   raise "project is missing expected settings: #{missing.join(", ")}" unless missing.empty?
   expected_app_sources = relative_files("App", ".swift")
   expected_helper_sources = relative_files("Helper", ".swift")
-  source_fragments = (expected_app_sources + expected_helper_sources)
+  source_fragments = (expected_app_sources + expected_helper_sources + APP_TEST_SOURCES)
   missing_sources = source_fragments.reject { |source| pbx.include?(source) }
   raise "project is missing source references: #{missing_sources.join(", ")}" unless missing_sources.empty?
   config_inputs = [
@@ -369,6 +434,10 @@ def check
   config_inputs.each do |path|
     raise "missing project input: #{path}" unless ROOT.join(path).file?
   end
+  raise "hostless app test target unexpectedly has a test host" if pbx.include?("TEST_HOST =") || pbx.include?("BUNDLE_LOADER =")
+  scheme = PROJECT_PATH.join("xcshareddata/xcschemes/LidPilot.xcscheme")
+  raise "LidPilotAppTests is missing from the shared test scheme" unless
+    scheme.file? && File.read(scheme).include?("LidPilotAppTests.xctest")
   puts "project configuration is valid"
 end
 

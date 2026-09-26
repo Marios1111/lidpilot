@@ -30,6 +30,8 @@ jobs:
         run: ./scripts/verify.sh
       - name: Run Swift package tests
         run: ./scripts/test.sh
+      - name: Test update coordinator app policy with in-memory dependencies
+        run: ./scripts/test-app.sh
       - name: Test profiling instrumentation with harmless fixtures
         run: swift test --disable-sandbox --scratch-path /private/tmp/lidpilot-profile-ci -Xswiftc -DLIDPILOT_PROFILE
       - name: Test profiling report analysis

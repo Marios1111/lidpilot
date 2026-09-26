@@ -105,6 +105,7 @@ With Xcode and the repository's pinned project-generator dependencies installed:
 ./scripts/build.sh Debug
 ./scripts/build.sh Release
 ./scripts/test.sh
+./scripts/test-app.sh
 ./scripts/verify.sh
 ruby scripts/generate-project.rb --check
 ```

@@ -1,7 +1,37 @@
 import AppKit
 import Observation
+import ServiceManagement
 import Sparkle
 import LidPilotRuntime
+
+@MainActor protocol UpdateCoordinatorHelper: AnyObject {
+    var signed: Bool { get }
+    var enabled: Bool { get }
+    var status: SMAppService.Status { get }
+    func register()
+    func unregister() async throws
+}
+
+extension HelperManager: UpdateCoordinatorHelper {}
+
+@MainActor protocol UpdateCoordinatorModel: AnyObject {
+    var controller: SessionController { get }
+    var onboardingComplete: Bool { get }
+    var updateHelper: any UpdateCoordinatorHelper { get }
+    func refreshHelper()
+}
+
+extension AppModel: UpdateCoordinatorModel {
+    var updateHelper: any UpdateCoordinatorHelper { helper }
+}
+
+#if LIDPILOT_TESTING
+@MainActor protocol UpdateCoordinatorTestUpdater: AnyObject {
+    var canCheckForUpdates: Bool { get }
+    var automaticallyChecksForUpdates: Bool { get set }
+    func checkForUpdates()
+}
+#endif
 
 /// Keep one standard Sparkle controller. Update checks are allowed only while LidPilot is Off.
 /// The whole install-capable cycle remains gated before Sparkle can present an update.
@@ -12,27 +42,47 @@ import LidPilotRuntime
         "https://marios1111.github.io/lidpilot/rc/appcast.xml"
     ]
 
-    private weak var model: AppModel?
-    private var standard: SPUStandardUpdaterController?
+    @ObservationIgnored private weak var model: (any UpdateCoordinatorModel)?
+    @ObservationIgnored private var standard: SPUStandardUpdaterController?
     private var preparing = false
     private var prepared = false
     private var installationCommitted = false
     private var restoreHelper = false
-    private let defaults = UserDefaults.standard
+    @ObservationIgnored private let defaults: UserDefaults
     private let build: String
+    @ObservationIgnored private let lidIsOpen: @MainActor () -> Bool
+    @ObservationIgnored private var cycleCleanupScheduled = false
+#if LIDPILOT_TESTING
+    @ObservationIgnored private var testUpdater: (any UpdateCoordinatorTestUpdater)?
+#endif
     private(set) var configured = false
     private(set) var status = "Updates will be available in publisher-signed releases."
     private(set) var canCheck = false
-    private var capabilityObservation: NSKeyValueObservation?
+    @ObservationIgnored private var capabilityObservation: NSKeyValueObservation?
 
     var automaticChecks: Bool {
-        get { standard?.updater.automaticallyChecksForUpdates ?? false }
-        set { standard?.updater.automaticallyChecksForUpdates = newValue }
+        get {
+#if LIDPILOT_TESTING
+            if let testUpdater { return testUpdater.automaticallyChecksForUpdates }
+#endif
+            return standard?.updater.automaticallyChecksForUpdates ?? false
+        }
+        set {
+#if LIDPILOT_TESTING
+            if let testUpdater {
+                testUpdater.automaticallyChecksForUpdates = newValue
+                return
+            }
+#endif
+            standard?.updater.automaticallyChecksForUpdates = newValue
+        }
     }
 
     init(model: AppModel) {
         self.model = model
+        defaults = .standard
         build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "unconfigured"
+        lidIsOpen = { SystemPowerSampler().sample().lid == .open }
         super.init()
         guard let configuration = HelperIdentity.applicationConfiguration() else {
             status = "Updates are unavailable for this app identity."
@@ -65,9 +115,63 @@ import LidPilotRuntime
         Task { await reconcilePreviousUpdate() }
     }
 
+#if LIDPILOT_TESTING
+    init(testing model: any UpdateCoordinatorModel, defaults: UserDefaults, build: String,
+         updater: any UpdateCoordinatorTestUpdater, lidIsOpen: @escaping @MainActor () -> Bool) {
+        self.model = model
+        self.defaults = defaults
+        self.build = build
+        self.testUpdater = updater
+        self.lidIsOpen = lidIsOpen
+        super.init()
+        configured = true
+        canCheck = updater.canCheckForUpdates
+        status = "Signed updates. Manual installation."
+        if defaults.string(forKey: "updatePendingBuild") != nil {
+            model.controller.holdInterruptedUpdate()
+        }
+    }
+
+    func reconcilePreviousUpdateForTesting() async {
+        await reconcilePreviousUpdate()
+    }
+
+    func authorizeUpdateCheckForTesting(_ kind: SPUUpdateCheck) throws {
+        try authorizeUpdateCheck(kind)
+    }
+
+    func commitInstallationForTesting() {
+        commitInstallation()
+    }
+
+    func finishUpdateCycleForTesting(error: (any Error)?) {
+        finishUpdateCycle(error: error)
+    }
+
+    func waitForUpdateCycleCleanupForTesting() async {
+        while cycleCleanupScheduled { await Task.yield() }
+    }
+#endif
+
+    private var updaterCanCheck: Bool {
+#if LIDPILOT_TESTING
+        if let testUpdater { return testUpdater.canCheckForUpdates }
+#endif
+        return standard?.updater.canCheckForUpdates ?? false
+    }
+
+    private func checkForUpdates() {
+#if LIDPILOT_TESTING
+        if let testUpdater {
+            testUpdater.checkForUpdates()
+            return
+        }
+#endif
+        standard?.checkForUpdates(nil)
+    }
+
     func check() {
-        guard configured, let standard, let model, !preparing, !installationCommitted,
-              standard.updater.canCheckForUpdates else { return }
+        guard configured, let model, !preparing, !installationCommitted, updaterCanCheck else { return }
         // Sparkle can show a synchronous error alert after shouldProceed rejects an update.
         // Its modal loop can delay our assertion renewal task until the alert is dismissed.
         guard !model.controller.hasSession else {
@@ -81,17 +185,18 @@ import LidPilotRuntime
                 if model.controller.updateBarrier { model.controller.endUpdate() }
                 try await model.controller.beginUpdate()
                 model.refreshHelper()
-                restoreHelper = restoreHelper || model.helper.enabled || defaults.bool(forKey: "updateRestoreHelper")
+                let helper = model.updateHelper
+                restoreHelper = restoreHelper || helper.enabled || defaults.bool(forKey: "updateRestoreHelper")
                 defaults.set(restoreHelper, forKey: "updateRestoreHelper")
                 defaults.set(build, forKey: "updatePendingBuild")
-                try await model.helper.unregister()
+                try await helper.unregister()
                 model.refreshHelper()
-                guard SystemPowerSampler().sample().lid == .open else {
+                guard lidIsOpen() else {
                     throw RuntimeFailure.unavailable("Keep the lid open to update LidPilot.")
                 }
                 prepared = true
                 status = "LidPilot is Off while the update window is open."
-                standard.checkForUpdates(nil)
+                checkForUpdates()
             } catch {
                 status = error.localizedDescription
                 await finishPreparation(error: status)
@@ -100,6 +205,10 @@ import LidPilotRuntime
     }
 
     func updater(_ updater: SPUUpdater, mayPerform updateCheck: SPUUpdateCheck) throws {
+        try authorizeUpdateCheck(updateCheck)
+    }
+
+    private func authorizeUpdateCheck(_ updateCheck: SPUUpdateCheck) throws {
         guard model?.onboardingComplete == true else {
             throw updateError("Finish the welcome screen before checking for updates.")
         }
@@ -110,21 +219,25 @@ import LidPilotRuntime
 
     func updater(_ updater: SPUUpdater, shouldProceedWithUpdate updateItem: SUAppcastItem, updateCheck: SPUUpdateCheck) throws {
         guard let model, prepared, model.controller.updateBarrier, !model.controller.hasSession,
-              model.controller.assertions == .off, SystemPowerSampler().sample().lid == .open,
-              model.helper.status == .notRegistered || model.helper.status == .notFound else {
+              model.controller.assertions == .off, lidIsOpen(),
+              model.updateHelper.status == .notRegistered || model.updateHelper.status == .notFound else {
             status = "An update is available. Turn LidPilot Off, then choose Check for Updates to install."
             throw updateError(status)
         }
     }
 
     func updater(_ updater: SPUUpdater, willInstallUpdate item: SUAppcastItem) {
+        commitInstallation()
+    }
+
+    private func commitInstallation() {
         // The pre-download gate already holds the barrier and the helper has been unregistered.
         installationCommitted = true
         status = "Update ready. LidPilot will restart Off."
     }
 
     func updater(_ updater: SPUUpdater, userDidMake choice: SPUUserUpdateChoice, forUpdate updateItem: SUAppcastItem, state: SPUUserUpdateState) {
-        if state.stage == .installing { installationCommitted = true }
+        if state.stage == .installing { commitInstallation() }
     }
 
     func updater(_ updater: SPUUpdater, shouldPostponeRelaunchForUpdate item: SUAppcastItem,
@@ -143,17 +256,26 @@ import LidPilotRuntime
     }
 
     func updater(_ updater: SPUUpdater, didFinishUpdateCycleFor updateCheck: SPUUpdateCheck, error: (any Error)?) {
+        finishUpdateCycle(error: error)
+    }
+
+    private func finishUpdateCycle(error: (any Error)?) {
         guard prepared || preparing else { return }
         // A staged install can survive dismissing the dialog and install on quit. Keep its barrier.
-        guard !installationCommitted else { return }
-        Task { await finishPreparation(error: error?.localizedDescription) }
+        guard !installationCommitted, !cycleCleanupScheduled else { return }
+        cycleCleanupScheduled = true
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            defer { cycleCleanupScheduled = false }
+            await finishPreparation(error: error?.localizedDescription)
+        }
     }
 
     var canTerminate: Bool {
         guard let model, model.controller.updateBarrier else { return true }
         return prepared && !model.controller.hasSession && model.controller.assertions == .off &&
-            SystemPowerSampler().sample().lid == .open &&
-            (model.helper.status == .notRegistered || model.helper.status == .notFound)
+            lidIsOpen() &&
+            (model.updateHelper.status == .notRegistered || model.updateHelper.status == .notFound)
     }
 
     private func reconcilePreviousUpdate() async {
@@ -175,13 +297,14 @@ import LidPilotRuntime
     private func finishPreparation(error: String?) async {
         guard let model else { return }
         prepared = false
+        let helper = model.updateHelper
         if restoreHelper {
-            model.helper.register()
+            helper.register()
             model.refreshHelper()
         }
         defaults.removeObject(forKey: "updatePendingBuild")
         // Keep this repair hint until registration succeeds, including after a failed update.
-        if !restoreHelper || model.helper.enabled {
+        if !restoreHelper || helper.enabled {
             defaults.removeObject(forKey: "updateRestoreHelper")
             restoreHelper = false
         }
