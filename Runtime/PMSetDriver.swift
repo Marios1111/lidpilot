@@ -183,7 +183,7 @@ internal struct POSIXCommandRunner: Sendable {
                     throw POSIXCommandError.io("waitpid errno \(errno)")
                 }
 
-                _ = try drain(child.outputDescriptor, into: &output, tooLarge: &outputTooLarge)
+                let outputClosed = try drain(child.outputDescriptor, into: &output, tooLarge: &outputTooLarge)
                 if DispatchTime.now().uptimeNanoseconds >= deadline {
                     throw POSIXCommandError.timedOut(childReaped: false)
                 }
@@ -191,7 +191,13 @@ internal struct POSIXCommandRunner: Sendable {
                 guard waitMilliseconds > 0 else {
                     throw POSIXCommandError.timedOut(childReaped: false)
                 }
-                _ = try waitForOutput(child.outputDescriptor, milliseconds: waitMilliseconds)
+                if outputClosed {
+                    // EOF makes poll report HUP immediately even when the child
+                    // is still running. Keep checking waitpid without spinning.
+                    Thread.sleep(forTimeInterval: Double(waitMilliseconds) / 1_000)
+                } else {
+                    _ = try waitForOutput(child.outputDescriptor, milliseconds: waitMilliseconds)
+                }
             }
 
             if outputTooLarge { throw POSIXCommandError.outputTooLarge }

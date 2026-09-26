@@ -118,6 +118,47 @@ struct PMSetDriverTests {
     }
 }
 
+@Suite(.serialized)
+struct POSIXCommandRunnerRegressionTests {
+    @Test func runnerDoesNotBusyLoopWhenChildClosesOutputBeforeExit() throws {
+        let runner = POSIXCommandRunner(executable: "/bin/sh", timeout: 1)
+        let before = try currentThreadCPUSeconds()
+        let start = DispatchTime.now().uptimeNanoseconds
+        let output = try runner.run(
+            arguments: ["-c", "exec 1>&- 2>&-; /bin/sleep 0.3"],
+            inheritedFence: nil
+        )
+        let elapsed = Double(DispatchTime.now().uptimeNanoseconds - start) / 1_000_000_000
+        let cpuUsed = try currentThreadCPUSeconds() - before
+
+        #expect(output.isEmpty)
+        #expect(elapsed >= 0.25)
+        #expect(cpuUsed < elapsed * 0.05)
+    }
+}
+
+private func currentThreadCPUSeconds() throws -> Double {
+    let thread = mach_thread_self()
+    defer { mach_port_deallocate(mach_task_self_, thread) }
+
+    var info = thread_basic_info_data_t()
+    var count = mach_msg_type_number_t(
+        MemoryLayout<thread_basic_info_data_t>.size / MemoryLayout<natural_t>.size
+    )
+    let result = withUnsafeMutablePointer(to: &info) { pointer in
+        pointer.withMemoryRebound(to: integer_t.self, capacity: Int(count)) {
+            thread_info(thread, thread_flavor_t(THREAD_BASIC_INFO), $0, &count)
+        }
+    }
+    guard result == KERN_SUCCESS else {
+        throw RuntimeFailure.unavailable("could not read current-thread CPU time (\(result))")
+    }
+
+    let user = Double(info.user_time.seconds) + Double(info.user_time.microseconds) / 1_000_000
+    let system = Double(info.system_time.seconds) + Double(info.system_time.microseconds) / 1_000_000
+    return user + system
+}
+
 private final class TestFenceDirectory {
     let url: URL
     let descriptor: Int32
