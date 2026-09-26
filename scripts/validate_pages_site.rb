@@ -29,9 +29,50 @@ POST_SIGNATURE_WARNING = <<~COMMENT.strip
   IMPORTANT: This file was signed by Sparkle. Any modifications to this file requires updating signatures in appcasts that reference this file! This will involve re-running generate_appcast or sign_update.
   -->
 COMMENT
+OPENSSL3_PATH_ENV = "LIDPILOT_OPENSSL3"
+OPENSSL3_FIXED_PATHS = [
+  "/opt/homebrew/opt/openssl@3/bin/openssl",
+  "/usr/local/opt/openssl@3/bin/openssl"
+].freeze
 
 def fail_validation(message)
   raise ValidationError, message
+end
+
+def validate_openssl3_executable(path)
+  fail_validation("OpenSSL 3 executable path must be absolute") unless Pathname.new(path).absolute?
+  fail_validation("OpenSSL 3 executable is missing or not executable: #{path}") unless File.file?(path) && File.executable?(path)
+
+  stdout, stderr, status = Open3.capture3(path, "version")
+  version = [stdout, stderr].map(&:strip).reject(&:empty?).join(" ")
+  unless status.success? && stdout.match?(/\AOpenSSL 3(?:\.|\s)/)
+    fail_validation("OpenSSL 3 is required; #{path} reported #{version.empty? ? "an unknown version" : version}")
+  end
+
+  path
+rescue Errno::ENOENT, Errno::EACCES => e
+  fail_validation("OpenSSL 3 executable could not be run at #{path}: #{e.message}")
+end
+
+def openssl3_executable(path_environment: ENV.fetch("PATH", ""), explicit_path: ENV[OPENSSL3_PATH_ENV])
+  unless explicit_path.to_s.empty?
+    return validate_openssl3_executable(explicit_path)
+  end
+
+  path_candidates = path_environment.split(File::PATH_SEPARATOR)
+                                   .select { |directory| Pathname.new(directory).absolute? }
+                                   .map { |directory| File.join(directory, "openssl") }
+  (OPENSSL3_FIXED_PATHS + path_candidates).uniq.each do |candidate|
+    next unless File.file?(candidate) && File.executable?(candidate)
+
+    begin
+      return validate_openssl3_executable(candidate)
+    rescue ValidationError
+      # LibreSSL and other OpenSSL versions do not meet the Ed25519 verifier requirement.
+    end
+  end
+
+  fail_validation("OpenSSL 3 is required to verify signed Pages metadata. Set #{OPENSSL3_PATH_ENV} to an existing OpenSSL 3 executable.")
 end
 
 def require_file(path, label)
@@ -87,13 +128,13 @@ def verify_ed25519(public_key, signature, message, label)
     File.binwrite(signature_path, signature)
     File.binwrite(message_path, message)
     _stdout, stderr, status = Open3.capture3(
-      "openssl", "pkeyutl", "-verify", "-pubin", "-keyform", "DER", "-inkey", public_path,
+      openssl3_executable, "pkeyutl", "-verify", "-pubin", "-keyform", "DER", "-inkey", public_path,
       "-sigfile", signature_path, "-rawin", "-in", message_path
     )
     fail_validation("#{label} Ed25519 signature verification failed#{stderr.strip.empty? ? "" : ": #{stderr.strip}"}") unless status.success?
   end
 rescue Errno::ENOENT
-  fail_validation("OpenSSL is required to verify signed Pages metadata")
+  fail_validation("OpenSSL 3 became unavailable while verifying signed Pages metadata")
 rescue ArgumentError
   fail_validation("configured Sparkle public key is not valid Base64")
 end
@@ -211,7 +252,24 @@ def expect_failure(label)
   puts "self-test rejected #{label}"
 end
 
+def self_test_openssl_selection
+  selected = openssl3_executable(path_environment: "/usr/bin:/bin", explicit_path: nil)
+  stdout, = Open3.capture3(selected, "version")
+  fail_validation("self-test did not select OpenSSL 3 with a restricted PATH") unless stdout.match?(/\AOpenSSL 3(?:\.|\s)/)
+  puts "self-test selected OpenSSL 3 with a restricted PATH"
+
+  Dir.mktmpdir("lidpilot-pages-openssl-") do |dir|
+    legacy_executable = File.join(dir, "openssl")
+    File.write(legacy_executable, "#!/bin/sh\nprintf '%s\\n' 'LibreSSL 3.3.6'\n")
+    FileUtils.chmod(0o700, legacy_executable)
+    expect_failure("LibreSSL is not accepted as the OpenSSL 3 verifier") do
+      openssl3_executable(path_environment: "/usr/bin:/bin", explicit_path: legacy_executable)
+    end
+  end
+end
+
 def self_test(defaults)
+  self_test_openssl_selection
   site = ROOT.join("website")
   puts validate_pages_site(site, defaults)
   fail_validation("self-test did not accept branded RC URL") unless validate_rc_feed_url(DEFAULT_BRANDED_RC_FEED) == :branded
