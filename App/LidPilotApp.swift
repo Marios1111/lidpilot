@@ -50,8 +50,23 @@ import LidPilotRuntime
     weak var model: AppModel?
     private var terminationRequested = false
     private var cleanupConfirmed = false
+    private var iconAppearanceObservation: NSKeyValueObservation?
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
+        // Update only on appearance changes, never on a timer. Finder retains
+        // the default icon; the running app uses the matching native variant.
+        iconAppearanceObservation = NSApp.observe(\.effectiveAppearance, options: [.initial, .new]) { _, _ in
+            Task { @MainActor in
+                guard let artwork = NSImage(named: "PilotIcon") else { return }
+                let icon = NSImage(size: NSSize(width: 512, height: 512))
+                NSApp.effectiveAppearance.performAsCurrentDrawingAppearance {
+                    icon.lockFocus()
+                    artwork.draw(in: NSRect(x: 0, y: 0, width: 512, height: 512))
+                    icon.unlockFocus()
+                }
+                NSApp.applicationIconImage = icon
+            }
+        }
         #if DEBUG
         if let model, model.isPreview,
            let directory = ProcessInfo.processInfo.environment["LIDPILOT_PREVIEW_CAPTURE_DIR"] {

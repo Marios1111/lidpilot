@@ -213,16 +213,15 @@ struct PilotPanel: View {
     private func showSettings() { openWindow(id: "settings"); NSApp.activate(ignoringOtherApps: true) }
 }
 
-/// A quiet system-symbol mark, shared by the menu, welcome screen, and settings.
+/// The same light/dark LP artwork used by the native application icon.
 struct PilotMark: View {
     var size: CGFloat = 40
     var body: some View {
-        Image(systemName: "laptopcomputer.and.arrow.down")
-            .font(.system(size: size * 0.52, weight: .medium))
-            .foregroundStyle(.tint)
+        Image("PilotIcon")
+            .resizable()
+            .interpolation(.high)
+            .scaledToFit()
             .frame(width: size, height: size)
-            .background(Color.accentColor.opacity(0.08), in: RoundedRectangle(cornerRadius: size * 0.27))
-            .overlay(RoundedRectangle(cornerRadius: size * 0.27).strokeBorder(Color.accentColor.opacity(0.12)))
             .accessibilityHidden(true)
     }
 }
