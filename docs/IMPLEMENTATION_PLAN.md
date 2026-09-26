@@ -104,3 +104,35 @@ Use natural coherent commits as work is completed: repository guidance; design g
 ## Release gates that cannot be replaced by mocks
 
 G1: inactivity dimming while preventing idle-off, tested independently of manual/ambient brightness. G2: physical internal panel shutdown across headless/docked/virtual-display topologies. G3: real GUI/helper crash, recovery, and command-lifecycle behavior. G4: signed peer authentication and journal/launchd security. G5: notarized install, tamper rejection, session-safe signed upgrade, helper replacement, recovery release, and uninstall. No universal hardware, thermal-safety, workload-success, or performance claim follows from implementation alone.
+
+## Owner-approved closeout additions — September 27, 2026
+
+The current owner added Homebrew installation and Copy Status to V1. CLI and
+configurable global shortcuts remain deferred. Settings should appear temporarily
+in the Dock/Cmd-Tab, returning to menu-bar-only when its window closes.
+
+Homebrew is an installation channel; Sparkle remains the routine in-app updater.
+The owner accepted required native cleanup before Homebrew removal/replacement:
+Turn Off, disable login, Remove Helper, confirm removal, Quit. Supported cask APIs
+cannot enforce that sequence automatically; no private hook or privileged cleanup
+bypass is permitted. Validate a manifest-derived stable cask and its real signed
+artifact before claiming the installation route is ready.
+
+RC10 inclusive CPU/memory and orderly uninstall/restoration passed. Remaining
+work: actual updater persistence/callback fault coverage, final hardware/native
+accessibility and original 100 ms visible-response validation, then exact-source
+tests/CI and freshly built stable artifacts. The polished RC website was separately
+authorized and published through Pages; this does not approve stable release.
+
+### Public launch presentation continuation
+
+- Approved one-time RC Pages publication completed at `13342a8` (run
+  `36279153700`); production stable feed remains unpublished.
+- Public-facing README rewritten around benefits, actual RC download, support,
+  cleanup and developer entrypoints. Stable download/cask links stay gated.
+- Homebrew copy block prepared for `brew install --cask Marios1111/tap/lidpilot`;
+  native hidden attribute remains until exact published cask installation passes.
+- Owner requested Astra Max review of film pacing, pauses, synchronization and
+  free/open-source/Homebrew messaging. Revised ElevenLabs narration generated
+  two takes; two failed provider concurrency limits without retries. New film
+  remains an isolated launch candidate until reviewed and Homebrew is available.

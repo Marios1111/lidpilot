@@ -33,7 +33,7 @@ journal-phase, admission, and retry findings were fixed by the lead and covered
 by regression tests; it was not a second final reviewer. CodeGraph was used for
 focused context, with current source and builds as the final evidence.
 
-## Latest closeout — September 26
+## Latest closeout — September 27
 
 The [audit closeout record](validation/2026-09-25-audit-closeout.md) records the
 owner's accepted dimming/panel/update limitations and narrowed built-in-display
@@ -85,12 +85,15 @@ RC10. Its isolated harness showed reduced bitmap memory; final installed
 | Closed-lid helper | Reciprocal signed XPC, console user restriction, fixed pmset operations, bounded child execution, leases/watchdog, journal and conflict handling | Real registration, identity rejection, GUI/helper crash cleanup, lease expiry and replacement helper verified across RC1–RC3; remaining G3/G4 cases open |
 | App lifecycle | Starts Off, login preference, helper approval, onboarding, notifications, verified quit and Stop & Sleep | Real helper approval and crash relaunch Off passed; RC8 gracefully retained notifications Off under denied OS permission. RC10 session-end entry in Notification Centre was observed by the owner; sound/banner unconfirmed. Login and sleep paths remain |
 | Diagnostics/recovery | Local redacted bounded logs, export preview, cleanup/repair/removal UI, explicit ambiguous-state recovery | Prolonged RC6 Save-dialog renewals passed; RC10 native successful save and output contents/hash verified. Final active-dialog regression remains |
-| Sparkle 2.10.0 | Manual/daily checks, signed feed/notes/archive configuration, active-session barrier, helper replacement and interrupted-update handling | Real RC1→RC2→RC3→RC4 signed upgrades and replacement helpers passed; RC8 no-update cycle restored its helper and cleared markers; updater fault paths and uninstall remain G5 |
+| Sparkle 2.10.0 | Manual/daily checks, signed feed/notes/archive configuration, active-session barrier, helper replacement and interrupted-update handling | Real RC1→RC2→RC3→RC4 signed upgrades and replacement helpers passed; RC8 no-update cycle restored its helper and cleared markers; updater fault paths and final-artifact uninstall remain G5 (RC10 uninstall passed) |
 | Distribution/community | MIT and dependency notices, README, CONTRIBUTING, SECURITY, CHANGELOG, issue templates, CI, staged signed/notarized DMG tooling | Developer ID, private reporting, signed/notarized RC1–RC4 and public artifact hashes verified; stable release still gated |
 | Website | Static accessible Pages site, no trackers or build dependency | Manual RC publication passed; hosted signed feed bytes/signature verified |
 
-No CLI, AI-agent detection, process automation, Shortcuts, widgets, remote
-control, cloud account, or Homebrew feature was added.
+The owner added Homebrew installation and Copy Status to the V1 closeout, plus
+temporary Dock presence while Settings is open. The Homebrew cask generator
+and staged website copy-command block are implemented; a published tap and real
+stable installation remain pending. CLI, global shortcuts, AI-agent detection,
+process automation, widgets, remote control and cloud accounts remain deferred.
 
 ## Initial implementation checks — September 19–21
 
