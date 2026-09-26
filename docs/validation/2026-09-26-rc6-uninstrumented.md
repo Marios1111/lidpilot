@@ -19,7 +19,10 @@ Host: Apple Silicon M4 MacBook Air, built-in display, macOS 27.2 **26B5091g**.
 The earlier instrumented RC6 record used **26B5086k**. The changed beta OS build
 and different dates/system conditions prevent causal attribution of the delta
 to instrumentation alone. This remains a valid absolute 600-second measurement
-on the recorded host, not stable-OS support evidence.
+on the recorded host, not evidence from a stable OS release. After this run, the
+owner explicitly accepted this Mac as the V1 validation host without requiring
+a separate stable-OS test. That scope decision does not change this failed CPU
+result or the hard ≤0.2% inclusive target.
 
 The operator selected Keep Mac Running and confirmed both windows closed.
 Independent preflight showed `SleepDisabled=1`, a LidPilot system-sleep

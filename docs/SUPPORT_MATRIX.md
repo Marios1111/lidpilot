@@ -28,8 +28,12 @@ or update lifecycle has passed validation.
 
 The [September 25 owner decisions](validation/2026-09-25-audit-closeout.md) narrow
 display support and defer genuine different-team evidence. Unavailable hardware
-is not a failed implementation and is not a test pass. Stable-OS installed
-runtime evidence remains separate from macOS 15 CI.
+is not a failed implementation and is not a test pass. On September 26 the owner
+accepted the current Mac as the V1 validation host: passing installed tests on
+its recorded beta OS may satisfy the corresponding V1 gates; a separate
+stable-OS installation is not required. This does not relabel the beta OS as a
+stable release or establish physical coverage on every supported OS. The
+inclusive CPU limit remains unchanged and currently fails.
 
 ## Mode and helper boundary
 

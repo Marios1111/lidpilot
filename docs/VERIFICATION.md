@@ -64,6 +64,10 @@ control, cloud account, or Homebrew feature was added.
 Environment: Apple Silicon; macOS 27.2 (26B5086k); Xcode 27.0 (27A5252f).
 The project targets macOS 15.0, but this newer development environment does not
 establish support on macOS 15 or constitute a stable-OS release matrix.
+On September 26 the owner accepted passing installed tests on the current Mac
+as the V1 validation basis; a separate stable-OS installation is not a release
+prerequisite. Actual OS versions remain recorded, and the failed inclusive CPU
+gate is not waived by that decision.
 
 - Debug and optimized Release builds pass through `scripts/build.sh`.
 - `scripts/test.sh`: 51 Runtime tests in seven suites and 21 Core tests pass.
