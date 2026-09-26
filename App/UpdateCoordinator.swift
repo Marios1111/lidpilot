@@ -51,9 +51,11 @@ import LidPilotRuntime
               Data(base64Encoded: key)?.count == 32, model.helper.signed else { return }
         configured = true
         standard = SPUStandardUpdaterController(startingUpdater: false, updaterDelegate: self, userDriverDelegate: nil)
-        capabilityObservation = standard?.updater.observe(\.canCheckForUpdates, options: [.initial, .new]) { [weak self] updater, _ in
-            let value = updater.canCheckForUpdates
-            Task { @MainActor in self?.canCheck = value }
+        capabilityObservation = standard?.updater.observe(\.canCheckForUpdates, options: [.initial, .new]) { [weak self] _, _ in
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                self.canCheck = self.standard?.updater.canCheckForUpdates ?? false
+            }
         }
         if defaults.string(forKey: "updatePendingBuild") != nil {
             model.controller.holdInterruptedUpdate()

@@ -32,6 +32,14 @@ and diff review: Astra lead.
   is claimed. Repeat authorized foreground/background delivery on the fresh
   signed candidate, retaining OS permission and Focus context.
 
-The pre-existing updater KVO actor-isolation warning is separate from this fix.
+The pre-existing updater KVO actor-isolation warning was subsequently corrected
+in a separate scoped change: the Sendable observer now schedules a main-actor
+read of the current updater capability, without capturing the updater argument
+across actors. Both initial and change observations remain registered; update
+barriers and helper handling are unchanged. Debug and Release exited 0 and the
+warning is absent from `/private/tmp/lidpilot-notification-closeout/kvo-debug-build.log`
+and `kvo-release-build.log`. Package tests do not compile this app source and were
+not repeated solely for this observation fix. Installed updater regressions remain
+required; compilation is not evidence of the full Sparkle lifecycle.
 The installed RC8 remains unchanged and Off; its controlled AC acceptance capture
 still awaits charger availability.
