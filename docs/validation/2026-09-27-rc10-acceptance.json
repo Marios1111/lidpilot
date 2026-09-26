@@ -1,0 +1,3545 @@
+{
+  "cpuByTarget" : [
+    {
+      "inclusiveCPUPercentOfOneCore" : 0.13566420475211696,
+      "ownSystemTicks" : 3534559,
+      "ownUserTicks" : 16001156,
+      "pid" : 9596,
+      "reapedChildSystemTicks" : 0,
+      "reapedChildUserTicks" : 0
+    },
+    {
+      "inclusiveCPUPercentOfOneCore" : 0.6636127844317578,
+      "ownSystemTicks" : 8447379,
+      "ownUserTicks" : 3172943,
+      "pid" : 11649,
+      "reapedChildSystemTicks" : 48268396,
+      "reapedChildUserTicks" : 35671863
+    }
+  ],
+  "cpuPercentOfOneCoreIncludingReapedChildren" : 0.7992769891838749,
+  "durationSeconds" : 600.0021350416666,
+  "endedAtUnixSeconds" : 1790462713.509704,
+  "interruptWakeupsPerSecond" : 1.1816624618356801,
+  "label" : "keep-mac-running-rc10-acceptance",
+  "machTimebaseDenominator" : 3,
+  "machTimebaseNumerator" : 125,
+  "maxSampledCombinedPhysicalMiB" : 72.39218139648438,
+  "meanCombinedPhysicalMiB" : 72.2626617683852,
+  "notes" : "Public proc_pid_rusage V6; 5-second samples. CPU tick fields are converted using the recorded Mach timebase numerator\/denominator. Per-target inclusive CPU includes that PID's reaped children and sums to the combined value when target process trees do not overlap. Zero energy counters may mean unavailable accounting, not zero energy. This is not Activity Monitor's Energy Impact score. PID restarts, nonmonotonic counters or read failures invalidate the run. Physical footprint is sampled, not an absolute transient peak. Record mode, build, power and display state separately; this tool cannot verify them.",
+  "packageIdleWakeupsPerSecond" : 0.15833276992156503,
+  "reportedEnergyNanojoules" : 205567845,
+  "samples" : [
+    {
+      "elapsedSeconds" : 0,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11697508935,
+          "idleWakeups" : 529,
+          "interruptWakeups" : 4455,
+          "physicalBytes" : 70386792,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 39999839,
+          "userTicks" : 234754659
+        },
+        {
+          "childSystemTicks" : 18781393,
+          "childUserTicks" : 13237526,
+          "energyNanojoules" : 95724976,
+          "idleWakeups" : 8,
+          "interruptWakeups" : 277,
+          "physicalBytes" : 5194232,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 3277009,
+          "userTicks" : 1746965
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 5.0050584166666665,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11699403148,
+          "idleWakeups" : 529,
+          "interruptWakeups" : 4456,
+          "physicalBytes" : 70501480,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40037569,
+          "userTicks" : 234936345
+        },
+        {
+          "childSystemTicks" : 19454074,
+          "childUserTicks" : 13684283,
+          "energyNanojoules" : 96389027,
+          "idleWakeups" : 8,
+          "interruptWakeups" : 281,
+          "physicalBytes" : 5243384,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 3379245,
+          "userTicks" : 1784385
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 10.010145083333333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11699414374,
+          "idleWakeups" : 530,
+          "interruptWakeups" : 4458,
+          "physicalBytes" : 70501480,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40039330,
+          "userTicks" : 234936866
+        },
+        {
+          "childSystemTicks" : 19454074,
+          "childUserTicks" : 13684283,
+          "energyNanojoules" : 96393000,
+          "idleWakeups" : 8,
+          "interruptWakeups" : 282,
+          "physicalBytes" : 5194232,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 3380424,
+          "userTicks" : 1784992
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 15.010834249999998,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11699425377,
+          "idleWakeups" : 530,
+          "interruptWakeups" : 4460,
+          "physicalBytes" : 70501480,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40041090,
+          "userTicks" : 234937337
+        },
+        {
+          "childSystemTicks" : 19629855,
+          "childUserTicks" : 13812964,
+          "energyNanojoules" : 96591153,
+          "idleWakeups" : 8,
+          "interruptWakeups" : 284,
+          "physicalBytes" : 5210616,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 3412956,
+          "userTicks" : 1792383
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 20.01600045833333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11703917597,
+          "idleWakeups" : 530,
+          "interruptWakeups" : 4464,
+          "physicalBytes" : 70550632,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40137193,
+          "userTicks" : 235244934
+        },
+        {
+          "childSystemTicks" : 19958239,
+          "childUserTicks" : 14044781,
+          "energyNanojoules" : 98408223,
+          "idleWakeups" : 8,
+          "interruptWakeups" : 286,
+          "physicalBytes" : 5243384,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 3448977,
+          "userTicks" : 1809115
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 25.01909708333333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11704264646,
+          "idleWakeups" : 530,
+          "interruptWakeups" : 4467,
+          "physicalBytes" : 70501480,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40157092,
+          "userTicks" : 235285697
+        },
+        {
+          "childSystemTicks" : 20200920,
+          "childUserTicks" : 14215696,
+          "energyNanojoules" : 98640051,
+          "idleWakeups" : 9,
+          "interruptWakeups" : 290,
+          "physicalBytes" : 5210616,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 3496420,
+          "userTicks" : 1819541
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 30.024182916666664,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11704280496,
+          "idleWakeups" : 530,
+          "interruptWakeups" : 4469,
+          "physicalBytes" : 70501480,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40158568,
+          "userTicks" : 235286286
+        },
+        {
+          "childSystemTicks" : 20200920,
+          "childUserTicks" : 14215696,
+          "energyNanojoules" : 98648738,
+          "idleWakeups" : 9,
+          "interruptWakeups" : 291,
+          "physicalBytes" : 5194232,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 3497179,
+          "userTicks" : 1819918
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 35.02844541666666,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11705468616,
+          "idleWakeups" : 530,
+          "interruptWakeups" : 4470,
+          "physicalBytes" : 70550632,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40195853,
+          "userTicks" : 235573002
+        },
+        {
+          "childSystemTicks" : 20955126,
+          "childUserTicks" : 14804219,
+          "energyNanojoules" : 99463822,
+          "idleWakeups" : 9,
+          "interruptWakeups" : 298,
+          "physicalBytes" : 5259768,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 3633914,
+          "userTicks" : 1872375
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 40.03357258333333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11705488741,
+          "idleWakeups" : 530,
+          "interruptWakeups" : 4473,
+          "physicalBytes" : 70501480,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40197439,
+          "userTicks" : 235573981
+        },
+        {
+          "childSystemTicks" : 20955126,
+          "childUserTicks" : 14804219,
+          "energyNanojoules" : 99467111,
+          "idleWakeups" : 9,
+          "interruptWakeups" : 299,
+          "physicalBytes" : 5210616,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 3634949,
+          "userTicks" : 1872858
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 45.03866566666666,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11705508675,
+          "idleWakeups" : 530,
+          "interruptWakeups" : 4475,
+          "physicalBytes" : 70501480,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40199313,
+          "userTicks" : 235574671
+        },
+        {
+          "childSystemTicks" : 21225384,
+          "childUserTicks" : 15012582,
+          "energyNanojoules" : 99765978,
+          "idleWakeups" : 10,
+          "interruptWakeups" : 302,
+          "physicalBytes" : 5210616,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 3678580,
+          "userTicks" : 1886015
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 50.04201804166666,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11709573094,
+          "idleWakeups" : 530,
+          "interruptWakeups" : 4477,
+          "physicalBytes" : 70501480,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40263113,
+          "userTicks" : 236132733
+        },
+        {
+          "childSystemTicks" : 22264005,
+          "childUserTicks" : 15814186,
+          "energyNanojoules" : 101363484,
+          "idleWakeups" : 11,
+          "interruptWakeups" : 310,
+          "physicalBytes" : 5259768,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 3869944,
+          "userTicks" : 1961661
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 55.04709808333333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11709583730,
+          "idleWakeups" : 531,
+          "interruptWakeups" : 4479,
+          "physicalBytes" : 70501480,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40265040,
+          "userTicks" : 236133301
+        },
+        {
+          "childSystemTicks" : 22522201,
+          "childUserTicks" : 16007732,
+          "energyNanojoules" : 101611745,
+          "idleWakeups" : 11,
+          "interruptWakeups" : 314,
+          "physicalBytes" : 5210616,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 3923264,
+          "userTicks" : 1981359
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 60.05217487499999,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11709592867,
+          "idleWakeups" : 533,
+          "interruptWakeups" : 4481,
+          "physicalBytes" : 70501480,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40266771,
+          "userTicks" : 236133784
+        },
+        {
+          "childSystemTicks" : 22522201,
+          "childUserTicks" : 16007732,
+          "energyNanojoules" : 101621339,
+          "idleWakeups" : 11,
+          "interruptWakeups" : 315,
+          "physicalBytes" : 5194232,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 3924289,
+          "userTicks" : 1981720
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 65.05721633333333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11710794435,
+          "idleWakeups" : 535,
+          "interruptWakeups" : 4483,
+          "physicalBytes" : 70517864,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40294263,
+          "userTicks" : 236316924
+        },
+        {
+          "childSystemTicks" : 23200394,
+          "childUserTicks" : 16502754,
+          "energyNanojoules" : 102582096,
+          "idleWakeups" : 11,
+          "interruptWakeups" : 320,
+          "physicalBytes" : 5259768,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 4032248,
+          "userTicks" : 2030038
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 70.06227954166665,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11710803309,
+          "idleWakeups" : 535,
+          "interruptWakeups" : 4485,
+          "physicalBytes" : 70468712,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40296968,
+          "userTicks" : 236317629
+        },
+        {
+          "childSystemTicks" : 23200394,
+          "childUserTicks" : 16502754,
+          "energyNanojoules" : 102590330,
+          "idleWakeups" : 11,
+          "interruptWakeups" : 321,
+          "physicalBytes" : 5210616,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 4032957,
+          "userTicks" : 2030271
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 75.06738424999999,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11710814072,
+          "idleWakeups" : 536,
+          "interruptWakeups" : 4487,
+          "physicalBytes" : 70468712,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40298705,
+          "userTicks" : 236318133
+        },
+        {
+          "childSystemTicks" : 23453910,
+          "childUserTicks" : 16701319,
+          "energyNanojoules" : 102804269,
+          "idleWakeups" : 11,
+          "interruptWakeups" : 324,
+          "physicalBytes" : 5210616,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 4091350,
+          "userTicks" : 2041963
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 80.06987520833333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11714171518,
+          "idleWakeups" : 536,
+          "interruptWakeups" : 4488,
+          "physicalBytes" : 70485096,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40340398,
+          "userTicks" : 236611888
+        },
+        {
+          "childSystemTicks" : 24087688,
+          "childUserTicks" : 17175688,
+          "energyNanojoules" : 104477807,
+          "idleWakeups" : 11,
+          "interruptWakeups" : 329,
+          "physicalBytes" : 5243384,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 4205669,
+          "userTicks" : 2085856
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 85.07489924999999,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11716620115,
+          "idleWakeups" : 536,
+          "interruptWakeups" : 4489,
+          "physicalBytes" : 70468712,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40400872,
+          "userTicks" : 237012038
+        },
+        {
+          "childSystemTicks" : 25487926,
+          "childUserTicks" : 18253968,
+          "energyNanojoules" : 106104806,
+          "idleWakeups" : 12,
+          "interruptWakeups" : 339,
+          "physicalBytes" : 5243384,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 4389976,
+          "userTicks" : 2178610
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 90.07999162499999,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11716626864,
+          "idleWakeups" : 537,
+          "interruptWakeups" : 4491,
+          "physicalBytes" : 70468712,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40403122,
+          "userTicks" : 237012728
+        },
+        {
+          "childSystemTicks" : 25487926,
+          "childUserTicks" : 18253968,
+          "energyNanojoules" : 106108821,
+          "idleWakeups" : 12,
+          "interruptWakeups" : 340,
+          "physicalBytes" : 5194232,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 4391508,
+          "userTicks" : 2179288
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 95.08511079166665,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11716635821,
+          "idleWakeups" : 537,
+          "interruptWakeups" : 4492,
+          "physicalBytes" : 70468712,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40403909,
+          "userTicks" : 237012996
+        },
+        {
+          "childSystemTicks" : 25754642,
+          "childUserTicks" : 18437161,
+          "energyNanojoules" : 106411897,
+          "idleWakeups" : 12,
+          "interruptWakeups" : 343,
+          "physicalBytes" : 5210616,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 4434751,
+          "userTicks" : 2191369
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 100.08888270833333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11717399121,
+          "idleWakeups" : 539,
+          "interruptWakeups" : 4494,
+          "physicalBytes" : 70485096,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40437244,
+          "userTicks" : 237228227
+        },
+        {
+          "childSystemTicks" : 26256764,
+          "childUserTicks" : 18808865,
+          "energyNanojoules" : 106927271,
+          "idleWakeups" : 12,
+          "interruptWakeups" : 347,
+          "physicalBytes" : 5259768,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 4544968,
+          "userTicks" : 2230155
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 105.09389358333333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11717410094,
+          "idleWakeups" : 539,
+          "interruptWakeups" : 4497,
+          "physicalBytes" : 70468712,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40441235,
+          "userTicks" : 237229250
+        },
+        {
+          "childSystemTicks" : 26497232,
+          "childUserTicks" : 18979887,
+          "energyNanojoules" : 107229234,
+          "idleWakeups" : 12,
+          "interruptWakeups" : 351,
+          "physicalBytes" : 5210616,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 4591655,
+          "userTicks" : 2246788
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 110.09894233333333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11717415381,
+          "idleWakeups" : 540,
+          "interruptWakeups" : 4498,
+          "physicalBytes" : 70468712,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40442795,
+          "userTicks" : 237230399
+        },
+        {
+          "childSystemTicks" : 26497232,
+          "childUserTicks" : 18979887,
+          "energyNanojoules" : 107234169,
+          "idleWakeups" : 12,
+          "interruptWakeups" : 352,
+          "physicalBytes" : 5194232,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 4594361,
+          "userTicks" : 2247599
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 115.10404474999999,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11718795821,
+          "idleWakeups" : 541,
+          "interruptWakeups" : 4501,
+          "physicalBytes" : 70501480,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40474654,
+          "userTicks" : 237489301
+        },
+        {
+          "childSystemTicks" : 27237665,
+          "childUserTicks" : 19555291,
+          "energyNanojoules" : 107894484,
+          "idleWakeups" : 15,
+          "interruptWakeups" : 358,
+          "physicalBytes" : 5259768,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 4759712,
+          "userTicks" : 2301650
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 120.10914987499999,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11718806834,
+          "idleWakeups" : 541,
+          "interruptWakeups" : 4503,
+          "physicalBytes" : 70501480,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40476192,
+          "userTicks" : 237489790
+        },
+        {
+          "childSystemTicks" : 27237665,
+          "childUserTicks" : 19555291,
+          "energyNanojoules" : 107899241,
+          "idleWakeups" : 15,
+          "interruptWakeups" : 359,
+          "physicalBytes" : 5210616,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 4760535,
+          "userTicks" : 2302047
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 125.11420279166666,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11718814237,
+          "idleWakeups" : 541,
+          "interruptWakeups" : 4504,
+          "physicalBytes" : 70501480,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40476818,
+          "userTicks" : 237489985
+        },
+        {
+          "childSystemTicks" : 27459603,
+          "childUserTicks" : 19717906,
+          "energyNanojoules" : 108291788,
+          "idleWakeups" : 15,
+          "interruptWakeups" : 361,
+          "physicalBytes" : 5210616,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 4796039,
+          "userTicks" : 2316186
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 130.11930299999997,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11719623035,
+          "idleWakeups" : 541,
+          "interruptWakeups" : 4506,
+          "physicalBytes" : 70501480,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40505766,
+          "userTicks" : 237693053
+        },
+        {
+          "childSystemTicks" : 28009070,
+          "childUserTicks" : 20147713,
+          "energyNanojoules" : 108702943,
+          "idleWakeups" : 15,
+          "interruptWakeups" : 365,
+          "physicalBytes" : 5259768,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 4912663,
+          "userTicks" : 2362275
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 135.12352691666666,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11720005677,
+          "idleWakeups" : 543,
+          "interruptWakeups" : 4508,
+          "physicalBytes" : 70501480,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40525935,
+          "userTicks" : 237734119
+        },
+        {
+          "childSystemTicks" : 28276474,
+          "childUserTicks" : 20357541,
+          "energyNanojoules" : 108974123,
+          "idleWakeups" : 15,
+          "interruptWakeups" : 369,
+          "physicalBytes" : 5210616,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 4974241,
+          "userTicks" : 2378917
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 140.12781079166666,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11722319367,
+          "idleWakeups" : 543,
+          "interruptWakeups" : 4508,
+          "physicalBytes" : 70501480,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40559706,
+          "userTicks" : 237981665
+        },
+        {
+          "childSystemTicks" : 28810452,
+          "childUserTicks" : 20774842,
+          "energyNanojoules" : 110360324,
+          "idleWakeups" : 16,
+          "interruptWakeups" : 373,
+          "physicalBytes" : 5243384,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 5060495,
+          "userTicks" : 2413622
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 145.13296158333333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11723303254,
+          "idleWakeups" : 543,
+          "interruptWakeups" : 4510,
+          "physicalBytes" : 70550632,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40585560,
+          "userTicks" : 238173588
+        },
+        {
+          "childSystemTicks" : 29538456,
+          "childUserTicks" : 21296334,
+          "energyNanojoules" : 111149672,
+          "idleWakeups" : 16,
+          "interruptWakeups" : 380,
+          "physicalBytes" : 5259768,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 5182013,
+          "userTicks" : 2459557
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 150.1342953333333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11723323212,
+          "idleWakeups" : 543,
+          "interruptWakeups" : 4513,
+          "physicalBytes" : 70517864,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40589507,
+          "userTicks" : 238176441
+        },
+        {
+          "childSystemTicks" : 29538456,
+          "childUserTicks" : 21296334,
+          "energyNanojoules" : 111157703,
+          "idleWakeups" : 16,
+          "interruptWakeups" : 381,
+          "physicalBytes" : 5210616,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 5182574,
+          "userTicks" : 2459895
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 155.13935841666665,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11723326347,
+          "idleWakeups" : 543,
+          "interruptWakeups" : 4514,
+          "physicalBytes" : 70517864,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40590587,
+          "userTicks" : 238176738
+        },
+        {
+          "childSystemTicks" : 29875172,
+          "childUserTicks" : 21494570,
+          "energyNanojoules" : 111463460,
+          "idleWakeups" : 16,
+          "interruptWakeups" : 384,
+          "physicalBytes" : 5210616,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 5225463,
+          "userTicks" : 2478697
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 160.14365324999997,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11725889087,
+          "idleWakeups" : 544,
+          "interruptWakeups" : 4516,
+          "physicalBytes" : 70517864,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40628945,
+          "userTicks" : 238421129
+        },
+        {
+          "childSystemTicks" : 30803106,
+          "childUserTicks" : 22145494,
+          "energyNanojoules" : 112721349,
+          "idleWakeups" : 16,
+          "interruptWakeups" : 389,
+          "physicalBytes" : 5259768,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 5369381,
+          "userTicks" : 2528531
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 165.14877816666666,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11725896377,
+          "idleWakeups" : 545,
+          "interruptWakeups" : 4518,
+          "physicalBytes" : 70517864,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40631508,
+          "userTicks" : 238421887
+        },
+        {
+          "childSystemTicks" : 31086572,
+          "childUserTicks" : 22322503,
+          "energyNanojoules" : 113029105,
+          "idleWakeups" : 16,
+          "interruptWakeups" : 392,
+          "physicalBytes" : 5259768,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 5410949,
+          "userTicks" : 2540224
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 170.1534470833333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11725902824,
+          "idleWakeups" : 545,
+          "interruptWakeups" : 4519,
+          "physicalBytes" : 70517864,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40633760,
+          "userTicks" : 238423660
+        },
+        {
+          "childSystemTicks" : 31086572,
+          "childUserTicks" : 22322503,
+          "energyNanojoules" : 113034416,
+          "idleWakeups" : 16,
+          "interruptWakeups" : 393,
+          "physicalBytes" : 5210616,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 5412069,
+          "userTicks" : 2540693
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 175.153589375,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11727094112,
+          "idleWakeups" : 545,
+          "interruptWakeups" : 4522,
+          "physicalBytes" : 70517864,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40669264,
+          "userTicks" : 238687000
+        },
+        {
+          "childSystemTicks" : 31854923,
+          "childUserTicks" : 22884061,
+          "energyNanojoules" : 113852848,
+          "idleWakeups" : 17,
+          "interruptWakeups" : 400,
+          "physicalBytes" : 5259768,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 5558326,
+          "userTicks" : 2584988
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 180.15416554166666,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11727100381,
+          "idleWakeups" : 545,
+          "interruptWakeups" : 4524,
+          "physicalBytes" : 70517864,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40671317,
+          "userTicks" : 238687514
+        },
+        {
+          "childSystemTicks" : 31854923,
+          "childUserTicks" : 22884061,
+          "energyNanojoules" : 113863553,
+          "idleWakeups" : 17,
+          "interruptWakeups" : 401,
+          "physicalBytes" : 5194232,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 5561743,
+          "userTicks" : 2585849
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 185.15884483333332,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11727103570,
+          "idleWakeups" : 545,
+          "interruptWakeups" : 4525,
+          "physicalBytes" : 70517864,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40672319,
+          "userTicks" : 238687746
+        },
+        {
+          "childSystemTicks" : 32111038,
+          "childUserTicks" : 23076420,
+          "energyNanojoules" : 114195649,
+          "idleWakeups" : 17,
+          "interruptWakeups" : 404,
+          "physicalBytes" : 5210616,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 5593838,
+          "userTicks" : 2595321
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 190.1620399583333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11727954359,
+          "idleWakeups" : 545,
+          "interruptWakeups" : 4528,
+          "physicalBytes" : 70583400,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40707083,
+          "userTicks" : 238901097
+        },
+        {
+          "childSystemTicks" : 32641228,
+          "childUserTicks" : 23473575,
+          "energyNanojoules" : 114761313,
+          "idleWakeups" : 17,
+          "interruptWakeups" : 409,
+          "physicalBytes" : 5259768,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 5680085,
+          "userTicks" : 2623450
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 195.1644005833333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11727967195,
+          "idleWakeups" : 545,
+          "interruptWakeups" : 4530,
+          "physicalBytes" : 70452328,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40713158,
+          "userTicks" : 238903059
+        },
+        {
+          "childSystemTicks" : 32898168,
+          "childUserTicks" : 23674928,
+          "energyNanojoules" : 114959231,
+          "idleWakeups" : 18,
+          "interruptWakeups" : 412,
+          "physicalBytes" : 5259768,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 5723548,
+          "userTicks" : 2634359
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 200.16751979166665,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11727970440,
+          "idleWakeups" : 545,
+          "interruptWakeups" : 4531,
+          "physicalBytes" : 70452328,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40714261,
+          "userTicks" : 238903404
+        },
+        {
+          "childSystemTicks" : 32898168,
+          "childUserTicks" : 23674928,
+          "energyNanojoules" : 114962074,
+          "idleWakeups" : 18,
+          "interruptWakeups" : 413,
+          "physicalBytes" : 5210616,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 5724554,
+          "userTicks" : 2634729
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 205.16878716666665,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11727980699,
+          "idleWakeups" : 546,
+          "interruptWakeups" : 4533,
+          "physicalBytes" : 70452328,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40715902,
+          "userTicks" : 238903902
+        },
+        {
+          "childSystemTicks" : 33158808,
+          "childUserTicks" : 23874432,
+          "energyNanojoules" : 115120392,
+          "idleWakeups" : 19,
+          "interruptWakeups" : 416,
+          "physicalBytes" : 5210616,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 5770571,
+          "userTicks" : 2648052
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 210.172187625,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11728709625,
+          "idleWakeups" : 546,
+          "interruptWakeups" : 4535,
+          "physicalBytes" : 70452328,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40750715,
+          "userTicks" : 239087076
+        },
+        {
+          "childSystemTicks" : 33676049,
+          "childUserTicks" : 24259289,
+          "energyNanojoules" : 115650169,
+          "idleWakeups" : 20,
+          "interruptWakeups" : 420,
+          "physicalBytes" : 5259768,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 5866143,
+          "userTicks" : 2685191
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 215.1772560833333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11728720148,
+          "idleWakeups" : 546,
+          "interruptWakeups" : 4536,
+          "physicalBytes" : 70452328,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40751707,
+          "userTicks" : 239087540
+        },
+        {
+          "childSystemTicks" : 33965439,
+          "childUserTicks" : 24471282,
+          "energyNanojoules" : 115992956,
+          "idleWakeups" : 20,
+          "interruptWakeups" : 424,
+          "physicalBytes" : 5210616,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 5920855,
+          "userTicks" : 2699467
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 220.17833754166665,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11730709106,
+          "idleWakeups" : 547,
+          "interruptWakeups" : 4539,
+          "physicalBytes" : 70452328,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40776953,
+          "userTicks" : 239330432
+        },
+        {
+          "childSystemTicks" : 34528437,
+          "childUserTicks" : 24879490,
+          "energyNanojoules" : 116912134,
+          "idleWakeups" : 20,
+          "interruptWakeups" : 428,
+          "physicalBytes" : 5243384,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 6019169,
+          "userTicks" : 2739287
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 225.18341708333332,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11732179746,
+          "idleWakeups" : 549,
+          "interruptWakeups" : 4541,
+          "physicalBytes" : 70501480,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40804909,
+          "userTicks" : 239548655
+        },
+        {
+          "childSystemTicks" : 35313966,
+          "childUserTicks" : 25460627,
+          "energyNanojoules" : 117743720,
+          "idleWakeups" : 22,
+          "interruptWakeups" : 435,
+          "physicalBytes" : 5259768,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 6176801,
+          "userTicks" : 2791338
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 230.18847308333332,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11736176657,
+          "idleWakeups" : 549,
+          "interruptWakeups" : 4541,
+          "physicalBytes" : 70534248,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40854254,
+          "userTicks" : 239872028
+        },
+        {
+          "childSystemTicks" : 36326731,
+          "childUserTicks" : 26116800,
+          "energyNanojoules" : 121125693,
+          "idleWakeups" : 23,
+          "interruptWakeups" : 442,
+          "physicalBytes" : 5259768,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 6280608,
+          "userTicks" : 2835706
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 235.1894784583333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11736202371,
+          "idleWakeups" : 549,
+          "interruptWakeups" : 4545,
+          "physicalBytes" : 70485096,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40860260,
+          "userTicks" : 239874152
+        },
+        {
+          "childSystemTicks" : 36649974,
+          "childUserTicks" : 26312161,
+          "energyNanojoules" : 121302459,
+          "idleWakeups" : 23,
+          "interruptWakeups" : 446,
+          "physicalBytes" : 5243384,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 6334572,
+          "userTicks" : 2850645
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 240.19142454166663,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11737542888,
+          "idleWakeups" : 550,
+          "interruptWakeups" : 4548,
+          "physicalBytes" : 70485096,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40889634,
+          "userTicks" : 240070840
+        },
+        {
+          "childSystemTicks" : 37126894,
+          "childUserTicks" : 26653457,
+          "energyNanojoules" : 121696781,
+          "idleWakeups" : 23,
+          "interruptWakeups" : 449,
+          "physicalBytes" : 5243384,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 6418820,
+          "userTicks" : 2878294
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 245.19348666666664,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11737550825,
+          "idleWakeups" : 550,
+          "interruptWakeups" : 4549,
+          "physicalBytes" : 70485096,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40890289,
+          "userTicks" : 240071063
+        },
+        {
+          "childSystemTicks" : 37392078,
+          "childUserTicks" : 26853723,
+          "energyNanojoules" : 122010010,
+          "idleWakeups" : 23,
+          "interruptWakeups" : 453,
+          "physicalBytes" : 5210616,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 6464410,
+          "userTicks" : 2894125
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 250.19858612499996,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11737561761,
+          "idleWakeups" : 550,
+          "interruptWakeups" : 4551,
+          "physicalBytes" : 70485096,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40892069,
+          "userTicks" : 240071594
+        },
+        {
+          "childSystemTicks" : 37392078,
+          "childUserTicks" : 26853723,
+          "energyNanojoules" : 122022331,
+          "idleWakeups" : 23,
+          "interruptWakeups" : 454,
+          "physicalBytes" : 5194232,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 6465096,
+          "userTicks" : 2894292
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 255.2036730833333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11740348747,
+          "idleWakeups" : 550,
+          "interruptWakeups" : 4553,
+          "physicalBytes" : 70485096,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40940670,
+          "userTicks" : 240458016
+        },
+        {
+          "childSystemTicks" : 38561724,
+          "childUserTicks" : 27767834,
+          "energyNanojoules" : 123276986,
+          "idleWakeups" : 25,
+          "interruptWakeups" : 463,
+          "physicalBytes" : 5292536,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 6678253,
+          "userTicks" : 2973316
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 260.208827,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11740356182,
+          "idleWakeups" : 551,
+          "interruptWakeups" : 4554,
+          "physicalBytes" : 70485096,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40942697,
+          "userTicks" : 240459853
+        },
+        {
+          "childSystemTicks" : 38561724,
+          "childUserTicks" : 27767834,
+          "energyNanojoules" : 123286491,
+          "idleWakeups" : 25,
+          "interruptWakeups" : 464,
+          "physicalBytes" : 5243384,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 6679198,
+          "userTicks" : 2974007
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 265.2139105,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11740372448,
+          "idleWakeups" : 551,
+          "interruptWakeups" : 4556,
+          "physicalBytes" : 70485096,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40944146,
+          "userTicks" : 240460464
+        },
+        {
+          "childSystemTicks" : 38798067,
+          "childUserTicks" : 27953368,
+          "energyNanojoules" : 123517498,
+          "idleWakeups" : 25,
+          "interruptWakeups" : 467,
+          "physicalBytes" : 5243384,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 6730424,
+          "userTicks" : 2986985
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 270.2183866666666,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11741398170,
+          "idleWakeups" : 552,
+          "interruptWakeups" : 4558,
+          "physicalBytes" : 70534248,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40973484,
+          "userTicks" : 240677963
+        },
+        {
+          "childSystemTicks" : 39342530,
+          "childUserTicks" : 28359147,
+          "energyNanojoules" : 124152828,
+          "idleWakeups" : 26,
+          "interruptWakeups" : 471,
+          "physicalBytes" : 5259768,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 6838415,
+          "userTicks" : 3027481
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 275.2215775833333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11741414144,
+          "idleWakeups" : 552,
+          "interruptWakeups" : 4560,
+          "physicalBytes" : 70485096,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40975861,
+          "userTicks" : 240678937
+        },
+        {
+          "childSystemTicks" : 39580651,
+          "childUserTicks" : 28525447,
+          "energyNanojoules" : 124323203,
+          "idleWakeups" : 27,
+          "interruptWakeups" : 474,
+          "physicalBytes" : 5210616,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 6892972,
+          "userTicks" : 3042447
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 280.22615575,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11741432896,
+          "idleWakeups" : 552,
+          "interruptWakeups" : 4562,
+          "physicalBytes" : 70485096,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40977815,
+          "userTicks" : 240679721
+        },
+        {
+          "childSystemTicks" : 39580651,
+          "childUserTicks" : 28525447,
+          "energyNanojoules" : 124327318,
+          "idleWakeups" : 27,
+          "interruptWakeups" : 475,
+          "physicalBytes" : 5194232,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 6894088,
+          "userTicks" : 3042977
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 285.23091908333333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11742145322,
+          "idleWakeups" : 552,
+          "interruptWakeups" : 4565,
+          "physicalBytes" : 70501480,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 40997826,
+          "userTicks" : 240840185
+        },
+        {
+          "childSystemTicks" : 40099398,
+          "childUserTicks" : 28910724,
+          "energyNanojoules" : 124986579,
+          "idleWakeups" : 27,
+          "interruptWakeups" : 480,
+          "physicalBytes" : 5259768,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 7046867,
+          "userTicks" : 3085471
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 290.2321132916666,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11742545425,
+          "idleWakeups" : 552,
+          "interruptWakeups" : 4566,
+          "physicalBytes" : 70534248,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 41014955,
+          "userTicks" : 240910045
+        },
+        {
+          "childSystemTicks" : 40316729,
+          "childUserTicks" : 29078860,
+          "energyNanojoules" : 125116843,
+          "idleWakeups" : 27,
+          "interruptWakeups" : 481,
+          "physicalBytes" : 5259768,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 7061792,
+          "userTicks" : 3105194
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 295.23723566666666,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11742564711,
+          "idleWakeups" : 553,
+          "interruptWakeups" : 4569,
+          "physicalBytes" : 70485096,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 41021595,
+          "userTicks" : 240912127
+        },
+        {
+          "childSystemTicks" : 40585249,
+          "childUserTicks" : 29284565,
+          "energyNanojoules" : 125357877,
+          "idleWakeups" : 27,
+          "interruptWakeups" : 485,
+          "physicalBytes" : 5210616,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 7127815,
+          "userTicks" : 3120408
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 300.2381885833333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11742572739,
+          "idleWakeups" : 553,
+          "interruptWakeups" : 4571,
+          "physicalBytes" : 70485096,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 41024099,
+          "userTicks" : 240913465
+        },
+        {
+          "childSystemTicks" : 40585249,
+          "childUserTicks" : 29284565,
+          "energyNanojoules" : 125362235,
+          "idleWakeups" : 27,
+          "interruptWakeups" : 486,
+          "physicalBytes" : 5194232,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 7129580,
+          "userTicks" : 3121143
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 305.24240416666663,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11744626206,
+          "idleWakeups" : 553,
+          "interruptWakeups" : 4571,
+          "physicalBytes" : 70485096,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 41052500,
+          "userTicks" : 241106989
+        },
+        {
+          "childSystemTicks" : 41383777,
+          "childUserTicks" : 29875596,
+          "energyNanojoules" : 126533738,
+          "idleWakeups" : 30,
+          "interruptWakeups" : 493,
+          "physicalBytes" : 5243384,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 7262815,
+          "userTicks" : 3173857
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 310.245309875,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11744639510,
+          "idleWakeups" : 554,
+          "interruptWakeups" : 4573,
+          "physicalBytes" : 70485096,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 41054054,
+          "userTicks" : 241107513
+        },
+        {
+          "childSystemTicks" : 41383777,
+          "childUserTicks" : 29875596,
+          "energyNanojoules" : 126541882,
+          "idleWakeups" : 30,
+          "interruptWakeups" : 494,
+          "physicalBytes" : 5194232,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 7263386,
+          "userTicks" : 3174179
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 315.2493008333333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11752161265,
+          "idleWakeups" : 554,
+          "interruptWakeups" : 4574,
+          "physicalBytes" : 70550632,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 41294478,
+          "userTicks" : 241639493
+        },
+        {
+          "childSystemTicks" : 42473086,
+          "childUserTicks" : 30664951,
+          "energyNanojoules" : 128777360,
+          "idleWakeups" : 30,
+          "interruptWakeups" : 506,
+          "physicalBytes" : 5243384,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 7429021,
+          "userTicks" : 3249374
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 320.2543545833333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11756442108,
+          "idleWakeups" : 555,
+          "interruptWakeups" : 4579,
+          "physicalBytes" : 70517864,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 41443600,
+          "userTicks" : 242072328
+        },
+        {
+          "childSystemTicks" : 43282133,
+          "childUserTicks" : 31230689,
+          "energyNanojoules" : 130188337,
+          "idleWakeups" : 30,
+          "interruptWakeups" : 513,
+          "physicalBytes" : 5243384,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 7549075,
+          "userTicks" : 3303072
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 325.25825799999996,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11756450377,
+          "idleWakeups" : 555,
+          "interruptWakeups" : 4581,
+          "physicalBytes" : 70517864,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 41447409,
+          "userTicks" : 242073559
+        },
+        {
+          "childSystemTicks" : 43538980,
+          "childUserTicks" : 31410159,
+          "energyNanojoules" : 130352376,
+          "idleWakeups" : 31,
+          "interruptWakeups" : 517,
+          "physicalBytes" : 5210616,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 7600780,
+          "userTicks" : 3318170
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 330.26331124999996,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11756461494,
+          "idleWakeups" : 555,
+          "interruptWakeups" : 4583,
+          "physicalBytes" : 70517864,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 41449187,
+          "userTicks" : 242074127
+        },
+        {
+          "childSystemTicks" : 43538980,
+          "childUserTicks" : 31410159,
+          "energyNanojoules" : 130356228,
+          "idleWakeups" : 31,
+          "interruptWakeups" : 518,
+          "physicalBytes" : 5194232,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 7602050,
+          "userTicks" : 3318687
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 335.26370304166664,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11759568317,
+          "idleWakeups" : 555,
+          "interruptWakeups" : 4584,
+          "physicalBytes" : 70567016,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 41752907,
+          "userTicks" : 242470084
+        },
+        {
+          "childSystemTicks" : 44226867,
+          "childUserTicks" : 31921585,
+          "energyNanojoules" : 131186528,
+          "idleWakeups" : 32,
+          "interruptWakeups" : 524,
+          "physicalBytes" : 5243384,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 7710906,
+          "userTicks" : 3358877
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 340.2687634166666,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11762881910,
+          "idleWakeups" : 556,
+          "interruptWakeups" : 4588,
+          "physicalBytes" : 70550632,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 41800535,
+          "userTicks" : 242712636
+        },
+        {
+          "childSystemTicks" : 44747277,
+          "childUserTicks" : 32322741,
+          "energyNanojoules" : 133340586,
+          "idleWakeups" : 32,
+          "interruptWakeups" : 528,
+          "physicalBytes" : 5308920,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 7807576,
+          "userTicks" : 3405242
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 345.2738557083333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11762923613,
+          "idleWakeups" : 556,
+          "interruptWakeups" : 4590,
+          "physicalBytes" : 70550632,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 41805510,
+          "userTicks" : 242717820
+        },
+        {
+          "childSystemTicks" : 45004222,
+          "childUserTicks" : 32504343,
+          "energyNanojoules" : 133734695,
+          "idleWakeups" : 32,
+          "interruptWakeups" : 532,
+          "physicalBytes" : 5292536,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 7858785,
+          "userTicks" : 3419035
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 350.2789404166666,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11763863743,
+          "idleWakeups" : 556,
+          "interruptWakeups" : 4593,
+          "physicalBytes" : 70550632,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 41837571,
+          "userTicks" : 242943015
+        },
+        {
+          "childSystemTicks" : 45502527,
+          "childUserTicks" : 32908573,
+          "energyNanojoules" : 134285760,
+          "idleWakeups" : 33,
+          "interruptWakeups" : 536,
+          "physicalBytes" : 5325304,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 7964954,
+          "userTicks" : 3462437
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 355.28016437499997,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11763871207,
+          "idleWakeups" : 556,
+          "interruptWakeups" : 4594,
+          "physicalBytes" : 70550632,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 41838260,
+          "userTicks" : 242943296
+        },
+        {
+          "childSystemTicks" : 45743666,
+          "childUserTicks" : 33093660,
+          "energyNanojoules" : 134453707,
+          "idleWakeups" : 34,
+          "interruptWakeups" : 540,
+          "physicalBytes" : 5243384,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 8020947,
+          "userTicks" : 3479642
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 360.28525687499996,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11763882295,
+          "idleWakeups" : 556,
+          "interruptWakeups" : 4596,
+          "physicalBytes" : 70550632,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 41840147,
+          "userTicks" : 242943906
+        },
+        {
+          "childSystemTicks" : 45743666,
+          "childUserTicks" : 33093660,
+          "energyNanojoules" : 134463140,
+          "idleWakeups" : 34,
+          "interruptWakeups" : 541,
+          "physicalBytes" : 5227000,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 8021879,
+          "userTicks" : 3480042
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 365.28979766666663,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11765524586,
+          "idleWakeups" : 557,
+          "interruptWakeups" : 4599,
+          "physicalBytes" : 70550632,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 41856525,
+          "userTicks" : 243091466
+        },
+        {
+          "childSystemTicks" : 46427603,
+          "childUserTicks" : 33585715,
+          "energyNanojoules" : 135396797,
+          "idleWakeups" : 34,
+          "interruptWakeups" : 546,
+          "physicalBytes" : 5276152,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 8136989,
+          "userTicks" : 3518159
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 370.29488612499995,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11765534862,
+          "idleWakeups" : 558,
+          "interruptWakeups" : 4601,
+          "physicalBytes" : 70550632,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 41858762,
+          "userTicks" : 243093073
+        },
+        {
+          "childSystemTicks" : 46427603,
+          "childUserTicks" : 33585715,
+          "energyNanojoules" : 135401223,
+          "idleWakeups" : 34,
+          "interruptWakeups" : 547,
+          "physicalBytes" : 5227000,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 8138577,
+          "userTicks" : 3519640
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 375.296042125,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11765538803,
+          "idleWakeups" : 559,
+          "interruptWakeups" : 4602,
+          "physicalBytes" : 70550632,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 41860123,
+          "userTicks" : 243093431
+        },
+        {
+          "childSystemTicks" : 46675787,
+          "childUserTicks" : 33776228,
+          "energyNanojoules" : 135790422,
+          "idleWakeups" : 34,
+          "interruptWakeups" : 550,
+          "physicalBytes" : 5243384,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 8178513,
+          "userTicks" : 3532431
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 380.29968116666663,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11766718481,
+          "idleWakeups" : 559,
+          "interruptWakeups" : 4605,
+          "physicalBytes" : 70599784,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 41891963,
+          "userTicks" : 243393477
+        },
+        {
+          "childSystemTicks" : 47186246,
+          "childUserTicks" : 34161070,
+          "energyNanojoules" : 136408865,
+          "idleWakeups" : 34,
+          "interruptWakeups" : 555,
+          "physicalBytes" : 5292536,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 8268851,
+          "userTicks" : 3574908
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 385.30474354166665,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11766737423,
+          "idleWakeups" : 559,
+          "interruptWakeups" : 4607,
+          "physicalBytes" : 70550632,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 41893550,
+          "userTicks" : 243394706
+        },
+        {
+          "childSystemTicks" : 47454890,
+          "childUserTicks" : 34357974,
+          "energyNanojoules" : 136577049,
+          "idleWakeups" : 36,
+          "interruptWakeups" : 558,
+          "physicalBytes" : 5292536,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 8322936,
+          "userTicks" : 3591726
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 390.3098177916666,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11766845056,
+          "idleWakeups" : 560,
+          "interruptWakeups" : 4609,
+          "physicalBytes" : 70550632,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 41899331,
+          "userTicks" : 243400270
+        },
+        {
+          "childSystemTicks" : 47454890,
+          "childUserTicks" : 34357974,
+          "energyNanojoules" : 136581923,
+          "idleWakeups" : 36,
+          "interruptWakeups" : 559,
+          "physicalBytes" : 5243384,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 8324533,
+          "userTicks" : 3592188
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 395.31488112499994,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11767824502,
+          "idleWakeups" : 561,
+          "interruptWakeups" : 4611,
+          "physicalBytes" : 70567016,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 41937909,
+          "userTicks" : 243602903
+        },
+        {
+          "childSystemTicks" : 47761806,
+          "childUserTicks" : 34522668,
+          "energyNanojoules" : 137069457,
+          "idleWakeups" : 37,
+          "interruptWakeups" : 563,
+          "physicalBytes" : 5292536,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 8406178,
+          "userTicks" : 3614906
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 400.3189390416666,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11769995054,
+          "idleWakeups" : 562,
+          "interruptWakeups" : 4613,
+          "physicalBytes" : 70567016,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 41973261,
+          "userTicks" : 243844681
+        },
+        {
+          "childSystemTicks" : 48758429,
+          "childUserTicks" : 35275677,
+          "energyNanojoules" : 138214195,
+          "idleWakeups" : 37,
+          "interruptWakeups" : 569,
+          "physicalBytes" : 5292536,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 8535463,
+          "userTicks" : 3677533
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 405.32403287499994,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11770018084,
+          "idleWakeups" : 562,
+          "interruptWakeups" : 4615,
+          "physicalBytes" : 70517864,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 41975795,
+          "userTicks" : 243845527
+        },
+        {
+          "childSystemTicks" : 48982192,
+          "childUserTicks" : 35438043,
+          "energyNanojoules" : 138554444,
+          "idleWakeups" : 37,
+          "interruptWakeups" : 572,
+          "physicalBytes" : 5276152,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 8556262,
+          "userTicks" : 3683377
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 410.3280155833333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11770038271,
+          "idleWakeups" : 562,
+          "interruptWakeups" : 4617,
+          "physicalBytes" : 70534248,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 41980794,
+          "userTicks" : 243847574
+        },
+        {
+          "childSystemTicks" : 48982192,
+          "childUserTicks" : 35438043,
+          "energyNanojoules" : 138558412,
+          "idleWakeups" : 37,
+          "interruptWakeups" : 573,
+          "physicalBytes" : 5227000,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 8557575,
+          "userTicks" : 3683918
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 415.32852174999994,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11771607697,
+          "idleWakeups" : 562,
+          "interruptWakeups" : 4620,
+          "physicalBytes" : 70534248,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 42035239,
+          "userTicks" : 244139448
+        },
+        {
+          "childSystemTicks" : 49746049,
+          "childUserTicks" : 36011525,
+          "energyNanojoules" : 139310505,
+          "idleWakeups" : 39,
+          "interruptWakeups" : 580,
+          "physicalBytes" : 5292536,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 8693519,
+          "userTicks" : 3735454
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 420.33359499999995,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11771619124,
+          "idleWakeups" : 563,
+          "interruptWakeups" : 4623,
+          "physicalBytes" : 70517864,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 42039002,
+          "userTicks" : 244140482
+        },
+        {
+          "childSystemTicks" : 49746049,
+          "childUserTicks" : 36011525,
+          "energyNanojoules" : 139313919,
+          "idleWakeups" : 39,
+          "interruptWakeups" : 581,
+          "physicalBytes" : 5243384,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 8694749,
+          "userTicks" : 3735983
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 425.33866241666664,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11771625596,
+          "idleWakeups" : 564,
+          "interruptWakeups" : 4625,
+          "physicalBytes" : 70517864,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 42041212,
+          "userTicks" : 244141033
+        },
+        {
+          "childSystemTicks" : 49985404,
+          "childUserTicks" : 36195545,
+          "energyNanojoules" : 139491424,
+          "idleWakeups" : 40,
+          "interruptWakeups" : 584,
+          "physicalBytes" : 5243384,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 8742614,
+          "userTicks" : 3750097
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 430.34376662499994,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11775502049,
+          "idleWakeups" : 564,
+          "interruptWakeups" : 4628,
+          "physicalBytes" : 70534248,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 42106541,
+          "userTicks" : 244641218
+        },
+        {
+          "childSystemTicks" : 51000641,
+          "childUserTicks" : 36955497,
+          "energyNanojoules" : 140532748,
+          "idleWakeups" : 43,
+          "interruptWakeups" : 592,
+          "physicalBytes" : 5308920,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 8931188,
+          "userTicks" : 3819571
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 435.34882524999995,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11775947725,
+          "idleWakeups" : 564,
+          "interruptWakeups" : 4630,
+          "physicalBytes" : 70517864,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 42130552,
+          "userTicks" : 244679846
+        },
+        {
+          "childSystemTicks" : 51272787,
+          "childUserTicks" : 37161086,
+          "energyNanojoules" : 140710214,
+          "idleWakeups" : 43,
+          "interruptWakeups" : 596,
+          "physicalBytes" : 5259768,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 8994089,
+          "userTicks" : 3838514
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 440.34989249999995,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11777950187,
+          "idleWakeups" : 564,
+          "interruptWakeups" : 4632,
+          "physicalBytes" : 70517864,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 42199542,
+          "userTicks" : 244782759
+        },
+        {
+          "childSystemTicks" : 51272787,
+          "childUserTicks" : 37161086,
+          "energyNanojoules" : 140714322,
+          "idleWakeups" : 43,
+          "interruptWakeups" : 597,
+          "physicalBytes" : 5243384,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 8995714,
+          "userTicks" : 3839125
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 445.35051079166664,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11779642510,
+          "idleWakeups" : 564,
+          "interruptWakeups" : 4635,
+          "physicalBytes" : 70567016,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 42250020,
+          "userTicks" : 244991988
+        },
+        {
+          "childSystemTicks" : 51926776,
+          "childUserTicks" : 37653757,
+          "energyNanojoules" : 141455633,
+          "idleWakeups" : 44,
+          "interruptWakeups" : 602,
+          "physicalBytes" : 5308920,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 9108466,
+          "userTicks" : 3875393
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 450.35409549999997,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11781221742,
+          "idleWakeups" : 564,
+          "interruptWakeups" : 4638,
+          "physicalBytes" : 70517864,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 42317584,
+          "userTicks" : 245095088
+        },
+        {
+          "childSystemTicks" : 51926776,
+          "childUserTicks" : 37653757,
+          "energyNanojoules" : 141463378,
+          "idleWakeups" : 44,
+          "interruptWakeups" : 603,
+          "physicalBytes" : 5259768,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 9108990,
+          "userTicks" : 3875568
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 455.3591473333333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11782190412,
+          "idleWakeups" : 564,
+          "interruptWakeups" : 4641,
+          "physicalBytes" : 70550632,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 42345357,
+          "userTicks" : 245153349
+        },
+        {
+          "childSystemTicks" : 52168489,
+          "childUserTicks" : 37828632,
+          "energyNanojoules" : 141857362,
+          "idleWakeups" : 44,
+          "interruptWakeups" : 606,
+          "physicalBytes" : 5259768,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 9146189,
+          "userTicks" : 3885254
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 460.3596095833333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11784088847,
+          "idleWakeups" : 565,
+          "interruptWakeups" : 4642,
+          "physicalBytes" : 70567016,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 42385778,
+          "userTicks" : 245417692
+        },
+        {
+          "childSystemTicks" : 52687953,
+          "childUserTicks" : 38218295,
+          "energyNanojoules" : 142298914,
+          "idleWakeups" : 44,
+          "interruptWakeups" : 610,
+          "physicalBytes" : 5308920,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 9258485,
+          "userTicks" : 3922482
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 465.36359099999993,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11784121057,
+          "idleWakeups" : 565,
+          "interruptWakeups" : 4645,
+          "physicalBytes" : 70517864,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 42388574,
+          "userTicks" : 245419558
+        },
+        {
+          "childSystemTicks" : 52949858,
+          "childUserTicks" : 38409943,
+          "energyNanojoules" : 142606578,
+          "idleWakeups" : 44,
+          "interruptWakeups" : 614,
+          "physicalBytes" : 5259768,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 9298450,
+          "userTicks" : 3940367
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 470.36864266666663,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11784132353,
+          "idleWakeups" : 567,
+          "interruptWakeups" : 4647,
+          "physicalBytes" : 70517864,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 42390391,
+          "userTicks" : 245420110
+        },
+        {
+          "childSystemTicks" : 52949858,
+          "childUserTicks" : 38409943,
+          "energyNanojoules" : 142610496,
+          "idleWakeups" : 44,
+          "interruptWakeups" : 615,
+          "physicalBytes" : 5243384,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 9299906,
+          "userTicks" : 3940897
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 475.37343287499993,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11785524854,
+          "idleWakeups" : 567,
+          "interruptWakeups" : 4649,
+          "physicalBytes" : 70550632,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 42408269,
+          "userTicks" : 245591965
+        },
+        {
+          "childSystemTicks" : 53692620,
+          "childUserTicks" : 38948044,
+          "energyNanojoules" : 143577894,
+          "idleWakeups" : 44,
+          "interruptWakeups" : 621,
+          "physicalBytes" : 5308920,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 9420740,
+          "userTicks" : 3990100
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 480.3785264166666,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11785530693,
+          "idleWakeups" : 567,
+          "interruptWakeups" : 4650,
+          "physicalBytes" : 70550632,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 42408849,
+          "userTicks" : 245592104
+        },
+        {
+          "childSystemTicks" : 53692620,
+          "childUserTicks" : 38948044,
+          "energyNanojoules" : 143581329,
+          "idleWakeups" : 44,
+          "interruptWakeups" : 622,
+          "physicalBytes" : 5259768,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 9422060,
+          "userTicks" : 3990607
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 485.3796529166666,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11785538071,
+          "idleWakeups" : 567,
+          "interruptWakeups" : 4652,
+          "physicalBytes" : 70550632,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 42410709,
+          "userTicks" : 245592594
+        },
+        {
+          "childSystemTicks" : 53920242,
+          "childUserTicks" : 39107798,
+          "energyNanojoules" : 143927567,
+          "idleWakeups" : 45,
+          "interruptWakeups" : 624,
+          "physicalBytes" : 5259768,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 9456309,
+          "userTicks" : 4002954
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 490.38475091666663,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11787518931,
+          "idleWakeups" : 568,
+          "interruptWakeups" : 4653,
+          "physicalBytes" : 70550632,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 42433170,
+          "userTicks" : 245760168
+        },
+        {
+          "childSystemTicks" : 54386019,
+          "childUserTicks" : 39468272,
+          "energyNanojoules" : 144842167,
+          "idleWakeups" : 45,
+          "interruptWakeups" : 628,
+          "physicalBytes" : 5292536,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 9541009,
+          "userTicks" : 4037121
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 495.3899163333333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11788463335,
+          "idleWakeups" : 568,
+          "interruptWakeups" : 4655,
+          "physicalBytes" : 70567016,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 42458160,
+          "userTicks" : 245960065
+        },
+        {
+          "childSystemTicks" : 55095273,
+          "childUserTicks" : 40016734,
+          "energyNanojoules" : 145734009,
+          "idleWakeups" : 45,
+          "interruptWakeups" : 634,
+          "physicalBytes" : 5292536,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 9675916,
+          "userTicks" : 4089448
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 500.39508783333326,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11788493832,
+          "idleWakeups" : 568,
+          "interruptWakeups" : 4658,
+          "physicalBytes" : 70517864,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 42460986,
+          "userTicks" : 245962090
+        },
+        {
+          "childSystemTicks" : 55095273,
+          "childUserTicks" : 40016734,
+          "energyNanojoules" : 145741425,
+          "idleWakeups" : 45,
+          "interruptWakeups" : 635,
+          "physicalBytes" : 5243384,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 9676577,
+          "userTicks" : 4089938
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 505.3963871666666,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11788501405,
+          "idleWakeups" : 569,
+          "interruptWakeups" : 4659,
+          "physicalBytes" : 70517864,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 42461634,
+          "userTicks" : 245962352
+        },
+        {
+          "childSystemTicks" : 55268107,
+          "childUserTicks" : 40133336,
+          "energyNanojoules" : 146132151,
+          "idleWakeups" : 45,
+          "interruptWakeups" : 637,
+          "physicalBytes" : 5259768,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 9705909,
+          "userTicks" : 4097413
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 510.40147349999995,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11789491736,
+          "idleWakeups" : 570,
+          "interruptWakeups" : 4661,
+          "physicalBytes" : 70534248,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 42491287,
+          "userTicks" : 246170595
+        },
+        {
+          "childSystemTicks" : 55756142,
+          "childUserTicks" : 40494229,
+          "energyNanojoules" : 146818875,
+          "idleWakeups" : 45,
+          "interruptWakeups" : 641,
+          "physicalBytes" : 5292536,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 9809142,
+          "userTicks" : 4129982
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 515.4065626666666,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11796811902,
+          "idleWakeups" : 570,
+          "interruptWakeups" : 4666,
+          "physicalBytes" : 70517864,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 42563790,
+          "userTicks" : 246905582
+        },
+        {
+          "childSystemTicks" : 57402267,
+          "childUserTicks" : 41768520,
+          "energyNanojoules" : 150022491,
+          "idleWakeups" : 47,
+          "interruptWakeups" : 654,
+          "physicalBytes" : 5341688,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 10065370,
+          "userTicks" : 4245089
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 520.4116543749999,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11802555274,
+          "idleWakeups" : 570,
+          "interruptWakeups" : 4666,
+          "physicalBytes" : 70517864,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 42634717,
+          "userTicks" : 247501146
+        },
+        {
+          "childSystemTicks" : 58866472,
+          "childUserTicks" : 42868504,
+          "energyNanojoules" : 152773771,
+          "idleWakeups" : 48,
+          "interruptWakeups" : 666,
+          "physicalBytes" : 5341688,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 10309672,
+          "userTicks" : 4360955
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 525.414816,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11803845492,
+          "idleWakeups" : 571,
+          "interruptWakeups" : 4668,
+          "physicalBytes" : 70567016,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 42661017,
+          "userTicks" : 247695950
+        },
+        {
+          "childSystemTicks" : 59604970,
+          "childUserTicks" : 43419843,
+          "energyNanojoules" : 153603716,
+          "idleWakeups" : 48,
+          "interruptWakeups" : 672,
+          "physicalBytes" : 5341688,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 10446998,
+          "userTicks" : 4417095
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 530.4198964583333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11808001745,
+          "idleWakeups" : 572,
+          "interruptWakeups" : 4670,
+          "physicalBytes" : 70550632,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 42798023,
+          "userTicks" : 247991181
+        },
+        {
+          "childSystemTicks" : 59995353,
+          "childUserTicks" : 43679282,
+          "energyNanojoules" : 154345031,
+          "idleWakeups" : 48,
+          "interruptWakeups" : 675,
+          "physicalBytes" : 5341688,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 10495249,
+          "userTicks" : 4444345
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 535.4212752083333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11812585466,
+          "idleWakeups" : 572,
+          "interruptWakeups" : 4674,
+          "physicalBytes" : 70567016,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 42924114,
+          "userTicks" : 248303722
+        },
+        {
+          "childSystemTicks" : 60533641,
+          "childUserTicks" : 44038880,
+          "energyNanojoules" : 155198452,
+          "idleWakeups" : 48,
+          "interruptWakeups" : 679,
+          "physicalBytes" : 5341688,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 10575759,
+          "userTicks" : 4469513
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 540.4263767916666,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11813982905,
+          "idleWakeups" : 572,
+          "interruptWakeups" : 4677,
+          "physicalBytes" : 70567016,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 42946079,
+          "userTicks" : 248550569
+        },
+        {
+          "childSystemTicks" : 60959369,
+          "childUserTicks" : 44337731,
+          "energyNanojoules" : 155877113,
+          "idleWakeups" : 49,
+          "interruptWakeups" : 681,
+          "physicalBytes" : 5341688,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 10648363,
+          "userTicks" : 4498563
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 545.4299870833332,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11820689166,
+          "idleWakeups" : 572,
+          "interruptWakeups" : 4677,
+          "physicalBytes" : 70567016,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 43022296,
+          "userTicks" : 249078329
+        },
+        {
+          "childSystemTicks" : 62621214,
+          "childUserTicks" : 45629473,
+          "energyNanojoules" : 159318756,
+          "idleWakeups" : 51,
+          "interruptWakeups" : 698,
+          "physicalBytes" : 5341688,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 10909793,
+          "userTicks" : 4617605
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 550.4336430416666,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11825585069,
+          "idleWakeups" : 573,
+          "interruptWakeups" : 4680,
+          "physicalBytes" : 70567016,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 43363715,
+          "userTicks" : 249569957
+        },
+        {
+          "childSystemTicks" : 63153678,
+          "childUserTicks" : 45991764,
+          "energyNanojoules" : 160404161,
+          "idleWakeups" : 51,
+          "interruptWakeups" : 702,
+          "physicalBytes" : 5341688,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 10986014,
+          "userTicks" : 4651168
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 555.4363334583333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11826396075,
+          "idleWakeups" : 574,
+          "interruptWakeups" : 4682,
+          "physicalBytes" : 70567016,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 43403983,
+          "userTicks" : 249811165
+        },
+        {
+          "childSystemTicks" : 63963076,
+          "childUserTicks" : 46573737,
+          "energyNanojoules" : 161407241,
+          "idleWakeups" : 51,
+          "interruptWakeups" : 709,
+          "physicalBytes" : 5341688,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 11133925,
+          "userTicks" : 4701341
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 560.4414537499999,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11826416040,
+          "idleWakeups" : 576,
+          "interruptWakeups" : 4684,
+          "physicalBytes" : 70567016,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 43405434,
+          "userTicks" : 249812276
+        },
+        {
+          "childSystemTicks" : 63963076,
+          "childUserTicks" : 46573737,
+          "energyNanojoules" : 161412654,
+          "idleWakeups" : 51,
+          "interruptWakeups" : 710,
+          "physicalBytes" : 5292536,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 11136412,
+          "userTicks" : 4702052
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 565.4465531249999,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11826424046,
+          "idleWakeups" : 576,
+          "interruptWakeups" : 4685,
+          "physicalBytes" : 70567016,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 43406111,
+          "userTicks" : 249812597
+        },
+        {
+          "childSystemTicks" : 64193876,
+          "childUserTicks" : 46719646,
+          "energyNanojoules" : 161611260,
+          "idleWakeups" : 51,
+          "interruptWakeups" : 712,
+          "physicalBytes" : 5292536,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 11192714,
+          "userTicks" : 4714601
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 570.4474397916666,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11827149502,
+          "idleWakeups" : 576,
+          "interruptWakeups" : 4687,
+          "physicalBytes" : 70583400,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 43437459,
+          "userTicks" : 250033471
+        },
+        {
+          "childSystemTicks" : 64723199,
+          "childUserTicks" : 47134284,
+          "energyNanojoules" : 162098932,
+          "idleWakeups" : 51,
+          "interruptWakeups" : 716,
+          "physicalBytes" : 5308920,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 11290045,
+          "userTicks" : 4756206
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 575.45253125,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11827181933,
+          "idleWakeups" : 576,
+          "interruptWakeups" : 4690,
+          "physicalBytes" : 70534248,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 43440924,
+          "userTicks" : 250036969
+        },
+        {
+          "childSystemTicks" : 64961286,
+          "childUserTicks" : 47306309,
+          "energyNanojoules" : 162397230,
+          "idleWakeups" : 51,
+          "interruptWakeups" : 720,
+          "physicalBytes" : 5259768,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 11331545,
+          "userTicks" : 4768336
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 580.4576179166667,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11827201014,
+          "idleWakeups" : 577,
+          "interruptWakeups" : 4693,
+          "physicalBytes" : 70534248,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 43444069,
+          "userTicks" : 250039383
+        },
+        {
+          "childSystemTicks" : 64961286,
+          "childUserTicks" : 47306309,
+          "energyNanojoules" : 162400816,
+          "idleWakeups" : 51,
+          "interruptWakeups" : 721,
+          "physicalBytes" : 5243384,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 11332742,
+          "userTicks" : 4769038
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 585.4592290833333,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11828086379,
+          "idleWakeups" : 577,
+          "interruptWakeups" : 4694,
+          "physicalBytes" : 70550632,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 43476562,
+          "userTicks" : 250243026
+        },
+        {
+          "childSystemTicks" : 65753563,
+          "childUserTicks" : 47895393,
+          "energyNanojoules" : 163211761,
+          "idleWakeups" : 51,
+          "interruptWakeups" : 728,
+          "physicalBytes" : 5308920,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 11495943,
+          "userTicks" : 4829602
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 590.4643141666666,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11828104794,
+          "idleWakeups" : 577,
+          "interruptWakeups" : 4697,
+          "physicalBytes" : 70534248,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 43479531,
+          "userTicks" : 250243713
+        },
+        {
+          "childSystemTicks" : 65753563,
+          "childUserTicks" : 47895393,
+          "energyNanojoules" : 163218680,
+          "idleWakeups" : 51,
+          "interruptWakeups" : 729,
+          "physicalBytes" : 5292536,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 11496481,
+          "userTicks" : 4829844
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 595.466170125,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11828108323,
+          "idleWakeups" : 577,
+          "interruptWakeups" : 4698,
+          "physicalBytes" : 70534248,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 43480623,
+          "userTicks" : 250243987
+        },
+        {
+          "childSystemTicks" : 66006885,
+          "childUserTicks" : 48088218,
+          "energyNanojoules" : 163547659,
+          "idleWakeups" : 53,
+          "interruptWakeups" : 732,
+          "physicalBytes" : 5292536,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 11548861,
+          "userTicks" : 4844645
+        }
+      ]
+    },
+    {
+      "elapsedSeconds" : 600.0021350416666,
+      "processes" : [
+        {
+          "childSystemTicks" : 0,
+          "childUserTicks" : 0,
+          "energyNanojoules" : 11833643812,
+          "idleWakeups" : 577,
+          "interruptWakeups" : 4701,
+          "physicalBytes" : 70534248,
+          "pid" : 9596,
+          "started" : 5710563908120,
+          "systemTicks" : 43534398,
+          "userTicks" : 250755815
+        },
+        {
+          "childSystemTicks" : 67049789,
+          "childUserTicks" : 48909389,
+          "energyNanojoules" : 165157944,
+          "idleWakeups" : 55,
+          "interruptWakeups" : 740,
+          "physicalBytes" : 5308920,
+          "pid" : 11649,
+          "started" : 5716217109847,
+          "systemTicks" : 11724388,
+          "userTicks" : 4919908
+        }
+      ]
+    }
+  ],
+  "startedAt" : "2026-09-26T22:35:13Z",
+  "startedAtUnixSeconds" : 1790462113.505053
+}

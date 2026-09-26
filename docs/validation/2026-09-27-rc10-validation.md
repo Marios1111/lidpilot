@@ -46,3 +46,48 @@ both pending-update defaults were absent. The native update status settled to
 override off. This installed branch passes the regression for RC9’s reproduced
 callback crash. It does not stand in for network-failure/staged-install cases.
 Notification diagnosis and final controlled 600-second acceptance remain open.
+
+## Notification delivery and restoration
+
+A controlled one-minute Keep Screen On session ended Off and released its
+system/display assertions. Independent SleepDisabled=0 remained. The local
+log recorded successful macOS enqueue with public authorization status 2
+(authorized). The owner found “Session finished” in Notification Centre,
+and repeated that observation on a further manual check. **Delivery PASS**;
+no banner was observed and sound was not checked, so neither is claimed.
+The foreground presentation callback was not present in the captured event log;
+no cause for OS presentation policy is inferred.
+
+Both OS and app notification switches were restored Off in native UI. Original
+Keep Mac Running / 30-minute preferences were confirmed; login remained On.
+The charger was physically connected and macOS then reported charging on AC.
+
+For final acceptance, native Keep Mac Running became active with a 30-minute
+countdown. Independent SleepDisabled=1, a system assertion and no LidPilot
+display assertion were verified. App PID 9596 / helper PID 11649, parent helper
+bundle version 10, were read before the recorder handoff. Panel and Settings
+were closed. The same 600-second inclusive recorder command was supplied to
+the operator; no capture result is claimed before its output is complete.
+
+## Installed performance acceptance
+
+Uninstrumented signed build 10, source `d74d76707e4a8c0143e3e8f0991e15e1ed26e83d`,
+Keep Mac Running, lid open, charging on AC, native windows closed.
+Recorder ran 600.002135 seconds from 2026-09-26 22:35:13 UTC, retaining 121 samples.
+
+- Inclusive CPU: **0.799276989%** of one core — PASS revised ≤1.0% limit.
+- App CPU: 0.135664205%; helper own CPU: 0.080696393%; reaped fixed-command children: 0.582916391%.
+- Combined physical footprint: **72.262662 MiB mean / 72.392181 MiB sampled maximum** — PASS ≤75 MiB.
+- Interrupt wakeups: 1.181662/s; package-idle wakeups: 0.158333/s.
+- Energy counter: 205567845 nJ; this is not Activity Monitor Energy Impact.
+- Raw capture: `2026-09-27-rc10-acceptance.json`, SHA-256 `74926569b53f85a30970267fbc7e5c1f097c26043af4598285cc5129d341769e`.
+
+No architecture or safety changes were made during the capture. UI-response measurement
+and verified post-capture Off cleanup remain pending; performance is not a stable-release approval.
+
+Post-capture cleanup was completed through the native Turn Off control. The panel
+reported Off / Normal macOS behavior; independent `pmset -g` reported
+SleepDisabled=0 and assertion enumeration contained no LidPilot owner. Other
+apps' assertions were preserved. Five-second inclusive CPU maximum was
+3.412561%, with no interval above 5%; no sustained runaway was indicated.
+UI latency remains unmeasured.

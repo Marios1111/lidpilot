@@ -1,5 +1,19 @@
 # V1 release verification
 
+## RC10 installed acceptance — September 27, 2026
+
+Signed, uninstrumented build 10 at `d74d767` completed the controlled 600.002135-second
+Keep Mac Running capture on AC with lid open and windows closed. Inclusive CPU
+**0.799277%**, app **0.135664%**, helper **0.080696%**, children **0.582916%**:
+PASS revised ≤1.0% CPU gate. Combined footprint **72.262662 MiB mean / 72.392181 MiB
+sampled maximum**: PASS ≤75 MiB. Interrupt/package-idle wakeups **1.181662 /
+0.158333 per second**. Five-second inclusive CPU maximum **3.412561%**, no interval
+above 5%; no sustained runaway indicated by this capture. Raw record and hashes
+are in [RC10 validation](validation/2026-09-27-rc10-validation.md).
+Post-capture native Off and independent SleepDisabled=0 / no LidPilot assertions
+were verified. UI latency remains pending. Stable release is not approved.
+
+
 Initial checkpoint: 2026-09-19; native follow-up and release validation: 2026-09-21.
 Source and local development builds are implemented; stable release remains
 blocked by the gates below. The repository is now
@@ -49,14 +63,14 @@ capture **passes CPU at 0.903801%** under the owner-revised 1.0% gate, but
 **fails memory at 75.648805 MiB mean / 76.032715 MiB sampled maximum** against
 75 MiB. App/helper/children CPU is 0.244045 / 0.077764 / 0.581991%; interrupt/
 package-idle wakeups are 1.109997 / 0.135000 per second. UI-response timing and
-remaining lifecycle gates are open. Overall performance is not PASS.
+remaining lifecycle gates were open at that checkpoint. RC10 supersedes its CPU/memory result.
 
 RC7 was Developer-ID signed, notarized and stapled; exact-source CI passed.
 Its replacement helper is Approved and acquired the real session. After the
 capture, Off was verified in native UI, SleepDisabled=0 and no LidPilot assertion.
 The bounded runtime-icon correction was implemented in RC8 and retained in
 RC10. Its isolated harness showed reduced bitmap memory; final installed
-600-second memory acceptance remains pending. CPU optimization has stopped.
+600-second RC10 installed acceptance now passes CPU and memory. UI latency remains open; CPU optimization has stopped.
 
 ## Feature checklist
 
@@ -67,7 +81,7 @@ RC10. Its isolated harness showed reduced bitmap memory; final installed
 | Sessions | 30m/1h/2h/4h/custom/until-time/indefinite; immutable hard deadlines; switch preserves deadline | Native preset/custom/until-time/indefinite interaction passed; physical timing remains gated |
 | Safety | Thermal protection, 10/20/30% battery cutoff, battery/LPM policies, charger/lid/display/wake observation, explicit restart after pause | Live sensor and workload continuity checks |
 | Closed-lid helper | Reciprocal signed XPC, console user restriction, fixed pmset operations, bounded child execution, leases/watchdog, journal and conflict handling | Real registration, identity rejection, GUI/helper crash cleanup, lease expiry and replacement helper verified across RC1–RC3; remaining G3/G4 cases open |
-| App lifecycle | Starts Off, login preference, helper approval, onboarding, notifications, verified quit and Stop & Sleep | Real helper approval and crash relaunch Off passed; RC8 gracefully retained notifications Off under denied OS permission. Delivery, login and sleep paths remain |
+| App lifecycle | Starts Off, login preference, helper approval, onboarding, notifications, verified quit and Stop & Sleep | Real helper approval and crash relaunch Off passed; RC8 gracefully retained notifications Off under denied OS permission. RC10 session-end entry in Notification Centre was observed by the owner; sound/banner unconfirmed. Login and sleep paths remain |
 | Diagnostics/recovery | Local redacted bounded logs, export preview, cleanup/repair/removal UI, explicit ambiguous-state recovery | Prolonged Save-dialog renewals passed; deterministic saved-file confirmation and final regression remain |
 | Sparkle 2.10.0 | Manual/daily checks, signed feed/notes/archive configuration, active-session barrier, helper replacement and interrupted-update handling | Real RC1→RC2→RC3→RC4 signed upgrades and replacement helpers passed; RC8 no-update cycle restored its helper and cleared markers; updater fault paths and uninstall remain G5 |
 | Distribution/community | MIT and dependency notices, README, CONTRIBUTING, SECURITY, CHANGELOG, issue templates, CI, staged signed/notarized DMG tooling | Developer ID, private reporting, signed/notarized RC1–RC4 and public artifact hashes verified; stable release still gated |
@@ -175,9 +189,9 @@ under the explicit support and security-evidence conditions recorded above.
 | G2 closed lid | Follow Lid and Keep Mac Running workloads continued through recorded closed-lid intervals; operator saw the built-in screen darken and normal reopen | Owner-approved built-in-only V1 support; external/dock cases deferred, not passed. Immediate or electrical panel shutdown is not claimed |
 | G3 recovery | RC1 GUI SIGKILL restored the override within 0.28 s. RC2 lease expiry restored it by 64.7 s and the GUI paused without false Recovery; root-helper crash/restart restored it by the first changed 22.9 s sample. RC3 one-minute deadline ended Off; RC3 GUI SIGKILL restored the override by the first changed observer sample, with no re-enable through 90 s | Inspect RC3 post-crash UI; remaining safely reproducible read-back/restore failures and delayed/race paths |
 | G4 identity/helper | Signed/notarized helper registered through ServiceManagement; publisher accepted, wrong-ID/ad-hoc and wrong-console clients rejected by explicit XPC logs; four malformed-wire cases rejected. RC2–RC4 replacement helpers acquired the override; launchd reported RC4 parent bundle version 4 | Genuine different-team test deferred by owner review; preserve exact signing requirements and complete remaining lifecycle matrix |
-| Performance | Off 600 s: 0.102% CPU, 47.62 MiB mean; Keep Screen On 600 s: 0.079% CPU, 37.32 MiB mean on RC1. RC3 Keep Mac Running 600 s: **FAIL 0.855% CPU**. RC4 Keep Mac Running 600 s: **FAIL 0.684% CPU**, PASS 38.04 MiB mean; 0.519% CPU came from reaped fixed `pmset` children. Diagnostic RC5: **FAIL 0.614%**, 148 reads; RC6 Standard: **FAIL 0.543%**, 144 reads, 0.363% child CPU, 52.56 MiB mean. Uninstrumented source-matched RC6: **FAIL 0.830470%**, app 0.355936%, helper 0.054073%, children 0.420460%, memory 63.32 MiB mean; beta OS build changed | Final clean uninstrumented ≤1.0% CPU / ≤75 MiB acceptance pending after bounded runner/UI checks; record wakeups/UI timing and verify no pathological behavior. No safety redesign for the old budget |
+| Performance | Off 600 s: 0.102% CPU, 47.62 MiB mean; Keep Screen On 600 s: 0.079% CPU, 37.32 MiB mean on RC1. RC3 Keep Mac Running 600 s: **FAIL 0.855% CPU**. RC4 Keep Mac Running 600 s: **FAIL 0.684% CPU**, PASS 38.04 MiB mean; 0.519% CPU came from reaped fixed `pmset` children. Diagnostic RC5: **FAIL 0.614%**, 148 reads; RC6 Standard: **FAIL 0.543%**, 144 reads, 0.363% child CPU, 52.56 MiB mean. Uninstrumented source-matched RC6: **FAIL 0.830470%**, app 0.355936%, helper 0.054073%, children 0.420460%, memory 63.32 MiB mean; beta OS build changed | RC10 PASS: 0.799277% inclusive CPU, 72.262662 MiB mean / 72.392181 MiB maximum, recorded wakeups and no sustained runaway. Off cleanup verified. UI latency remains open; no safety redesign for the old budget |
 | G5 release/update | RC1–RC4 are public prereleases with verified hosted hashes. Real Sparkle RC1→RC2→RC3→RC4 installed signed builds 2–4; each relaunched Off with override/assertions released and its replacement helper acquired a new lease. RC3 disabled update checks while active; RC4 canceled check restored its previous helper. Signed archive/feed/notes and tamper rejection passed | Uninstall/cleanup, scheduled-check and interrupted/failing updater paths, final stable candidate |
-| Final candidate | Installed uninstrumented RC10 build 10 at `d74d767` is Developer ID signed, notarized and stapled; Gatekeeper accepted and bundle/helper signatures verified. Full suite: 90 tests. [Exact-source CI](https://github.com/Marios1111/lidpilot/actions/runs/36275637607) passed. RC9 was removed normally while Off with SleepDisabled=0; rollback retained | Replacement helper Approved/reachable and native Off verified; installed no-update crash regression passed. Notification delivery diagnosis, controlled 600-second acceptance and remaining lifecycle/uninstall/final-candidate checks remain |
+| Final candidate | Installed uninstrumented RC10 build 10 at `d74d767` is Developer ID signed, notarized and stapled; Gatekeeper accepted and bundle/helper signatures verified. Full suite: 90 tests. [Exact-source CI](https://github.com/Marios1111/lidpilot/actions/runs/36275637607) passed. RC9 was removed normally while Off with SleepDisabled=0; rollback retained | Replacement helper Approved/reachable and native Off verified; installed no-update crash regression passed. Session-end delivery to Notification Centre passed; sound/banner unconfirmed. Controlled 600-second CPU/memory acceptance passed; UI latency and remaining lifecycle/uninstall/final-candidate checks remain |
 
 The earlier running-controller baseline was resolved through its normal quit
 path and independent Off read-back before LidPilot acquired ownership. No
