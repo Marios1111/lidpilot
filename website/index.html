@@ -1,63 +1,50 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="LidPilot is a native Mac menu-bar utility for lectures and long-running tasks. Free, open source, and built without analytics.">
-  <meta name="color-scheme" content="light dark">
-  <title>LidPilot — A little more time, on your Mac</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>LidPilot — Your Mac. On your time.</title>
+  <meta name="description" content="A quiet, native Mac menu-bar utility. Keep your screen ready for a lecture or your Mac running through a long task. Free, open source, no account, no analytics.">
+  <meta name="color-scheme" content="light dark"><meta name="theme-color" content="#f6f7f9">
+  <link rel="canonical" href="https://lidpilot.app/">
+  <meta property="og:title" content="LidPilot — Your Mac. On your time."><meta property="og:description" content="Stay with the lecture. Leave the work running. A native Mac utility, free and open source."><meta property="og:type" content="website"><meta property="og:url" content="https://lidpilot.app/"><meta property="og:image" content="https://lidpilot.app/assets/film-poster.jpg">
+  <link rel="icon" type="image/png" href="assets/icon-light.png"><link rel="stylesheet" href="styles.css"><script src="site.js" defer></script>
 </head>
 <body>
-  <a class="skip" href="#main">Skip to content</a>
-  <header class="nav wrap">
-    <a class="brand" href="#" aria-label="LidPilot home"><span class="mark" aria-hidden="true">↗</span>LidPilot</a>
-    <nav aria-label="Main navigation"><a href="#behaviors">How it works</a><a href="#setup">Get started</a><a href="https://github.com/Marios1111/lidpilot">Source</a></nav>
-  </header>
-  <main id="main">
-    <section class="hero wrap">
-      <div class="intro">
-        <p class="eyebrow"><span class="dot"></span> Native for Mac · V1 release candidate</p>
-        <h1>A little more time.<br><span>A little less interruption.</span></h1>
-        <p class="lede">Keep your screen ready for a lecture, or give a long task room to finish. Choose a behavior, set a timer, and keep control from your menu bar.</p>
-        <a class="button" href="#setup">Meet LidPilot <span aria-hidden="true">↗</span></a>
-        <p class="compat">Apple Silicon · macOS 15 or later · Free & open source</p>
-      </div>
-      <div class="preview" aria-label="Illustrative LidPilot interface, not a hardware status report">
-        <div class="preview-top"><strong>LidPilot</strong><span class="status">Off</span></div>
-        <p class="preview-caption">What would you like to keep available?</p>
-        <div class="mode selected"><span class="glyph" aria-hidden="true">↗</span><div><strong>Follow Lid</strong><small>Screen open. Work continues when closed.</small></div><span class="selected-dot" aria-hidden="true"></span></div>
-        <div class="mode"><span class="glyph" aria-hidden="true">▱</span><div><strong>Keep Screen On</strong><small>For lectures and reading along.</small></div></div>
-        <div class="mode"><span class="glyph" aria-hidden="true">◒</span><div><strong>Keep Mac Running</strong><small>For builds, downloads, and long tasks.</small></div></div>
-        <div class="timer-label"><span>Session</span><span>Choose your own end time</span></div>
-        <div class="timers" aria-label="Example timer choices"><span>30 min</span><span class="chosen">1 hour</span><span>2 hours</span><span>4 hours</span></div>
-        <div class="preview-start">Start session</div>
-        <p class="preview-note">Illustration · LidPilot always launches Off</p>
-      </div>
-    </section>
-    <section id="behaviors" class="section wrap">
-      <div class="section-intro"><p class="eyebrow">One small utility, two everyday rhythms</p><h2>Choose what stays awake.</h2></div>
-      <div class="features">
-        <article><span class="number">01</span><h3>Follow Lid</h3><p>Keeps your Mac and screen available while open. When you close the lid, it releases the screen hold and keeps the Mac running. Reopening triggers a fresh safety check.</p></article>
-        <article><span class="number">02</span><h3>Keep Screen On</h3><p>A simple, helper-free screen session for a lecture or reading. Your brightness keys still work. The supported macOS display hold can also prevent inactivity dimming.</p></article>
-        <article><span class="number">03</span><h3>Keep Mac Running</h3><p>Uses an approved helper for closed-lid work. The screen follows macOS display policy. Physical internal-panel shutdown remains a release validation gate.</p></article>
-      </div>
-    </section>
-    <section class="quiet-band"><div class="wrap principles">
-      <div><h2>Useful controls.<br>Clear boundaries.</h2><p>Thirty minutes, an afternoon, a specific time, or until you stop.</p></div>
-      <ul><li>Battery cutoff and charger-aware policies</li><li>Thermal protection with an explicit restart</li><li>Verified cleanup and visible recovery status</li><li>Local diagnostics. No analytics. No account.</li></ul>
-    </div></section>
-    <section id="setup" class="section wrap setup">
-      <div><p class="eyebrow">Getting started</p><h2>Small by design.<br>Careful before release.</h2><p>A stable V1 download is not available yet. A signed and notarized <a href="https://github.com/Marios1111/lidpilot/releases/tag/v1.0.0-rc.4">release candidate</a> is available for supervised testing. The <a href="https://github.com/Marios1111/lidpilot">repository</a> includes the native app, tests, documentation, and a signing and notarization pipeline.</p><p class="note">Follow the <a href="https://github.com/Marios1111/lidpilot/blob/dev/docs/VERIFICATION.md">validation record</a> for measured results. Signed upgrades and helper recovery passed on one Mac; the closed-mode CPU budget, physical panel behavior, broader hardware matrix, updater fault paths, and uninstall remain release gates.</p></div>
-      <div class="questions">
-        <details open><summary>How will installation work?</summary><p>Open the signed disk image, move LidPilot to Applications, and launch it. It starts Off. Keep Screen On works without the privileged helper; the other two behaviors guide you through macOS helper approval.</p></details>
-        <details><summary>Does it change brightness?</summary><p>LidPilot does not write brightness settings or simulate user input. Manual brightness stays available. The public macOS display hold also suppresses idle dimming. Independent dim-without-off is not provided. See the validation record for tested hardware and observed ambient-brightness behavior.</p></details>
-        <details><summary>What happens when I stop?</summary><p>LidPilot releases its assertions and verifies its helper cleanup. If cleanup cannot be verified, it shows Recovery required. Stop & Sleep requests sleep only after cleanup succeeds.</p></details>
-        <details><summary>How do I remove it?</summary><p>Open the lid, turn LidPilot Off, and verify cleanup. In Settings → Helper & Recovery, remove the helper. Disable Launch at login, quit LidPilot, then remove the app. Resolve any recovery warning first.</p></details>
-        <details><summary>How will updates work?</summary><p>Signed Sparkle updates use GitHub Releases and a GitHub Pages feed. Checks wait until LidPilot is Off. Installation also requires an open lid and verified helper cleanup; the updated app starts Off.</p></details>
-      </div>
-    </section>
-  </main>
-  <footer class="wrap footer"><a class="brand" href="#">LidPilot</a><p>Made for a quieter menu bar.</p><span>© 2026 LidPilot contributors · MIT</span></footer>
-</body>
-</html>
+<a class="skip" href="#main">Skip to content</a>
+<header class="nav shell">
+  <a class="brand" href="#" aria-label="LidPilot home"><img src="assets/icon-light.png" width="36" height="36" alt="">LidPilot</a>
+  <nav aria-label="Main navigation"><a href="#experience">The app</a><a href="#film">Watch</a><a href="#questions">Questions</a></nav>
+  <a class="nav-source" href="https://github.com/Marios1111/lidpilot">Open source <span aria-hidden="true">↗</span></a>
+</header>
+<main id="main">
+  <section class="hero shell" aria-labelledby="hero-title">
+    <a class="release-pill" href="#download"><span class="status-dot" aria-hidden="true"></span> Made for your Mac <span aria-hidden="true">↗</span></a>
+    <h1 id="hero-title">Your Mac.<br><span>On your time.</span></h1>
+    <p class="hero-copy">Stay with the lecture. Leave the work running.<br>One quiet menu-bar utility. You decide when to stop.</p>
+    <div class="hero-actions"><a class="button primary" href="#download">Get LidPilot <span aria-hidden="true">↗</span></a><a class="text-link" href="#film"><span class="play-icon" aria-hidden="true">▶</span> Meet LidPilot</a></div>
+    <p class="compat">Apple Silicon <span>·</span> macOS 15+ <span>·</span> Free & open source</p>
+    <div class="product-stage" id="experience">
+      <div class="stage-orbit" aria-hidden="true"></div>
+      <div class="stage-word stage-word-left" aria-hidden="true">Stay focused.</div><div class="stage-word stage-word-right" aria-hidden="true">Keep going.</div>
+      <div class="product-window"><img id="product-image" src="assets/follow-lid.png" width="740" height="1008" fetchpriority="high" alt="LidPilot with Follow Lid active, mode cards and a one-hour session timer."></div>
+      <div class="stage-tag"><span aria-hidden="true">⌘</span> A small place in your menu bar.<br><strong>A little more room in your day.</strong></div>
+    </div>
+    <div class="mode-picker" role="group" aria-label="Explore LidPilot modes"><button type="button" data-mode="follow" aria-pressed="true">Follow Lid</button><button type="button" data-mode="screen" aria-pressed="false">Keep Screen On</button><button type="button" data-mode="running" aria-pressed="false">Keep Mac Running</button></div>
+    <p id="mode-description" class="mode-description" aria-live="polite">Screen ready when open. Work continues when closed.</p>
+    <p class="capture-note">Three modes. One place to stay in control.</p>
+  </section>
+  <section class="story shell" aria-labelledby="story-title">
+    <div class="section-heading"><p class="eyebrow">Two rhythms. One Mac.</p><h2 id="story-title">Less interruption.<br>More intention.</h2><p>For the moments when your Mac’s usual sleep schedule doesn’t match yours.</p></div>
+    <div class="workflow-grid">
+      <article class="workflow light-workflow"><div class="workflow-top"><span class="small-number">01 / PRESENT</span><svg viewBox="0 0 48 40" aria-hidden="true"><rect x="4" y="3" width="40" height="27" rx="4"/><path d="M18 37h12M24 30v7"/></svg></div><h3>Stay with<br>the lecture.</h3><p>Your slides, notes, or reference material stay available—without a tap just to keep the screen awake.</p><div class="workflow-bottom"><strong>Keep Screen On</strong><span>Brightness stays yours.</span></div></article>
+      <article class="workflow dark-workflow"><div class="workflow-top"><span class="small-number">02 / CONTINUE</span><svg viewBox="0 0 48 40" aria-hidden="true"><path d="M7 29h34l4 5H3l4-5ZM9 26V8a3 3 0 0 1 3-3h24a3 3 0 0 1 3 3v18"/><path d="m20 14 7 5-7 5"/></svg></div><h3>Close the lid.<br>Keep going.</h3><p>Give a build, download, or long-running task time to finish while your Mac stays on a ventilated desk.</p><div class="workflow-bottom"><strong>Keep Mac Running</strong><span>With the approved helper.</span></div></article>
+    </div>
+    <div class="follow-bridge"><span class="bridge-symbol" aria-hidden="true">↔</span><div><h3>Follow Lid brings both together.</h3><p>Screen available while open. Mac kept running while closed. A fresh safety check when you reopen.</p></div></div>
+  </section>
+  <section class="film-section shell" id="film" aria-labelledby="film-title"><div class="film-heading"><div><p class="eyebrow">Meet LidPilot</p><h2 id="film-title">A quieter way<br>to keep going.</h2></div><p>A short introduction.<br>Made around the real native interface.</p></div><video id="intro-film" controls playsinline preload="none" poster="assets/film-poster.jpg" aria-label="LidPilot introduction film"><source src="assets/lidpilot-intro-web.mp4" type="video/mp4"><track kind="captions" src="assets/lidpilot-intro.vtt" srclang="en" label="English" default>Your browser cannot play this video. <a href="assets/lidpilot-intro-web.mp4">Download the introduction.</a></video><details class="transcript"><summary>Read the video transcript</summary><p>Your Mac. On your time. Stay with the lecture. Brightness stays yours. Leave the work running. Builds. Downloads. Long tasks. Follow Lid connects both. Open for focus. Closed for work. Set your time. 30 minutes. A few hours. Until you stop. Safety stays awake. You stay in control. Always starts Off. Native. Local. Free and open source. lidpilot.app.</p><a href="assets/lidpilot-intro-transcript.txt">Download the timed transcript</a></details></section>
+  <section class="details-section shell" aria-labelledby="details-title"><div class="section-heading"><p class="eyebrow">Calm, by design</p><h2 id="details-title">A session.<br>Not a commitment.</h2></div><div class="detail-grid"><article><span class="detail-icon" aria-hidden="true">◷</span><h3>Choose your time.</h3><p>30 minutes, an afternoon, a custom duration, or a specific end time. Indefinite when you need it.</p></article><article><span class="detail-icon" aria-hidden="true">◇</span><h3>Safety stays awake.</h3><p>Battery and thermal safeguards can pause a session. Clear status tells you when cleanup needs attention.</p></article><article><span class="detail-icon" aria-hidden="true">⏻</span><h3>Always starts Off.</h3><p>Nothing starts keeping your Mac awake until you ask. Stop & Sleep verifies cleanup before requesting sleep.</p></article></div><div class="privacy-line"><span>No account.</span><span>No analytics.</span><span>Local-first.</span><a href="https://github.com/Marios1111/lidpilot/blob/dev/SECURITY.md">Designed to earn trust ↗</a></div></section>
+  <section class="download-section shell" id="download" aria-labelledby="download-title"><img src="assets/icon-light.png" width="112" height="112" loading="lazy" alt="LidPilot LP icon"><p class="eyebrow">Free now. Open for everyone.</p><h2 id="download-title">Your next session.<br>On your terms.</h2><p>A native Mac utility that gives your screen—and your work—the time they need. Free, open source, and yours to control.</p><div class="hero-actions"><a class="button primary" href="https://github.com/Marios1111/lidpilot/releases/tag/v1.0.0-rc.4">Download for Mac <span aria-hidden="true">↗</span></a><a class="text-link" href="https://github.com/Marios1111/lidpilot">Explore the source ↗</a></div><p class="download-note">Apple Silicon · macOS 15+ · MIT licensed<br>Current download: v1.0.0-rc.4 (prerelease).</p></section>
+  <section class="faq-section shell" id="questions" aria-labelledby="questions-title"><div><p class="eyebrow">A few useful answers</p><h2 id="questions-title">Clear from<br>the start.</h2></div><div class="faq-list"><details><summary>Does LidPilot change my brightness?</summary><p>No. Your brightness controls stay available. Preventing display sleep also suppresses native idle dimming; independent “dim but never turn off” isn’t provided.</p></details><details><summary>Does the internal display turn off immediately?</summary><p>The built-in display can take a little time to go dark after you close the lid. Timing depends on macOS; expect a delay rather than an instant blackout.</p></details><details><summary>What does the helper do?</summary><p>Follow Lid and Keep Mac Running require a small signed helper approved through macOS. It controls one fixed sleep setting with verification and recovery safeguards. Keep Screen On works without it.</p></details><details><summary>Can I put a running Mac in a bag?</summary><p>Keep your Mac on a stable, ventilated surface during a session. Thermal safeguards are a backstop, not a substitute for airflow.</p></details><details><summary>How do updates and removal work?</summary><p>Signed update checks wait until LidPilot is Off. Installation is manual and requires verified cleanup and an open lid. To remove LidPilot, turn it Off, resolve any recovery warning, remove its helper in Settings, disable launch at login, and quit before removing the app.</p></details><details><summary>Which Macs is LidPilot designed for?</summary><p>Apple Silicon MacBooks running macOS 15 or later. V1 supports the built-in-display setup. External displays, docks, and virtual displays are outside the validated V1 configuration.</p></details></div></section>
+</main>
+<footer class="shell footer"><a class="brand" href="#"><img src="assets/icon-light.png" width="32" height="32" alt="">LidPilot</a><p>Your Mac. On your time.</p><div><a href="https://github.com/Marios1111/lidpilot">GitHub</a><a href="https://github.com/Marios1111/lidpilot/issues">Support</a><span>© 2026 · MIT</span></div></footer>
+</body></html>
