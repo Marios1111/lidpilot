@@ -195,6 +195,8 @@ enum DurationChoice: String, CaseIterable, Identifiable {
             Task { [weak self] in
                 do {
                     try await center.add(request)
+                    let settings = await center.notificationSettings()
+                    self?.diagnostics.record(phase, "macOS accepted a session notification; authorization status: \(settings.authorizationStatus.rawValue). Presentation remains subject to macOS notification settings.")
                 } catch {
                     self?.diagnostics.record(phase, "Could not queue a session notification: \(error.localizedDescription)")
                 }

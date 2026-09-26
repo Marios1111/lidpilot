@@ -43,3 +43,18 @@ not repeated solely for this observation fix. Installed updater regressions rema
 required; compilation is not evidence of the full Sparkle lifecycle.
 The installed RC8 remains unchanged and Off; its controlled AC acceptance capture
 still awaits charger availability.
+
+## RC9 retest and bounded diagnostic follow-up
+
+The owner reported no banner/sound or Notification Centre entry after the RC9
+one-minute retest. Both temporary notification settings were restored Off.
+No enqueue error was present in the retained diagnostic events; absence of an
+error does not establish delivery. The gate remains open.
+
+Event-only diagnostic entries now distinguish a successful macOS enqueue and
+its public authorization status from the foreground presentation callback.
+They contain no notification identifiers, user content or account data, and use
+the existing bounded local diagnostic log. These entries change no notification
+permission, presentation options, timer or power semantics. Debug and Release
+compilation passed, exit 0; installed observations are still required. Do not
+interpret “macOS accepted” as proof that a banner was shown.

@@ -39,8 +39,11 @@ On and a one-minute Keep Screen On session was started. Native system/display
 assertions appeared with bounded deadlines. The panel returned Off with “Your
 session has ended.” Independent SleepDisabled=0 and no LidPilot assertions were
 confirmed. Both notification switches were restored Off; mode/duration restored
-to Keep Mac Running / 30 min; login remained On. The operator's banner/sound or
-Notification Centre observation is pending, so delivery is not marked PASS.
+to Keep Mac Running / 30 min; login remained On. The operator reported no banner/sound and no Notification Centre entry.
+Delivery is therefore not passed. Existing diagnostics contain no enqueue error,
+but that alone does not prove enqueue or delivery. Bounded event-only diagnostics
+are being added to distinguish macOS request acceptance/authorization from the
+foreground presentation callback; this is not a claimed notification fix.
 
 The final controlled 600-second AC acceptance remains pending a quiet ready
 setup; no performance PASS is inferred from signing or compilation. This candidate

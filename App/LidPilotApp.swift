@@ -130,6 +130,9 @@ nonisolated extension AppDelegate: UNUserNotificationCenterDelegate {
                 completionHandler([])
                 return
             }
+            if let model = self?.model {
+                model.diagnostics.record(model.controller.phase, "Requested foreground notification banner, list and sound from macOS.")
+            }
             completionHandler([.banner, .list, .sound])
         }
     }
