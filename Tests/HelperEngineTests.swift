@@ -195,6 +195,37 @@ struct HelperEngineTests {
         #expect(platform.writes == [true, false])
     }
 
+    @Test func failedEnableReadbackRollsBackAndVerifiesCleanup() throws {
+        let platform = TestPlatform()
+        platform.onWrite = { enabled in platform.failRead = enabled }
+        let result = platform.engine().handle(try platform.acquire(), client: UUID())
+
+        #expect(!result.success && result.flag == .off)
+        #expect(!result.ownsOverride && !result.recoveryPending)
+        #expect(platform.writes == [true, false])
+        #expect(platform.record == nil)
+    }
+
+    @Test func failedCleanupReadbackRemainsPendingUntilWatchdogRetry() throws {
+        let platform = TestPlatform()
+        platform.onWrite = { enabled in
+            if enabled { platform.failRead = true }
+        }
+        let engine = platform.engine()
+        let result = engine.handle(try platform.acquire(), client: UUID())
+
+        #expect(!result.success && result.flag == .unknown)
+        #expect(result.ownsOverride && result.recoveryPending)
+        #expect(platform.flag == .off && platform.record != nil)
+        #expect(platform.writes == [true, false])
+
+        platform.failRead = false
+        engine.watchdog()
+
+        #expect(platform.flag == .off && platform.record == nil)
+        #expect(platform.writes == [true, false, false])
+    }
+
     @Test func failedRestorationRemainsVisibleAndRetries() throws {
         let platform = TestPlatform(); let engine = platform.engine(); let client = UUID()
         let request = try platform.acquire()
