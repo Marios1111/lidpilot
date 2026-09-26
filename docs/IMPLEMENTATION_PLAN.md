@@ -1,6 +1,18 @@
 # LidPilot V1 implementation plan
 
-Status: implementation and safe automated/native smoke checks are complete. The user delegated final design to Astra Max, retaining Mode Cards and the compact timer. User-facing labels are Follow Lid, Keep Screen On, and Keep Mac Running; internal semantics remain smart/display/closed. The September 21 native mock interaction and accessibility-tree pass is complete, including timer choices, settings, export, onboarding, and two verified UI fixes. The follow-up accessibility QA is complete: keyboard navigation, user-assisted VoiceOver speech confirmation, Light/Dark, Increase Contrast, Reduce Transparency, and Reduce Motion. macOS does not list LidPilot as supporting its preferred-reading-size control; that limitation is documented. Original system settings were restored. Hardware, signed XPC, notarized upgrades, and performance measurements remain explicit release gates. No hardware power tests or privileged installation are authorized by this plan. See `VERIFICATION.md` for evidence and the exact resume point.
+Initial implementation checkpoint (historical): implementation and safe automated/native smoke checks were complete. The user delegated final design to Astra Max, retaining Mode Cards and the compact timer. User-facing labels are Follow Lid, Keep Screen On, and Keep Mac Running; internal semantics remain smart/display/closed. The September 21 native mock interaction and accessibility-tree pass is complete, including timer choices, settings, export, onboarding, and two verified UI fixes. The follow-up accessibility QA is complete: keyboard navigation, user-assisted VoiceOver speech confirmation, Light/Dark, Increase Contrast, Reduce Transparency, and Reduce Motion. macOS does not list LidPilot as supporting its preferred-reading-size control; that limitation is documented. Original system settings were restored. Hardware, signed XPC, notarized upgrades, and performance measurements remain explicit release gates. No hardware power tests or privileged installation are authorized by this plan. See `VERIFICATION.md` for evidence and the exact resume point.
+
+## Current continuation — September 26
+
+Source checks and CI pass at `3b5a1e6` (85 tests). Preserve the retained signed
+RC and physical evidence. Inclusive installed CPU remains failed at 0.830470%.
+The next bounded experiment isolates hidden SwiftUI presentation on exact RC6
+source, verifies native close/reopen behavior, then compares controlled A/B/A
+600-second runs without helper or safety changes. Close this hypothesis if the
+measurement is inconclusive rather than creating speculative release candidates.
+The permanent-domain migration is committed; polished site and completed
+Remotion exports are undergoing integration. Final lifecycle/accessibility and
+release checks follow only on a justified candidate. See `VERIFICATION.md`.
 
 ## Outcome and fixed decisions
 

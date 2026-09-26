@@ -25,16 +25,17 @@ The [audit closeout record](validation/2026-09-25-audit-closeout.md) records the
 owner's accepted dimming/panel/update limitations and narrowed built-in-display
 support. External/dock testing and genuine different-team testing are explicitly
 deferred evidence, not failed implementations or claimed passes. Exact signing
-requirements remain mandatory. Stable-OS runtime and other retained release
-gates remain open. The prolonged RC6 diagnostic Save dialog did not starve
+requirements remain mandatory. The owner accepts this Mac’s recorded beta OS
+as the V1 validation host; remaining mandatory gates are not waived.
+The prolonged RC6 diagnostic Save dialog did not starve
 renewals; the independent save-file branch still needs confirmation.
 
-Current local identity-isolation checks: **83 tests** (21 Core, 62 Runtime),
+Current local checks: **85 tests** (21 Core, 64 Runtime),
 Debug and Release builds, package identity inspection, and isolated native smoke
-passed. These cover identity commit `7cfd31c`, icon commit `c41acf3`, and preview
-commit `35ec58e` as applicable. They do not prove installed signed-helper
-coexistence. Latest retained remote CI: **79 tests** with Debug/Release passing
-at `f89cfec` on macOS 15.7.2 arm64; new CI is pending. Latest public
+passed at `3b5a1e6`, including identity isolation, independent failed-read
+recovery regressions and native product captures. They do not prove installed
+signed-helper coexistence. [CI at `3b5a1e6`](https://github.com/Marios1111/lidpilot/actions/runs/36265171164)
+also passed its tests and Debug/Release builds. Latest public
 prerelease: **RC4**. RC5/RC6 are local diagnostic candidates. The [uninstrumented installed RC6 baseline](validation/2026-09-26-rc6-uninstrumented.md)
 completed 600 seconds and **failed at 0.830470% inclusive CPU** (app 0.355936%,
 helper 0.054073%, children 0.420460%); memory passed at 63.32 MiB. Its beta OS
@@ -45,7 +46,7 @@ be attributed to instrumentation alone. These statements supersede historical ch
 
 | Feature | Implementation | Remaining evidence |
 | --- | --- | --- |
-| Native arm64 macOS 15+ app | Swift 6 / SwiftUI / AppKit menu-bar app, original icon, adaptive Soft Glass mode cards | macOS 15 CI build/tests passed; installed runtime and release-candidate accessibility repeat on a stable supported OS remain |
+| Native arm64 macOS 15+ app | Swift 6 / SwiftUI / AppKit menu-bar app, original icon, adaptive Soft Glass mode cards | macOS 15 CI build/tests passed; final installed runtime and release-candidate accessibility regression remain |
 | Follow Lid / Keep Screen On / Keep Mac Running / Off | Separate requested/effective/observed state, read-back, generation invalidation | G1/G2 physical behavior |
 | Sessions | 30m/1h/2h/4h/custom/until-time/indefinite; immutable hard deadlines; switch preserves deadline | Native preset/custom/until-time/indefinite interaction passed; physical timing remains gated |
 | Safety | Thermal protection, 10/20/30% battery cutoff, battery/LPM policies, charger/lid/display/wake observation, explicit restart after pause | Live sensor and workload continuity checks |
@@ -333,3 +334,16 @@ with its override and assertions off; launchd reports helper build 4. Native
 confirmation, a matching-build helper lease, and the ten-minute performance
 measurement are now recorded. RC4 reduced inclusive CPU to 0.684% but still
 missed the 0.2% target; the stable release gate remains open.
+
+## September 26 continuation checkpoint
+
+The [independent accounting review](validation/2026-09-26-independent-review.md)
+confirms the failed measurement; it found no accounting correction that produces
+a pass. One presentation-only candidate is being tested on the exact RC6 source
+in an isolated worktree. Its native lifecycle must pass before controlled A/B/A
+installed measurements. No helper, timer, read-back or recovery semantics change
+in that experiment. A UI reduction alone is not promised to meet the full budget.
+
+The 34-second Remotion landscape, vertical and 720p web exports are rendered.
+Website integration and playback review remain separate from application gates.
+Neither these exports nor source CI authorize a stable release.

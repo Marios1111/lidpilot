@@ -3,6 +3,16 @@
 All notable LidPilot changes will be recorded here. This file describes the
 current development snapshot; it is not a release announcement.
 
+## Unreleased
+
+- Isolate development app/helper identities and local state while preserving
+  published production identity requirements and the shared power-state fence.
+- Add adaptive LP artwork and isolated native product captures.
+- Configure the permanent `lidpilot.app` stable feed and retain signed RC
+  compatibility; make Pages signature validation portable with OpenSSL 3.
+- Cover failed independent verification and cleanup read-back recovery paths.
+- Treat boundary child accounting as incomplete rather than a performance pass.
+
 ## 1.0.0 - release candidate 6
 
 RC6 tests standard launchd scheduling for the helper while keeping its utility
