@@ -1,6 +1,6 @@
 {
   "repository": "Marios1111/lidpilot",
-  "stableFeedURL": "https://marios1111.github.io/lidpilot/appcast.xml",
-  "rcFeedURL": "https://marios1111.github.io/lidpilot/rc/appcast.xml",
+  "stableFeedURL": "https://lidpilot.app/updates/appcast.xml",
+  "rcFeedURL": "https://lidpilot.app/rc/appcast.xml",
   "sparklePublicKey": "aFbwN8/fxLZ3cnm70i6mffNUPWD1B1ZngUcX1JBtpEQ="
 }

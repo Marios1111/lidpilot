@@ -6,6 +6,12 @@ import LidPilotRuntime
 /// Keep one standard Sparkle controller. Update checks are allowed only while LidPilot is Off.
 /// The whole install-capable cycle remains gated before Sparkle can present an update.
 @MainActor @Observable final class UpdateCoordinator: NSObject, SPUUpdaterDelegate {
+    private static let allowedFeedURLs = [
+        "https://lidpilot.app/updates/appcast.xml",
+        "https://lidpilot.app/rc/appcast.xml",
+        "https://marios1111.github.io/lidpilot/rc/appcast.xml"
+    ]
+
     private weak var model: AppModel?
     private var standard: SPUStandardUpdaterController?
     private var preparing = false
@@ -37,7 +43,8 @@ import LidPilotRuntime
             return
         }
         guard !model.isPreview, let feed = Bundle.main.object(forInfoDictionaryKey: "SUFeedURL") as? String,
-              let url = URL(string: feed), url.scheme == "https", url.host?.hasSuffix(".github.io") == true,
+              Self.allowedFeedURLs.contains(feed),
+              let url = URL(string: feed), url.scheme == "https",
               url.user == nil, url.password == nil, url.query == nil, url.fragment == nil,
               !feed.contains("REPLACE"),
               let key = Bundle.main.object(forInfoDictionaryKey: "SUPublicEDKey") as? String,

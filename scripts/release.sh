@@ -159,16 +159,10 @@ check_publication_urls() {
   ruby -ruri -e '
     repository, release_label, channel, pages_value, download_value = ARGV
     abort unless repository.match?(/\A[A-Za-z0-9-]+\/[A-Za-z0-9_.-]+\z/)
-    owner = repository.split("/", 2).first
-    pages = URI.parse(pages_value)
-    download = URI.parse(download_value)
-    abort unless pages.is_a?(URI::HTTPS) && pages.port == 443 && pages.host && pages.userinfo.nil? && pages.query.nil? && pages.fragment.nil?
-    abort unless pages.host.downcase == "#{owner.downcase}.github.io" && pages.path.end_with?("/appcast.xml")
-    path_parts = pages.path.split("/").reject(&:empty?)
-    abort if channel == "stable" && path_parts.include?("rc")
-    abort if channel == "rc" && path_parts[-2] != "rc"
+    expected_feed = channel == "stable" ? "https://lidpilot.app/updates/appcast.xml" : "https://lidpilot.app/rc/appcast.xml"
+    abort unless pages_value == expected_feed
     expected = "https://github.com/#{repository}/releases/download/v#{release_label}/LidPilot-#{release_label}.zip"
-    abort unless download.to_s == expected
+    abort unless download_value == expected
   ' "$repository" "$RELEASE_LABEL" "$RELEASE_CHANNEL" "$pages_url" "$download_url" >/dev/null 2>&1
 }
 
@@ -269,7 +263,7 @@ preflight() {
     fi
   fi
   if [[ -n "${LIDPILOT_GITHUB_REPOSITORY:-}" && -n "${LIDPILOT_PAGES_URL:-}" && -n "${LIDPILOT_RELEASE_DOWNLOAD_URL:-}" ]] && ! check_publication_urls; then
-    release_error "publication URLs must use the repository owner's *.github.io appcast.xml for the selected channel and the exact immutable GitHub Release zip for ${RELEASE_LABEL}"
+    release_error "publication URLs must use the canonical lidpilot.app feed path for the selected channel and the exact immutable GitHub Release zip for ${RELEASE_LABEL}"
   fi
   if [[ "$RELEASE_CHANNEL" == "rc" ]]; then
     if [[ "$RELEASE_HARDWARE_VALIDATION" != "pending" ]]; then

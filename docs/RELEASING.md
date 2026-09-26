@@ -39,7 +39,7 @@ outside the repository.
 
 Stable is the default channel. Its release label is the numeric marketing
 version from `Version.xcconfig`, and its feed defaults to
-`https://marios1111.github.io/lidpilot/appcast.xml`.
+`https://lidpilot.app/updates/appcast.xml`.
 
 An RC must opt in explicitly:
 
@@ -54,9 +54,16 @@ For marketing version `1.3.0`, this creates release label `1.3.0-rc.2`. The
 app bundle keeps `CFBundleShortVersionString=1.3.0`; `CFBundleVersion` remains
 the positive, strictly increasing build number from `Version.xcconfig`. The
 stage directory includes both label and build, while the DMG, Sparkle archive,
-notes, GitHub tag, and immutable URL use the release label. RCs use
-`https://marios1111.github.io/lidpilot/rc/appcast.xml` and the matching
+notes, GitHub tag, and immutable URL use the release label. New RCs use
+`https://lidpilot.app/rc/appcast.xml` and the matching
 `v1.3.0-rc.2/LidPilot-1.3.0-rc.2.zip` GitHub asset path.
+
+The existing signed RC4 feed and notes keep their original
+`marios1111.github.io/lidpilot/rc/` links. The custom-domain redirect preserves
+those installed clients' feed path. Do not rewrite or re-sign these historical
+files as part of the domain migration. The Pages validator accepts that one
+byte-pinned legacy RC4 feed explicitly; release generation only accepts the
+branded feed URLs above.
 
 An RC still requires Developer ID identity, timestamped app/helper signing,
 notarization, the protected Sparkle private key, signed feed and notes, and
@@ -114,21 +121,24 @@ manifest has been reviewed:
    scoped `.gitattributes` rule disables text conversion for `website/rc/*`;
    do not format, normalize, regenerate, or otherwise edit these signed bytes.
    Any byte change requires new signatures and a new manifest hash. For a
-   future stable release, use the distinct root paths `website/appcast.xml` and
-   `website/<signed-release-notes-name>.md`; do not place stable metadata under
-   `website/rc/`.
+   future stable release, use the distinct `website/updates/appcast.xml` and
+   `website/updates/<signed-release-notes-name>.md` paths; do not place stable
+   metadata under `website/rc/`. The RC-only Pages workflow rejects a stable
+   feed until a real signed stable artifact and its validation path are ready.
 4. The current publisher at `.github/workflows/pages.yml` is RC-specific. To
    publish an RC, review the committed `website/` tree, open Actions, select
    the current default `dev` branch, and choose `publish-rc`; the default
    `skip` choice does not deploy. The workflow runs only for
-   `workflow_dispatch`, requires that explicit choice, validates the RC feed
-   paths/signature metadata, and uploads `website/` without a build or metadata
-   rewrite. It has no push, tag, release, or other automatic deployment
+   `workflow_dispatch`, requires that explicit choice, runs
+   `scripts/validate_pages_site.rb` to check the custom domain, exact RC feed
+   and immutable GitHub Release URLs, signed notes, Sparkle feed signature and
+   unchanged legacy RC4 bytes, then uploads `website/` unchanged. It has no
+   push, tag, release, or other automatic deployment
    trigger. GitHub Pages must be configured to use GitHub Actions as its
    publishing source. Adding the workflow and files does not dispatch it or
    publish the site. Before a stable publication, separately validate the
-   stable feed and notes at the root paths and update the manual workflow's
-   checks to cover them.
+   stable feed and notes under `website/updates/` and update the manual
+   workflow's checks to cover them.
 5. Fetch the Pages files, validate signatures, URLs, build number, minimum OS
    and archive hashes, then perform the update smoke test from the last
    supported public build.

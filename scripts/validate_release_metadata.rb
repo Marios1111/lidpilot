@@ -77,15 +77,12 @@ end
 
 def validate_publication_urls(feed, download, repository, release_label, channel)
   fail_validation("repository must be owner/repository") unless repository.match?(/\A[A-Za-z0-9-]+\/[A-Za-z0-9_.-]+\z/)
-  owner, = repository.split("/", 2)
-  fail_validation("Pages URL must use the repository owner's GitHub Pages HTTPS host") unless feed.port == 443 && feed.host.to_s.downcase == "#{owner.downcase}.github.io"
-  path_parts = feed.path.to_s.split("/").reject(&:empty?)
-  fail_validation("Pages URL must point to an appcast.xml path") unless path_parts.last == "appcast.xml"
-  if channel == "rc"
-    fail_validation("RC Pages URL must use the /rc/appcast.xml path") unless path_parts[-2] == "rc"
-  else
-    fail_validation("stable Pages URL must not use the RC appcast path") if path_parts.include?("rc")
-  end
+  expected_feed = if channel == "rc"
+                    "https://lidpilot.app/rc/appcast.xml"
+                  else
+                    "https://lidpilot.app/updates/appcast.xml"
+                  end
+  fail_validation("Pages URL must exactly match the canonical #{channel} feed URL #{expected_feed}") unless feed.to_s == expected_feed
   fail_validation("release download URL must use github.com") unless download.host.to_s.downcase == "github.com"
   expected_download = "https://github.com/#{repository}/releases/download/v#{release_label}/LidPilot-#{release_label}.zip"
   fail_validation("release download URL must exactly match the immutable GitHub Release asset") unless download.to_s == expected_download
@@ -206,6 +203,7 @@ def validate_bundle(bundle, version, build, team, feed_url)
   require_directory(bundle, "application bundle (run scripts/release.sh export first)")
   app_info = read_plist(File.join(bundle, "Contents", "Info.plist"), "application Info.plist")
   fail_validation("application bundle identifier is wrong") unless app_info["CFBundleIdentifier"] == "com.lidpilot.app"
+  fail_validation("application helper identifier is wrong") unless app_info["LidPilotHelperIdentifier"] == "com.lidpilot.app.helper"
   fail_validation("application version is wrong") unless app_info["CFBundleShortVersionString"].to_s == version.to_s
   fail_validation("application build is wrong") unless app_info["CFBundleVersion"].to_s == build.to_s
   fail_validation("automatic Sparkle checks must be enabled") unless app_info["SUEnableAutomaticChecks"] == true
@@ -363,6 +361,7 @@ def write_fixture_bundle(bundle, options)
   public_key = Base64.strict_encode64("x" * 32)
   write_fixture_plist(File.join(contents, "Info.plist"), {
     "CFBundleIdentifier" => "com.lidpilot.app",
+    "LidPilotHelperIdentifier" => "com.lidpilot.app.helper",
     "CFBundleShortVersionString" => options.fetch(:version),
     "CFBundleVersion" => options.fetch(:build),
     "SUFeedURL" => options.fetch(:feed_url),
@@ -407,7 +406,7 @@ def self_test
   Dir.mktmpdir("lidpilot-release-validator-") do |dir|
     stable_config = release_configuration("1.0.0", { "LIDPILOT_RELEASE_CHANNEL" => "stable", "LIDPILOT_RC_NUMBER" => "7", "LIDPILOT_RC_TESTING_APPROVED" => "1" })
     expect_equal(stable_config.fetch("releaseLabel"), "1.0.0", "stable release label")
-    expect_equal(stable_config.fetch("feedURL"), "https://marios1111.github.io/lidpilot/appcast.xml", "stable feed default")
+    expect_equal(stable_config.fetch("feedURL"), "https://lidpilot.app/updates/appcast.xml", "stable feed default")
     expect_equal(stable_config.fetch("downloadURL"), "https://github.com/Marios1111/lidpilot/releases/download/v1.0.0/LidPilot-1.0.0.zip", "stable immutable URL")
 
     rc_config = release_configuration("1.0.0", {
@@ -417,7 +416,7 @@ def self_test
       "LIDPILOT_HARDWARE_APPROVED" => "1"
     })
     expect_equal(rc_config.fetch("releaseLabel"), "1.0.0-rc.4", "RC release label")
-    expect_equal(rc_config.fetch("feedURL"), "https://marios1111.github.io/lidpilot/rc/appcast.xml", "RC feed default")
+    expect_equal(rc_config.fetch("feedURL"), "https://lidpilot.app/rc/appcast.xml", "RC feed default")
     expect_equal(rc_config.fetch("downloadURL"), "https://github.com/Marios1111/lidpilot/releases/download/v1.0.0-rc.4/LidPilot-1.0.0-rc.4.zip", "RC immutable URL")
     expect_equal(rc_config.fetch("hardwareValidation"), "pending", "RC hardware status even when hardware approval is present")
 
@@ -469,13 +468,16 @@ def self_test
       validate(stable_base.merge(feed_url: rc_config.fetch("feedURL")))
     end
     expect_failure("wrong Pages origin") do
-      validate(stable_base.merge(feed_url: "https://other.github.io/lidpilot/appcast.xml"))
+      validate(stable_base.merge(feed_url: "https://marios1111.github.io/lidpilot/updates/appcast.xml"))
+    end
+    expect_failure("non-canonical stable feed path") do
+      validate(stable_base.merge(feed_url: "https://lidpilot.app/appcast.xml"))
     end
     expect_failure("wrong GitHub Release owner/repository") do
       validate(stable_base.merge(download_url: "https://github.com/Other/lidpilot/releases/download/v1.0.0/LidPilot-1.0.0.zip"))
     end
     expect_failure("credential-bearing publication URL") do
-      validate(stable_base.merge(feed_url: "https://user:pass@marios1111.github.io/lidpilot/appcast.xml"))
+      validate(stable_base.merge(feed_url: "https://user:pass@lidpilot.app/updates/appcast.xml"))
     end
     expect_failure("placeholder feed URL") do
       validate(stable_base.merge(feed_url: "https://example.com/appcast.xml"))
@@ -500,6 +502,9 @@ def self_test
       repository: rc_config.fetch("repository"),
       team: "L69774LN97"
     }
+    expect_failure("legacy GitHub Pages URL for a newly signed RC") do
+      validate(rc_base.merge(feed_url: "https://marios1111.github.io/lidpilot/rc/appcast.xml"))
+    end
     write_fixture_appcast(rc_appcast, rc_base)
     bundle = File.join(dir, "LidPilot.app")
     write_fixture_bundle(bundle, rc_base)
@@ -524,11 +529,11 @@ def self_test
       validate(rc_base.merge(bundle: bundle))
     end
     expect_failure("release-notes origin mismatch") do
-      wrong_notes = File.read(rc_appcast).sub("https://marios1111.github.io/lidpilot/rc/LidPilot-1.0.0-rc.4.md", "https://other.github.io/lidpilot/rc/LidPilot-1.0.0-rc.4.md")
+      wrong_notes = File.read(rc_appcast).sub("https://lidpilot.app/rc/LidPilot-1.0.0-rc.4.md", "https://other.github.io/lidpilot/rc/LidPilot-1.0.0-rc.4.md")
       File.write(rc_appcast, wrong_notes)
       validate(rc_base)
     end
-    File.write(rc_appcast, File.read(rc_appcast).sub("https://other.github.io/lidpilot/rc/LidPilot-1.0.0-rc.4.md", "https://marios1111.github.io/lidpilot/rc/LidPilot-1.0.0-rc.4.md"))
+    File.write(rc_appcast, File.read(rc_appcast).sub("https://other.github.io/lidpilot/rc/LidPilot-1.0.0-rc.4.md", "https://lidpilot.app/rc/LidPilot-1.0.0-rc.4.md"))
     expect_failure("appcast enclosure URL mismatch") do
       wrong_asset = File.read(rc_appcast).sub(rc_config.fetch("downloadURL"), wrong_asset_url)
       File.write(rc_appcast, wrong_asset)
