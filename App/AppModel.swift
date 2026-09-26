@@ -154,6 +154,29 @@ enum DurationChoice: String, CaseIterable, Identifiable {
             catch { notify = false }
         }
     }
+    func copyStatus() {
+        let snapshot = controller.observation
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "development"
+        let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "unknown"
+        let lines = [
+            "LidPilot \(version) (\(build)) — status snapshot",
+            "State: \(controller.phase.rawValue)",
+            "Requested mode: \(controller.requestedMode?.title ?? "None")",
+            "Effective mode: \(controller.effectiveMode?.title ?? "None")",
+            "Status: \(controller.message)",
+            "Helper: \(helper.label)",
+            "Lid (last observation): \(snapshot?.lid.rawValue ?? "unknown")",
+            "Power (last observation): \(snapshot?.power.rawValue ?? "unknown")",
+            "Thermal (last observation): \(snapshot?.thermal.rawValue ?? "unknown")",
+            "System assertion: \(controller.assertions.system.rawValue)",
+            "Display assertion: \(controller.assertions.display.rawValue)",
+            "Sleep override (last read-back): \(controller.helperState?.flag.rawValue ?? "unknown")",
+            "Physical panel power: not measured"
+        ]
+        NSPasteboard.general.clearContents()
+        NSPasteboard.general.setString(lines.joined(separator: "\n"), forType: .string)
+    }
+
     func exportDiagnostics() {
         let panel = NSSavePanel()
         panel.nameFieldStringValue = "LidPilot-diagnostics.txt"

@@ -136,6 +136,7 @@ struct PilotPanel: View {
                     Button { showSettings() } label: { Image(systemName: "gearshape").frame(width: 20, height: 22) }
                         .accessibilityLabel("Open Settings").help("Settings")
                     Menu {
+                        Button("Copy Status") { model.copyStatus() }
                         Button("Check for Updates…") { model.updater?.check() }
                             .disabled(model.updater?.canCheck != true || model.controller.hasSession)
                         Button("Welcome & Help") { openWindow(id: "welcome"); NSApp.activate(ignoringOtherApps: true) }

@@ -203,6 +203,7 @@ struct SettingsView: View {
             Section("Diagnostics") {
                 Text("Stored on this Mac for up to 7 days, below 5 MB. No workload data, account, or analytics.").font(.caption).foregroundStyle(.secondary)
                 HStack {
+                    Button("Copy Status") { model.copyStatus() }
                     Button("Preview Export…") {
                         model.exportPreview = model.diagnostics.report(controller: model.controller, helper: model.helper)
                         showingExport = true
