@@ -31,6 +31,64 @@ struct NativeBoundaryTests {
         #expect(try String(contentsOf: target, encoding: .utf8) == "unrelated")
     }
 
+    @Test func journalRejectsMalformedRecordBytesWithoutChangingThem() throws {
+        let folder = FileManager.default.temporaryDirectory.appendingPathComponent("lidpilot-malformed-journal-\(UUID())")
+        defer { try? FileManager.default.removeItem(at: folder) }
+        let journal = try RecoveryJournal(directory: folder.path, owner: geteuid())
+        let recordURL = folder.appendingPathComponent("recovery.json")
+        let malformed = Data("not-json".utf8)
+        try malformed.write(to: recordURL)
+        #expect(chmod(recordURL.path, 0o600) == 0)
+
+        #expect(throws: DecodingError.self) { try journal.load() }
+        #expect(try Data(contentsOf: recordURL) == malformed)
+    }
+
+    @Test func journalRejectsOversizedRecordBytesWithoutChangingThem() throws {
+        let folder = FileManager.default.temporaryDirectory.appendingPathComponent("lidpilot-oversized-journal-\(UUID())")
+        defer { try? FileManager.default.removeItem(at: folder) }
+        let journal = try RecoveryJournal(directory: folder.path, owner: geteuid())
+        let recordURL = folder.appendingPathComponent("recovery.json")
+        let oversized = Data(repeating: 0x7B, count: 4_097)
+        try oversized.write(to: recordURL)
+        #expect(chmod(recordURL.path, 0o600) == 0)
+
+        do {
+            _ = try journal.load()
+            Issue.record("an oversized recovery record was accepted")
+        } catch let error as RuntimeFailure {
+            #expect(error == .unavailable("Recovery record is damaged or has unsafe permissions."))
+        } catch {
+            Issue.record("unexpected oversized-record error: \(error)")
+        }
+        #expect(try Data(contentsOf: recordURL) == oversized)
+    }
+
+    @Test func journalRejectsLooseRecordFilePermissionsWithoutChangingIt() throws {
+        let folder = FileManager.default.temporaryDirectory.appendingPathComponent("lidpilot-loose-file-journal-\(UUID())")
+        defer { try? FileManager.default.removeItem(at: folder) }
+        let journal = try RecoveryJournal(directory: folder.path, owner: geteuid())
+        let recordURL = folder.appendingPathComponent("recovery.json")
+        let encoded = try JSONEncoder().encode(
+            RecoveryRecord(sessionID: UUID(), generation: 1, bootID: "test")
+        )
+        try encoded.write(to: recordURL)
+        #expect(chmod(recordURL.path, 0o644) == 0)
+        var info = stat()
+        #expect(lstat(recordURL.path, &info) == 0)
+        #expect(info.st_mode & 0o777 == 0o644)
+
+        do {
+            _ = try journal.load()
+            Issue.record("a group/world-readable recovery record was accepted")
+        } catch let error as RuntimeFailure {
+            #expect(error == .unavailable("Recovery record is damaged or has unsafe permissions."))
+        } catch {
+            Issue.record("unexpected unsafe-permission error: \(error)")
+        }
+        #expect(try Data(contentsOf: recordURL) == encoded)
+    }
+
     @Test func distinctJournalsShareOneCommandFence() throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent("lidpilot-isolated-journals-\(UUID())")
         let productionDirectory = root.appendingPathComponent("production", isDirectory: true)
