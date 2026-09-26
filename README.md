@@ -126,15 +126,15 @@ following gates:
   bundle signing requirements remain mandatory. Final lifecycle checks remain.
 - G5: signed RC1→RC2→RC3→RC4 Sparkle replacements passed on the recorded Mac.
   RC4 relaunched Off, its build-4 helper acquired a fresh lease, and a canceled
-  update restored the previous helper. Uninstall/cleanup and remaining updater
-  fault paths still need installed validation.
-- Performance: the uninstrumented RC6 Keep Mac Running measurement passed memory
-  at 63.32 MiB mean and measured 0.830470% inclusive CPU. It failed the former
-  0.2% budget; the owner revised V1 acceptance to ≤1.0% on September 26. A final
-  clean installed run and pathological-behavior checks remain pending.
-  The source-matched baseline ran on a newer beta OS build than the earlier
-  instrumented 0.543018% result. Child
-  processes are included; compilation and mock tests cannot close this gate.
+  update restored the previous helper. RC10 orderly uninstall, login-item cleanup
+  and same-signed-bundle restoration passed; updater fault paths remain open.
+- Performance: signed, uninstrumented RC10 completed the installed 600-second
+  full-process-tree capture: **0.799277% CPU**, **72.262662 MiB mean / 72.392181 MiB
+  sampled maximum**, passing revised ≤1.0% / ≤75 MiB limits. Children are included.
+  Interrupt/package-idle wakeups were 1.181662 / 0.158333 per second, with no
+  sustained runaway indicated. Native Off and independent cleanup were verified.
+  The original 100 ms visible-response measurement and final candidate remain open.
+
 
 The complete opt-in checklist is in
 [`docs/HARDWARE_VALIDATION.md`](docs/HARDWARE_VALIDATION.md), with the current

@@ -20,8 +20,8 @@ or update lifecycle has passed validation.
 | Closed-lid control | Authenticated helper lease around fixed `pmset` operations | Real ServiceManagement approval, signed helper and publisher/wrong-ID/ad-hoc/wrong-console enforcement passed; RC2–RC4 replacement helpers acquired the override. Genuine different-team client remains untested, explicitly deferred by owner review; exact Team ID and bundle signing requirement remains mandatory |
 | Recovery | Durable journal, read-back, ownership ambiguity, explicit recovery | Real RC1 and RC3 GUI crashes restored the override; RC2 lease expiry and helper crash/restart restored it with no false Recovery. RC3 finite deadline ended Off; remaining fault paths and post-crash UI check are open |
 | Updates | Sparkle 2 signed update path with an activation barrier | Real signed RC1→RC2→RC3→RC4 upgrades, Off relaunch, matching helper acquisition, canceled RC4 check cleanup and RC3 active-check disabling passed; updater fault paths and uninstall remain open |
-| Performance | ≤1.0% mean inclusive CPU of one core over 600 s, ≤75 MiB combined physical footprint, no sustained busy-loop/runaway | Retained RC6 result: 0.830470% CPU, 63.32 MiB mean memory on 26B5091g; failed the former 0.2% budget. Final clean uninstrumented acceptance after bounded runner/UI checks is pending; no retrospective gate PASS |
-| Removal | Open-lid cleanup, verified helper unregistration, then app removal | Documented path; real installation cleanup is part of G5 |
+| Performance | ≤1.0% mean inclusive CPU of one core over 600 s, ≤75 MiB combined physical footprint, no sustained busy-loop/runaway | RC10 600-second inclusive capture PASS: 0.799277% CPU, 72.262662 MiB mean / 72.392181 MiB maximum, recorded wakeups and no sustained runaway. macOS 27.2 beta 26B5091g. UI response remains open |
+| Removal | Open-lid cleanup, verified helper unregistration, then app removal | RC10 native login/helper cleanup, app removal from Applications and same-bundle restoration passed; final stable regression remains |
 | Accessibility | Native SwiftUI/AppKit controls and labels | Keyboard flows, user-assisted VoiceOver speech, Light/Dark and contrast/transparency/motion settings checked; preferred-reading-size scaling is not claimed |
 | Diagnostics | Local, bounded, redacted diagnostics | Seven retention, redaction, storage, and malformed-input tests pass; native preview and local Save dialog export passed |
 | Privacy | No account, cloud service, analytics, AI-agent detection, CLI, or remote-control feature | V1 scope and source review; reassess every new dependency |
@@ -34,7 +34,8 @@ its recorded beta OS may satisfy the corresponding V1 gates; a separate
 stable-OS installation is not required. This does not relabel the beta OS as a
 stable release or establish physical coverage on every supported OS. The
 owner revised V1 inclusive CPU acceptance to ≤1.0% on September 26. The
-≤0.2% budget remains a post-V1 goal. Final acceptance is pending.
+≤0.2% budget remains a post-V1 goal. RC10 CPU/memory acceptance passed;
+final source/artifact and UI-response validation remain open.
 
 ## Mode and helper boundary
 
