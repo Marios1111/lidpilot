@@ -13,6 +13,14 @@ current development snapshot; it is not a release announcement.
 - Cover failed independent verification and cleanup read-back recovery paths.
 - Treat boundary child accounting as incomplete rather than a performance pass.
 
+## 1.0.0 - release candidate 8
+
+RC8 tests a smaller resolved runtime icon after RC7 passed the revised CPU gate
+at 0.903801% but narrowly missed the 75 MiB memory budget. The bundled icon
+masters and in-app artwork remain full-resolution. No helper or safety semantics
+change. The isolated AppKit comparison supports this memory fix; installed
+acceptance and remaining release lifecycle checks are still required.
+
 ## 1.0.0 - release candidate 7
 
 RC7 is a clean, uninstrumented validation candidate containing development/production

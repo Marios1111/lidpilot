@@ -12,5 +12,8 @@ or image dependency is used.
 
 The default Finder/bundle icon is light. Native in-app artwork and the running
 application icon follow Light/Dark appearance through public SwiftUI/AppKit APIs.
+The running menu-bar app resolves a 256-point (512-pixel Retina) icon; Finder
+retains the full-resolution app-icon set. This avoids oversized runtime bitmap
+copies without reducing the bundled masters or the in-app artwork.
 This does not claim a macOS 15 Finder dark-icon capability. The menu-bar status
 symbol remains a native template symbol so status and contrast stay legible.

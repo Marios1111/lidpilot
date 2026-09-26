@@ -58,10 +58,12 @@ import LidPilotRuntime
         iconAppearanceObservation = NSApp.observe(\.effectiveAppearance, options: [.initial, .new]) { _, _ in
             Task { @MainActor in
                 guard let artwork = NSImage(named: "PilotIcon") else { return }
-                let icon = NSImage(size: NSSize(width: 512, height: 512))
+                // 256 points produces a 512-pixel Retina icon without the larger
+                // offscreen bitmap copies. Finder retains the full bundle icon.
+                let icon = NSImage(size: NSSize(width: 256, height: 256))
                 NSApp.effectiveAppearance.performAsCurrentDrawingAppearance {
                     icon.lockFocus()
-                    artwork.draw(in: NSRect(x: 0, y: 0, width: 512, height: 512))
+                    artwork.draw(in: NSRect(x: 0, y: 0, width: 256, height: 256))
                     icon.unlockFocus()
                 }
                 NSApp.applicationIconImage = icon
