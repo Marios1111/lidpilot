@@ -1,2 +1,3 @@
 website/rc/* -text
 website/updates/* -text
+website/updates/*.md whitespace=-blank-at-eof

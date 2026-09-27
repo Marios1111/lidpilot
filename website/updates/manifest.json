@@ -1,0 +1,32 @@
+{
+  "version": "1.0.0",
+  "releaseLabel": "1.0.0",
+  "channel": "stable",
+  "hardwareValidation": "approved",
+  "profilingEnabled": false,
+  "build": "12",
+  "feedURL": "https://lidpilot.app/updates/appcast.xml",
+  "downloadURL": "https://github.com/Marios1111/lidpilot/releases/download/v1.0.0/LidPilot-1.0.0.zip",
+  "files": [
+    {
+      "name": "dmg",
+      "path": "LidPilot-1.0.0.dmg",
+      "sha256": "ef4b33a5009a6415221bf35a7c009737439d92db451aac794bbecc787f275fbb"
+    },
+    {
+      "name": "update-archive",
+      "path": "LidPilot-1.0.0.zip",
+      "sha256": "44e8840d87dfee6a95fa82bc9276035fded571c529ff4dd4b941b20428be749b"
+    },
+    {
+      "name": "appcast",
+      "path": "appcast.xml",
+      "sha256": "df0c9f9d6e3ea8686975ec51e3c2bbed55c575c09f98f910f7fad5b4d449c8ee"
+    },
+    {
+      "name": "release-notes",
+      "path": "LidPilot-1.0.0.md",
+      "sha256": "412cb161a8182ea0bed1be14d303107260319b43694e1301e5c28936f8c49d39"
+    }
+  ]
+}

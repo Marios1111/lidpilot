@@ -1,31 +1,40 @@
 WEBVTT
 
-00:00:03.000 --> 00:00:06.000
-You're still reading. The screen dims.
+00:00:01.000 --> 00:00:02.767
+Keep the lecture in view.
 
-00:00:06.000 --> 00:00:11.000
-A build is running, and you need to close the lid.
+00:00:03.100 --> 00:00:06.100
+Let the build finish, even when you close the lid.
 
-00:00:11.000 --> 00:00:12.000
-Meet LidPilot.
+00:00:06.567 --> 00:00:09.800
+LidPilot puts those choices right in your Mac’s menu bar.
 
-00:00:12.000 --> 00:00:16.500
-Keep Screen On keeps your lecture, or long read, visible.
+00:00:10.100 --> 00:00:13.400
+Keep Screen On for lectures, reading, and focused work.
 
-00:00:16.500 --> 00:00:24.000
-Keep Mac Running lets a build, download, or local AI task continue with the lid closed.
+00:00:13.833 --> 00:00:17.733
+Keep Mac Running for builds, downloads, or a local AI task.
 
-00:00:24.000 --> 00:00:26.000
-Follow Lid connects both.
+00:00:18.033 --> 00:00:20.600
+Or let Follow Lid connect the two.
 
-00:00:26.000 --> 00:00:32.000
-Choose a timer. It starts Off, and you can stop any time.
+00:00:21.033 --> 00:00:22.700
+Choose how long you need it.
 
-00:00:32.000 --> 00:00:35.000
-A quiet, native menu-bar app.
+00:00:23.067 --> 00:00:24.733
+Stop whenever you want.
 
-00:00:35.000 --> 00:00:37.000
+00:00:25.067 --> 00:00:26.600
+Native to macOS.
+
+00:00:26.733 --> 00:00:28.300
 Free and open source.
 
-00:00:37.000 --> 00:00:39.000
-LidPilot. Your Mac, on your time.
+00:00:28.633 --> 00:00:32.467
+Install with Homebrew, or download it from lidpilot.app.
+
+00:00:33.000 --> 00:00:34.300
+LidPilot.
+
+00:00:34.433 --> 00:00:36.600
+Your Mac, on your time.

@@ -1,0 +1,21 @@
+<?xml version="1.0" standalone="yes"?><!-- sparkle-sign-warning:
+IMPORTANT: This file was signed by Sparkle. Any modifications to this file requires re-signing this file with generate_appcast or sign_update! The signed signature will be embedded at the end of this file.
+--><rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" version="2.0">
+    <channel>
+        <title>LidPilot</title>
+        <item>
+            <title>1.0.0</title>
+            <pubDate>Sun, 27 Sep 2026 04:53:52 +0300</pubDate>
+            <link>https://lidpilot.app/updates/appcast.xml</link>
+            <sparkle:version>12</sparkle:version>
+            <sparkle:shortVersionString>1.0.0</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
+            <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
+            <sparkle:releaseNotesLink sparkle:edSignature="JsuY1rhbaDcn3V4FNaczWBbo9G9uMJx3Vq3IEP7YF4qpHcaEQvId5fdqKgm6G3xuHd8Ex58VaRkAJn2XJMe1Dg==" sparkle:length="1541">https://lidpilot.app/updates/LidPilot-1.0.0.md</sparkle:releaseNotesLink>
+            <enclosure url="https://github.com/Marios1111/lidpilot/releases/download/v1.0.0/LidPilot-1.0.0.zip" length="3640528" type="application/octet-stream" sparkle:edSignature="RVBfZvaMI/XUblsEX/X5ZxnJJeasPxanY2c6/a00fhtjJrRJysSxxR76uMCo5DmLyHL5A59o5I5VZfhYGI/hAg=="></enclosure>
+        </item>
+    </channel>
+</rss><!-- sparkle-signatures:
+edSignature: jAuF8rUgn0f8uOht7YA0YQ/SETaskPjhB9twdIf8LRcjsAXlnBiALledrQWMhm+4oDzF4T4pBm7AzHx5m8FRDQ==
+length: 1434
+-->
