@@ -91,7 +91,7 @@
     "helperParentBuild": 12,
     "SleepDisabled": 0,
     "testFeedOverrideRemoved": true,
-    "nativeOffConfirmation": "pending"
+    "nativeOffConfirmation": "PASS: native Settings showed Off/override off with Approved helper before removal; restored Homebrew app also native Off"
   },
   "homebrew": {
     "tap": "https://github.com/Marios1111/homebrew-tap",
@@ -99,7 +99,21 @@
     "fetch": "pass",
     "style": "pass",
     "audit": "host blocked: outdated Command Line Tools; no toolchain bypass",
-    "installedCleanup": "pending native Settings and interactive administrator prompt",
-    "adoptionAttempt": "Homebrew confirmed identical app adoption, then required sudo chmod; noninteractive attempt failed, cask installation rolled back. No success claimed."
+    "installedCleanup": "PASS: native login disabled/helper unregistered/GUI quit; reversible bundle removal; actual fresh brew install; actual brew uninstall removed Applications bundle; fresh brew restore",
+    "adoptionAttempt": "Homebrew confirmed identical app adoption, then required sudo chmod; noninteractive attempt failed, cask installation rolled back. No success claimed. Superseded by successful fresh installation after native cleanup; no administrator prompt was needed for fresh install.",
+    "restoredState": {
+      "appBuild": 12,
+      "helperParentBuild": 12,
+      "helper": "Approved/reachable",
+      "phase": "Off",
+      "SleepDisabled": 0,
+      "wakeAssertions": "none",
+      "guiCount": 1,
+      "developmentInstances": 0,
+      "loginPreference": "restored On",
+      "modePreference": "Keep Screen On",
+      "durationPreference": "2 hours",
+      "notifications": "Off"
+    }
   }
 }

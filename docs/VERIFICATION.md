@@ -11,7 +11,9 @@ and website commits do not change the shipped binary source.
 
 The owner explicitly authorized the V1 production exception after reviewing the
 prepared artifacts. This ledger retains evidence levels and accepted boundaries;
-publication alone does not prove every final installed check.
+publication alone is not treated as proof. Final stable cleanup, actual Homebrew
+installation/removal and restored native Off state have now passed. No retained
+mandatory V1 release blockers remain within the owner-approved support boundary.
 
 ## Current gates
 
@@ -23,7 +25,7 @@ publication alone does not prove every final installed check.
 | G4 signed helper/XPC | PASS with deferred independent evidence | Exact Team ID/bundle identity enforcement; real publisher/wrong-ID/ad-hoc/malformed/console-user tests and signed ServiceManagement approval. Separate-Team client testing is deferred by owner acceptance, never represented as tested. Stable launchd helper reports parent build 12. |
 | Performance | PASS revised V1 gate | RC10 uninstrumented 600.002135 s capture: inclusive 0.799277% CPU; 72.262662 MiB mean / 72.392181 MiB maximum. Safety semantics retained; no sustained runaway indicated. Not a new build-12 measurement. |
 | UI/accessibility | PASS retained native checks | Keyboard, user-assisted VoiceOver, Light/Dark, contrast/transparency/motion checks, native Copy Status and temporary Settings Dock/Cmd-Tab verified. Exact click-to-visible 100 ms is unmeasured and explicitly accepted as a post-V1 optimization goal. |
-| G5 release/update | Signed artifacts and actual stable upgrade PASS; final removal/install pending interactive completion | Signed RC1→2→3→4 and RC11→stable build 12 installed. Stable launched with override/assertions Off and replacement helper build 12. Final native cleanup and Homebrew installation/removal await reopened Settings and an interactive administrator prompt. RC10 orderly uninstall is retained evidence. |
+| G5 release/update | PASS | Signed RC1→2→3→4 and RC11→stable build 12 installed. Stable launched Off with replacement helper build 12. Final native login/helper/GUI cleanup, reversible app removal, actual Homebrew installation/uninstall/restoration and restored native Off all passed. |
 | Site/domain | PASS | Stable Pages deployment; public signed feed hash matches local manifest; HTTPS enabled, HTTP→HTTPS and www→apex verified. Published Homebrew copy button matches the command; no overflow/console errors observed. |
 
 ## Exact source checks and artifacts
@@ -89,6 +91,7 @@ that is rendering evidence, not physical click latency.
 - [Notification presentation](validation/2026-09-27-notification-presentation.md)
 - [RC11 native, crash and sleep evidence](validation/2026-09-27-rc11-validation.md)
 - [Retained orderly uninstall](validation/2026-09-27-uninstall.md)
+- [Final stable removal and Homebrew installation](validation/2026-09-27-v1-uninstall-homebrew.md)
 - [Historical checkpoints](VERIFICATION_HISTORY.md)
 
 The validated hardware is the recorded M4 MacBook Air/built-in display on its
@@ -97,14 +100,34 @@ Notifications reached Notification Centre; banner/sound are OS-controlled and we
 not independently established. No analytics, private brightness APIs, fake input,
 blanket external-display blanking or V1.1/V2 control features were added.
 
-## Homebrew host checkpoint
+## Final Homebrew and removal result
 
-The published cask passed `brew style`, and `brew fetch` downloaded/verified the
-real stable DMG. `brew audit` stopped before auditing on this host’s outdated
-Command Line Tools check; no toolchain settings or protections were bypassed.
-A noninteractive `--adopt` attempt recognized the identical installed stable app,
-then Homebrew required administrator `chmod`. It failed because no terminal
-password prompt was available and rolled back cask installation. This is not a
-successful Homebrew install. Final native cleanup plus an interactive install
-remain pending. The existing signed app remains installed Off; no duplicate
-app or development helper was added.
+The published cask passed `brew style`; `brew fetch` downloaded and verified the
+real stable DMG. The earlier noninteractive adoption attempt failed at an
+administrator `chmod` prompt and rolled back. It is superseded by the successful
+fresh install below; no adoption success is fabricated.
+
+Through stable native Settings: launch at login disabled, helper removal confirmed,
+then status **Not installed / Off / override off**. The app quit normally; launchd
+lookup returned 113, no LidPilot GUI/helper process remained, and SleepDisabled
+stayed 0. The stopped app was reversibly moved to local rollback storage.
+
+The exact public `brew install --cask Marios1111/tap/lidpilot` completed, installing
+build 12 into Applications without an administrator prompt. Signature, staple and
+Gatekeeper checks passed. `brew list --cask --versions lidpilot` reported 1.0.0.
+Actual `brew uninstall --cask lidpilot` then removed the app, with no helper or
+login registration to abandon and SleepDisabled still 0. The same public install
+command restored the app successfully.
+
+Native restored Settings confirmed **Approved helper / Off / override off**.
+Launch at login was restored On; Keep Screen On / two hours / notifications Off
+were preserved. Independent final read-back: SleepDisabled=0, no LidPilot wake
+assertion, exactly one GUI, one production helper with parent build 12, no
+running development instance. Preferences/diagnostics and unrelated global state
+were preserved. Historical Background Items rows and rollback bundles are not
+running apps and were not deleted.
+
+`brew audit` remains **unperformed on this host** because Homebrew rejects its
+outdated Command Line Tools before auditing. No toolchain or security check was
+bypassed. This is deferred packaging-tool evidence, separate from the passing
+real cask installation/removal, style, hash and Gatekeeper results.
