@@ -16,7 +16,7 @@ module HomebrewCaskGenerator
   REPOSITORY_PATTERN = /\A[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+\z/
   EXPECTED_REPOSITORY = "Marios1111/lidpilot"
   STABLE_FEED_URL = "https://lidpilot.app/updates/appcast.xml"
-  HOMEPAGE_URL = "https://lidpilot.app"
+  HOMEPAGE_URL = "https://lidpilot.app/"
 
   def generate(manifest_path:, dmg_path:, download_url:)
     manifest = read_manifest(manifest_path)

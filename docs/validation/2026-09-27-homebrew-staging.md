@@ -25,7 +25,16 @@ replacement. `auto_updates true` identifies Sparkle support; it does not prevent
 all Homebrew upgrades. The caveat and guide require Turn Off, disable login,
 Remove Helper, and Quit before a Homebrew operation replaces or removes the app.
 
+Homebrew's native style checker subsequently ran against the generated synthetic
+cask in a disposable `Casks/` directory. It found a missing trailing slash in
+the homepage URL; the generator now emits `https://lidpilot.app/`. Generator
+fixtures pass, and `brew style --cask` reports one file inspected, no offenses
+(exit 0). This checks generated cask syntax/style, not a real release download.
+The checker used temporary caches and Homebrew's development gem dependencies;
+no LidPilot cask was installed or tap published.
+
 Still required: verified stable DMG, public-byte hash comparison, tap publication,
-Homebrew style/audit against the real cask, actual install and cleanup testing,
-and reviewed activation of the website command. The local Homebrew style attempt
-was blocked by its cache write sandbox; it is not a passing audit.
+Homebrew audit against the real cask, actual install and cleanup testing,
+and reviewed activation of the website command. The short command
+`brew install --cask lidpilot` requires prior tap setup or acceptance into the
+official Homebrew Cask repository; neither is assumed for a fresh installation.
