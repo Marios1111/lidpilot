@@ -1,5 +1,24 @@
 # V1 release verification
 
+## Final source preparation — September 27, 2026
+
+The owner accepted the responsive native UI with exact click-to-visible latency
+retained as an **unmeasured post-V1 optimization goal**, rather than a mandatory
+100 ms release blocker. No timing PASS is fabricated: the bounded Instruments
+capture found no potential hangs (largest recorded SwiftUI update group
+47.626292 ms), and the authorized window-only recording had no trustworthy
+input timestamp for the accessibility click. Existing keyboard, VoiceOver,
+appearance, Dock/Settings and Copy Status evidence is retained; unchanged checks
+are not repeated merely for another build number.
+
+The last missing isolated runner branch now has a passing deterministic
+failed-kill/unreaped-child test, including real child cleanup and retained-fence
+verification. Unsafe/impractical OS failures retain their documented injection
+boundary. No production authentication, fence, lease, watchdog or read-back
+semantics were weakened. Release build 12 is being prepared; it is not published.
+Final artifact signing, upgrade/removal and public-byte checks remain pending.
+
+
 ## RC10 installed acceptance — September 27, 2026
 
 Signed, uninstrumented build 10 at `d74d767` completed the controlled 600.002135-second

@@ -112,7 +112,7 @@ was exercised. It exported 288 frame-update rows (maximum 22.200250 ms),
 2,463 SwiftUI update-group rows (maximum 47.626292 ms), and zero potential-hang
 rows. Neither duration table contained an interval above 100 ms. These are
 render/update measurements, **not exact input-to-visible response latency**;
-the 100 ms visible-feedback criterion remains unverified. Timing summaries and
+the 100 ms visible-feedback criterion remains unverified. On September 27 the owner explicitly accepted this as an unmeasured post-V1 optimization goal, rather than a release blocker. Timing summaries and
 export hashes are in `2026-09-27-rc11-ui-timing.json`.
 
 The original Instruments TOC unexpectedly included inherited shell credentials
