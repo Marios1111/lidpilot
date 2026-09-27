@@ -10,6 +10,7 @@ type ProductSceneProps = {
   headline: string;
   supporting: string;
   image: string;
+  presentation?: "launch";
 };
 
 const captureDimensions: Record<string, { width: number; height: number }> = {
@@ -22,27 +23,29 @@ export const ProductScene: React.FC<ProductSceneProps> = ({
   headline,
   supporting,
   image,
+  presentation,
 }) => {
   const frame = useCurrentFrame();
   const { width, height } = useVideoConfig();
   const vertical = height > width;
   const running = image === "keep-mac-running.png";
+  const launch = presentation === "launch";
   const captureSize = captureDimensions[image];
   const panelWidth = vertical ? 490 : 420;
   const panelHeight = Math.round(panelWidth / (captureSize.width / captureSize.height));
-  const panelReveal = interpolate(frame, [10, 38], [0, 1], {
+  const panelReveal = interpolate(frame, launch ? [0, 18] : [10, 38], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
-  const deviceRise = interpolate(frame, [0, 58], [56, 0], {
+  const deviceRise = interpolate(frame, launch ? [0, 22] : [0, 58], launch ? [15, 0] : [56, 0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
-  const deviceScale = interpolate(frame, [0, 74], [0.93, 1], {
+  const deviceScale = interpolate(frame, [0, 74], launch ? [1, 1] : [0.93, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
-  const open = running
+  const open = launch && running ? 0 : running
     ? interpolate(frame, [30, 104], [1, 0], {
         extrapolateLeft: "clamp",
         extrapolateRight: "clamp",
@@ -165,7 +168,7 @@ export const ProductScene: React.FC<ProductSceneProps> = ({
               }),
             }}
           >
-            <TaskStream progress={progress} active={frame > 104} label="LOCAL TASK · BUILD" compact />
+            <TaskStream progress={progress} active={launch || frame > 104} label="LOCAL TASK · BUILD" compact />
           </div>
         ) : null}
 

@@ -1,0 +1,61 @@
+{
+  "status": "launch-candidate-unpublished",
+  "fps": 30,
+  "durationInFrames": 1350,
+  "narration": {
+    "src": "narration-launch-candidate-take-1.mp3",
+    "from": 33,
+    "decodedDurationSeconds": 40.124082
+  },
+  "homebrewCommand": "brew install --cask Marios1111/tap/lidpilot",
+  "scenes": [
+    { "id": "reading-hook", "from": 0, "duration": 90 },
+    { "id": "working-hook", "from": 90, "duration": 113 },
+    { "id": "reveal", "from": 203, "duration": 124 },
+    { "id": "screen", "from": 327, "duration": 136 },
+    { "id": "running", "from": 463, "duration": 158 },
+    { "id": "follow", "from": 621, "duration": 96 },
+    { "id": "control", "from": 717, "duration": 135 },
+    { "id": "end", "from": 852, "duration": 498 }
+  ],
+  "captionCues": [
+    { "from": 30, "duration": 55, "text": "Keep the lecture in view." },
+    {
+      "from": 100,
+      "duration": 95,
+      "text": "Let the build finish, even when you close the lid."
+    },
+    {
+      "from": 218,
+      "duration": 103,
+      "text": "LidPilot puts those choices right in your Mac’s menu bar."
+    },
+    {
+      "from": 338,
+      "duration": 120,
+      "text": "Keep Screen On for lectures, reading, and focused work."
+    },
+    {
+      "from": 477,
+      "duration": 84,
+      "text": "Keep Mac Running for builds, downloads,"
+    },
+    { "from": 563, "duration": 49, "text": "or a local AI task." },
+    {
+      "from": 632,
+      "duration": 78,
+      "text": "Or let Follow Lid connect the two."
+    },
+    { "from": 731, "duration": 52, "text": "Choose how long you need it." },
+    { "from": 796, "duration": 51, "text": "Stop whenever you want." },
+    { "from": 856, "duration": 43, "text": "Native to macOS." },
+    { "from": 909, "duration": 62, "text": "Free and open source." },
+    {
+      "from": 980,
+      "duration": 127,
+      "text": "Install with Homebrew, or download it from lidpilot.app."
+    },
+    { "from": 1125, "duration": 30, "text": "LidPilot." },
+    { "from": 1173, "duration": 65, "text": "Your Mac, on your time." }
+  ]
+}

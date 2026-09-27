@@ -1,4 +1,5 @@
 import "./index.css";
+import { LaunchCompositions } from "./LaunchComposition";
 import {
   LandscapeFilm,
   LandscapeSocialFilm,
@@ -13,6 +14,7 @@ export const RemotionRoot: React.FC = () => {
       <LandscapeSocialFilm />
       <VerticalFilm />
       <VerticalSocialFilm />
+      <LaunchCompositions />
     </>
   );
 };
