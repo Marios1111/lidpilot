@@ -61,10 +61,53 @@ closed; the pre-existing snapshot was not edited. Dark Settings rendered without
 clipped content. These checks are not a complete VoiceOver/appearance regression
 or a measured 100 ms response result.
 
+The authorized brief Keep Mac Running test then reached native **Session active**
+with the lid open. Independent macOS output showed SleepDisabled=1, a LidPilot
+system assertion (app PID 63034), and no display-sleep assertion. This successful
+acquire verifies matching app/helper build compatibility, beyond registration
+alone. Turn Off reached native Off, SleepDisabled=0 and no LidPilot assertions.
+Keep Screen On and the two-hour preference were restored afterward. No physical
+lid or performance result is inferred from this short session.
+
+## Real GUI-crash recovery
+
+The owner separately prepared and approved the GUI-crash test with Keep Mac
+Running active, lid open and Settings visible. Native diagnostics showed the
+system assertion on and display assertion off. The observer verified the unique
+installed GUI PID (63034), SleepDisabled=1 and its assertion before SIGKILL.
+Only the GUI was terminated. The first independently observed Off state arrived
+at **1.040348 seconds**; every following sample remained Off through 30 seconds.
+This is a sampling upper bound, not an exact cleanup-duration measurement.
+
+The app was relaunched; independent read-back remained 0 with no LidPilot
+assertions. The owner reopened Settings, where the native recovered UI showed
+**Session: Off**, **Helper: Approved**, override off and "LidPilot's controls
+are off." There was no false Recovery state or automatic restart. Keep Screen
+On / two-hour defaults were restored through native General controls, and
+login On / notifications Off remained unchanged. Timed data is retained in
+[`2026-09-27-rc11-gui-crash.json`](2026-09-27-rc11-gui-crash.json), including
+the hash of the unfiltered local observation record.
+
 ## Remaining
 
-Installed active-session/helper compatibility, final native/accessibility and
-response timing, the remaining support/lifecycle checks and exact stable
+A bounded 30-second Apple Instruments SwiftUI recording successfully attached
+to the installed, signed app (PID 71208) while Off. Native Settings navigation
+was exercised. It exported 288 frame-update rows (maximum 22.200250 ms),
+2,463 SwiftUI update-group rows (maximum 47.626292 ms), and zero potential-hang
+rows. Neither duration table contained an interval above 100 ms. These are
+render/update measurements, **not exact input-to-visible response latency**;
+the 100 ms visible-feedback criterion remains unverified. Timing summaries and
+export hashes are in `2026-09-27-rc11-ui-timing.json`.
+
+The original Instruments TOC unexpectedly included inherited shell credentials
+and was displayed in tool output. No raw trace or credentials entered Git or
+public deliverables. Generated trace permissions were restricted, environment
+metadata was removed from the readable TOC, and subsequent exports selected
+only timing tables. The owner was informed; credential rotation was not
+performed without authorization. Never publish the raw trace or metadata.
+
+Final native/accessibility and response timing, the remaining support/lifecycle
+checks and exact stable
 distribution remain separate gates. RC10's retained 600-second CPU/memory pass
 is unchanged; no new performance result is claimed here. No global sleep policy
 was cleared blindly, and no closed-lid test ran during this replacement.

@@ -1,0 +1,30 @@
+{
+  "source": "bfbec568866b39a82ba486fbf43212c898808132",
+  "version": "1.0.0",
+  "build": 11,
+  "process_pid": 71208,
+  "host": "macOS 27.2 beta (26B5091g), Apple Silicon",
+  "tool": "Apple xctrace SwiftUI template, 30-second bounded installed recording",
+  "scope": "Settings navigation while Off; not the full-process-tree 600-second CPU test; not exact click-to-visible latency",
+  "tables": {
+    "hitches-updates": {
+      "row_count": 288,
+      "max_duration_ms": 22.20025,
+      "over_100_ms": 0,
+      "export_sha256": "b7bcbfbd017094da3afbfa0890cdbdee227546c78bc0abfe1bf461d83fbccd3f"
+    },
+    "swiftui-update-groups": {
+      "row_count": 2463,
+      "max_duration_ms": 47.626292,
+      "over_100_ms": 0,
+      "export_sha256": "7f65050c833470000fb2edccd7f77f25b5073fcf4ad98264f04c62465964e067"
+    },
+    "potential-hangs": {
+      "row_count": 0,
+      "max_duration_ms": null,
+      "over_100_ms": 0,
+      "export_sha256": "3e6a7b1c5896614835892637a92d58584bfb5a6d82213ce7fee01924b5b62b38"
+    }
+  },
+  "credential_boundary": "Raw Instruments metadata contains inherited environment data and is restricted locally; it is excluded from Git and public deliverables. This record contains only timing summaries."
+}

@@ -1,0 +1,168 @@
+{
+  "version": "1.0.0",
+  "build": 11,
+  "source": "bfbec568866b39a82ba486fbf43212c898808132",
+  "gui_pid": 63034,
+  "samples": [
+    {
+      "elapsed_seconds": 0.012225709011545405,
+      "sleep_disabled": 1,
+      "lidpilot_mentioned": true
+    },
+    {
+      "elapsed_seconds": 1.040347959002247,
+      "sleep_disabled": 0,
+      "lidpilot_mentioned": false
+    },
+    {
+      "elapsed_seconds": 2.070713666995289,
+      "sleep_disabled": 0,
+      "lidpilot_mentioned": false
+    },
+    {
+      "elapsed_seconds": 3.1012280840077437,
+      "sleep_disabled": 0,
+      "lidpilot_mentioned": false
+    },
+    {
+      "elapsed_seconds": 4.131708250002703,
+      "sleep_disabled": 0,
+      "lidpilot_mentioned": false
+    },
+    {
+      "elapsed_seconds": 5.162176209007157,
+      "sleep_disabled": 0,
+      "lidpilot_mentioned": false
+    },
+    {
+      "elapsed_seconds": 6.1911410840111785,
+      "sleep_disabled": 0,
+      "lidpilot_mentioned": false
+    },
+    {
+      "elapsed_seconds": 7.217448209004942,
+      "sleep_disabled": 0,
+      "lidpilot_mentioned": false
+    },
+    {
+      "elapsed_seconds": 8.249277958995663,
+      "sleep_disabled": 0,
+      "lidpilot_mentioned": false
+    },
+    {
+      "elapsed_seconds": 9.276602291996824,
+      "sleep_disabled": 0,
+      "lidpilot_mentioned": false
+    },
+    {
+      "elapsed_seconds": 10.306972624995979,
+      "sleep_disabled": 0,
+      "lidpilot_mentioned": false
+    },
+    {
+      "elapsed_seconds": 11.336469750007382,
+      "sleep_disabled": 0,
+      "lidpilot_mentioned": false
+    },
+    {
+      "elapsed_seconds": 12.366212459019152,
+      "sleep_disabled": 0,
+      "lidpilot_mentioned": false
+    },
+    {
+      "elapsed_seconds": 13.394141875003697,
+      "sleep_disabled": 0,
+      "lidpilot_mentioned": false
+    },
+    {
+      "elapsed_seconds": 14.423800417018356,
+      "sleep_disabled": 0,
+      "lidpilot_mentioned": false
+    },
+    {
+      "elapsed_seconds": 15.44616279201,
+      "sleep_disabled": 0,
+      "lidpilot_mentioned": false
+    },
+    {
+      "elapsed_seconds": 16.472077750018798,
+      "sleep_disabled": 0,
+      "lidpilot_mentioned": false
+    },
+    {
+      "elapsed_seconds": 17.50238512500073,
+      "sleep_disabled": 0,
+      "lidpilot_mentioned": false
+    },
+    {
+      "elapsed_seconds": 18.530357625015313,
+      "sleep_disabled": 0,
+      "lidpilot_mentioned": false
+    },
+    {
+      "elapsed_seconds": 19.545184749993496,
+      "sleep_disabled": 0,
+      "lidpilot_mentioned": false
+    },
+    {
+      "elapsed_seconds": 20.576657750003505,
+      "sleep_disabled": 0,
+      "lidpilot_mentioned": false
+    },
+    {
+      "elapsed_seconds": 21.60482091701124,
+      "sleep_disabled": 0,
+      "lidpilot_mentioned": false
+    },
+    {
+      "elapsed_seconds": 22.63584658401669,
+      "sleep_disabled": 0,
+      "lidpilot_mentioned": false
+    },
+    {
+      "elapsed_seconds": 23.662029041995993,
+      "sleep_disabled": 0,
+      "lidpilot_mentioned": false
+    },
+    {
+      "elapsed_seconds": 24.692070542019792,
+      "sleep_disabled": 0,
+      "lidpilot_mentioned": false
+    },
+    {
+      "elapsed_seconds": 25.721608749998268,
+      "sleep_disabled": 0,
+      "lidpilot_mentioned": false
+    },
+    {
+      "elapsed_seconds": 26.750166125013493,
+      "sleep_disabled": 0,
+      "lidpilot_mentioned": false
+    },
+    {
+      "elapsed_seconds": 27.776815209013876,
+      "sleep_disabled": 0,
+      "lidpilot_mentioned": false
+    },
+    {
+      "elapsed_seconds": 28.80529958399711,
+      "sleep_disabled": 0,
+      "lidpilot_mentioned": false
+    },
+    {
+      "elapsed_seconds": 29.83018445901689,
+      "sleep_disabled": 0,
+      "lidpilot_mentioned": false
+    },
+    {
+      "elapsed_seconds": 30.856944583996665,
+      "sleep_disabled": 0,
+      "lidpilot_mentioned": false
+    }
+  ],
+  "raw_record_sha256": "f07001f7662196cef39ee3b5c4aa1099c6488d3c836129e02765235611b6ba37",
+  "preflight_sleep_disabled": 1,
+  "final_sleep_disabled": 0,
+  "final_lidpilot_assertions_present": false,
+  "method": "Verified installed GUI PID; SIGKILL only that GUI; independent pmset -g read-back, approximately once per second for 30 seconds."
+}
