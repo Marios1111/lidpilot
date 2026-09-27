@@ -88,6 +88,22 @@ login On / notifications Off remained unchanged. Timed data is retained in
 [`2026-09-27-rc11-gui-crash.json`](2026-09-27-rc11-gui-crash.json), including
 the hash of the unfiltered local observation record.
 
+## Real Stop & Sleep observation
+
+The owner explicitly approved this intrusive check and opened the mode panel.
+RC11 was Off before the action, with independent SleepDisabled=0 and no LidPilot
+wake assertions. The native **Stop & Sleep** control was clicked at approximately
+04:15:50 +0300. The owner reported: "Mac slept; I woke it."
+
+The macOS power log recorded display off at 04:15:50 and display on at 04:15:53.
+It did **not** contain a corresponding system sleep/wake entry in that interval;
+therefore this is an operator-observed sleep result with corroborated display
+transition, not log-proven system sleep. The app's public IOPMSleepSystem path
+was exercised without changing unrelated apps or their assertions. Recovered
+native Helper & Recovery showed Session Off, helper Approved and override off;
+independent read-back remained SleepDisabled=0. This test started Off, so it does
+not independently prove Stop & Sleep cleanup from an active session.
+
 ## Remaining
 
 A bounded 30-second Apple Instruments SwiftUI recording successfully attached

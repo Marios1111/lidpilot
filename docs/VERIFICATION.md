@@ -292,7 +292,7 @@ Live computer-use interaction and screenshots of the actual Debug app used
 - Return to stop, Return to acknowledge onboarding, Escape to dismiss a native
   menu, and Command-Q during a mock session. The process exited with code zero;
   relaunch began Off with the duration preference retained.
-- Mock Stop & Sleep returned to Off; the real Mac was not asked to sleep.
+- Mock Stop & Sleep returned to Off. RC11 later exercised the real native action with explicit approval: the owner observed sleep and woke the Mac; power logs corroborated display off/on but had no system sleep/wake entry. Off/read-back remained verified. See the RC11 record for this evidence boundary.
 - All five Settings sections, inactive versus active safety/default locks,
   10/20/30 percent cutoff choices, disabled unsigned helper mutations, and the
   unavailable publisher-update state. No helper or login registration occurred.
