@@ -25,6 +25,14 @@ current development snapshot; it is not a release announcement.
 - Cover failed independent verification and cleanup read-back recovery paths.
 - Treat boundary child accounting as incomplete rather than a performance pass.
 
+## 1.0.0 - release candidate 11
+
+Prepared for final lifecycle validation with Copy Status, temporary Dock and
+Cmd-Tab presence while Settings is open, and the duplicate updater-cleanup
+correction. Local native preview checks cover status copying and Settings
+close/reopen; installed signed-candidate validation is still required. No stable
+release or new performance result is claimed by this build-number assignment.
+
 ## 1.0.0 - release candidate 10
 
 RC10 fixes a reproduced XPC error-callback actor-isolation crash and adds bounded
