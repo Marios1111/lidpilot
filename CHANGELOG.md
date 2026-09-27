@@ -1,33 +1,15 @@
 # Changelog
 
-All notable LidPilot changes will be recorded here. This file describes the
-current development snapshot; it is not a release announcement.
+All notable LidPilot changes are recorded here. Stable V1.0.0 was published
+on September 27, 2026; earlier RC sections retain their original checkpoint context.
 
 ## Unreleased
 
-- Add a user-invoked Copy Status snapshot in the panel and diagnostics settings.
-- Show LidPilot in the Dock and Cmd-Tab while Settings is open, returning to
-  menu-bar-only behavior when Settings closes.
-- Prepare stable Homebrew cask generation with exact artifact hashing and
-  documented native cleanup before removal or replacement; publication pending.
-- Coalesce duplicate updater finish callbacks so cleanup publishes Off once,
-  with ten tests of actual coordinator interruption and failure paths.
-- Publish the polished RC website and narrated introduction at `lidpilot.app`;
-  stage the future Homebrew copy-command block separately from live availability.
-- Stage the selected 41-second narrated launch film with free/open-source and
-  Homebrew messaging, timed captions and landscape/portrait/web exports.
-
-- Isolate development app/helper identities and local state while preserving
-  published production identity requirements and the shared power-state fence.
-- Add adaptive LP artwork and isolated native product captures.
-- Configure the permanent `lidpilot.app` stable feed and retain signed RC
-  compatibility; make Pages signature validation portable with OpenSSL 3.
-- Cover failed independent verification and cleanup read-back recovery paths.
-- Treat boundary child accounting as incomplete rather than a performance pass.
+No V1.1/V2 functionality has started.
 
 ## 1.0.0
 
-Prepared stable V1 source; publication follows final artifact verification.
+Released September 27, 2026 — fresh Developer ID signed, notarized and stapled build 12.
 
 - Native Apple Silicon menu-bar app for macOS 15+, with Follow Lid,
   Keep Screen On, Keep Mac Running and Off.

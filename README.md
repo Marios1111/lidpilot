@@ -16,10 +16,10 @@ Mac menu-bar app.
 
 ## Get LidPilot
 
-The current public download is the signed and notarized
-[**v1.0.0-rc.4 prerelease**](https://github.com/Marios1111/lidpilot/releases/tag/v1.0.0-rc.4).
-Stable V1.0 is not published yet. The [verification ledger](docs/VERIFICATION.md)
-records release readiness; an RC is for supervised testing.
+Download [**LidPilot 1.0.0**](https://github.com/Marios1111/lidpilot/releases/download/v1.0.0/LidPilot-1.0.0.dmg),
+a Developer ID signed, notarized and stapled app for Apple Silicon.
+[Release notes](https://github.com/Marios1111/lidpilot/releases/tag/v1.0.0) ·
+[Verification and support boundaries](docs/VERIFICATION.md)
 
 1. Download the DMG from the release page and move **LidPilot.app** to **Applications**.
 2. Open LidPilot and choose a mode and session duration.
@@ -31,18 +31,21 @@ Keep Screen On does not require the helper.
 
 ### Homebrew
 
-The V1 launch command will be:
+Install with the project’s Homebrew tap:
 
 ```sh
 brew install --cask Marios1111/tap/lidpilot
 ```
 
-**Not available yet:** the stable cask and project tap are being prepared.
-Use the DMG above until the tested Homebrew release is published.
-The project tap identifies LidPilot explicitly; a standalone
-`brew install --cask lidpilot` requires that tap to be configured first or
-acceptance into Homebrew's official cask repository. See the
-[Homebrew guide](docs/HOMEBREW.md) for setup and cleanup.
+Prefer the short command? Add the tap once:
+
+```sh
+brew tap Marios1111/tap
+brew install --cask lidpilot
+```
+
+[Homebrew tap](https://github.com/Marios1111/homebrew-tap) ·
+[Setup and required cleanup](docs/HOMEBREW.md)
 
 ## Three modes. One place to stay in control.
 

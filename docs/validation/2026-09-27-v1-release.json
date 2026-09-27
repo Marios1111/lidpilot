@@ -1,0 +1,105 @@
+{
+  "version": "1.0.0",
+  "build": 12,
+  "sourceCommit": "af6adf78d4fa776e578132b3111dae11bee536ef",
+  "tests": {
+    "core": 21,
+    "runtime": 70,
+    "app": 10,
+    "total": 101,
+    "result": "pass"
+  },
+  "ci": "https://github.com/Marios1111/lidpilot/actions/runs/36286833754",
+  "appNotarization": "69a0390d-fec3-4794-b5cc-1fd342afe2a2",
+  "dmgNotarization": "a3225609-195c-4aa7-80de-36fe7c816ed5",
+  "notarization": "Accepted; app and DMG stapled and validated",
+  "dmgBytes": 3991611,
+  "manifest": {
+    "version": "1.0.0",
+    "releaseLabel": "1.0.0",
+    "channel": "stable",
+    "hardwareValidation": "approved",
+    "profilingEnabled": false,
+    "build": "12",
+    "feedURL": "https://lidpilot.app/updates/appcast.xml",
+    "downloadURL": "https://github.com/Marios1111/lidpilot/releases/download/v1.0.0/LidPilot-1.0.0.zip",
+    "files": [
+      {
+        "name": "dmg",
+        "path": "LidPilot-1.0.0.dmg",
+        "sha256": "ef4b33a5009a6415221bf35a7c009737439d92db451aac794bbecc787f275fbb"
+      },
+      {
+        "name": "update-archive",
+        "path": "LidPilot-1.0.0.zip",
+        "sha256": "44e8840d87dfee6a95fa82bc9276035fded571c529ff4dd4b941b20428be749b"
+      },
+      {
+        "name": "appcast",
+        "path": "appcast.xml",
+        "sha256": "df0c9f9d6e3ea8686975ec51e3c2bbed55c575c09f98f910f7fad5b4d449c8ee"
+      },
+      {
+        "name": "release-notes",
+        "path": "LidPilot-1.0.0.md",
+        "sha256": "412cb161a8182ea0bed1be14d303107260319b43694e1301e5c28936f8c49d39"
+      }
+    ]
+  },
+  "publicURLChecks": [
+    {
+      "requested": "http://lidpilot.app/",
+      "final": "https://lidpilot.app/",
+      "status": 200,
+      "bytes": 11795,
+      "sha256": "3f0d2ebe25c10d998040c4dab7a2c980c911f2f906e71b58e6fb57a90900eab4"
+    },
+    {
+      "requested": "https://www.lidpilot.app/",
+      "final": "https://lidpilot.app/",
+      "status": 200,
+      "bytes": 11795,
+      "sha256": "3f0d2ebe25c10d998040c4dab7a2c980c911f2f906e71b58e6fb57a90900eab4"
+    },
+    {
+      "requested": "http://www.lidpilot.app/",
+      "final": "https://lidpilot.app/",
+      "status": 200,
+      "bytes": 11795,
+      "sha256": "3f0d2ebe25c10d998040c4dab7a2c980c911f2f906e71b58e6fb57a90900eab4"
+    },
+    {
+      "requested": "https://lidpilot.app/",
+      "final": "https://lidpilot.app/",
+      "status": 200,
+      "bytes": 11795,
+      "sha256": "3f0d2ebe25c10d998040c4dab7a2c980c911f2f906e71b58e6fb57a90900eab4"
+    },
+    {
+      "requested": "https://lidpilot.app/updates/appcast.xml",
+      "final": "https://lidpilot.app/updates/appcast.xml",
+      "status": 200,
+      "bytes": 1578,
+      "sha256": "df0c9f9d6e3ea8686975ec51e3c2bbed55c575c09f98f910f7fad5b4d449c8ee"
+    }
+  ],
+  "pagesRun": "https://github.com/Marios1111/lidpilot/actions/runs/36287189336",
+  "sparkleUpgrade": {
+    "fromBuild": 11,
+    "toBuild": 12,
+    "source": "signed public stable feed via temporary documented Sparkle test preference",
+    "helperParentBuild": 12,
+    "SleepDisabled": 0,
+    "testFeedOverrideRemoved": true,
+    "nativeOffConfirmation": "pending"
+  },
+  "homebrew": {
+    "tap": "https://github.com/Marios1111/homebrew-tap",
+    "tapCommit": "70e252b",
+    "fetch": "pass",
+    "style": "pass",
+    "audit": "host blocked: outdated Command Line Tools; no toolchain bypass",
+    "installedCleanup": "pending native Settings and interactive administrator prompt",
+    "adoptionAttempt": "Homebrew confirmed identical app adoption, then required sudo chmod; noninteractive attempt failed, cask installation rolled back. No success claimed."
+  }
+}

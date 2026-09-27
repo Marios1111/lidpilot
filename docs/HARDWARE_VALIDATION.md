@@ -1,7 +1,8 @@
 # Hardware validation checklist
 
-This checklist is an opt-in test plan, not evidence that the current checkout
-has passed it. Logic tests and mock helpers can establish ordering, bounds, and
+This checklist is an opt-in test plan. Current V1 results and owner-accepted
+support boundaries are in [VERIFICATION.md](VERIFICATION.md); dated physical
+records remain evidence for their recorded builds. Logic tests and mock helpers can establish ordering, bounds, and
 failure handling; only a deliberate Apple Silicon test can establish native
 display, lid, launchd, signed-identity, and update behavior.
 

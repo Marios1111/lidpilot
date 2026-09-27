@@ -1,10 +1,10 @@
 # Homebrew distribution
 
 Homebrew is a V1 installation path for the signed, notarized Apple Silicon
-release. It supports macOS 15 and later. This repository does not contain a
-stable cask release yet: the current RC is not eligible, and the stable release
-gates in [V1 release verification](VERIFICATION.md) must pass first. Do not
-publish a cask with guessed versions, URLs, or checksums.
+release. It supports macOS 15 and later. The verified stable cask is published in
+[Marios1111/homebrew-tap](https://github.com/Marios1111/homebrew-tap). Its checksum
+matches the immutable signed/notarized V1 DMG. See
+[V1 release verification](VERIFICATION.md) for evidence and boundaries.
 
 The cask is generated from the final release manifest and the exact local DMG
 whose SHA-256 is recorded there. The generator accepts only a non-profiled
@@ -33,11 +33,18 @@ ruby scripts/generate_homebrew_cask.rb \
 
 ## Install
 
-No tap or stable cask is published by this change. The planned project tap is
-`Marios1111/homebrew-tap`. After it is published with the verified stable
-`Casks/lidpilot.rb`, the installation command will be
-`brew install --cask Marios1111/tap/lidpilot`. The generated cask is restricted to the
-current `Marios1111/lidpilot` release repository.
+```sh
+brew install --cask Marios1111/tap/lidpilot
+```
+
+Or add the tap once and use the short command:
+
+```sh
+brew tap Marios1111/tap
+brew install --cask lidpilot
+```
+
+This is the project tap, not a claim of inclusion in Homebrew’s official Cask repository.
 
 The output file must not already exist. The generator refuses RCs, profile
 builds, unapproved hardware validation, malformed release metadata, mismatched

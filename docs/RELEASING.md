@@ -214,3 +214,22 @@ CPU. Sequence gaps mean event counts are incomplete. Verify capture coverage and
 inspect spans crossing the measurement boundaries before interpreting results.
 The analyzer's synthetic test is `python3 scripts/test-performance-profile.py`;
 it does not establish an installed performance pass.
+
+## V1 publication checkpoint
+
+V1.0.0 build 12 was freshly built from `af6adf78d4fa776e578132b3111dae11bee536ef`
+and published September 27, 2026. The permanent feed is
+`https://lidpilot.app/updates/appcast.xml`; immutable binaries remain on the
+`v1.0.0` GitHub Release. `main` is the stable publication branch, while `dev`
+remains the development branch. Pages requires explicit manual `publish-stable`.
+
+The historical signed RC4 feed remains byte-identical. RC testers can install
+the stable DMG directly after normal cleanup. The controlled RC11→stable Sparkle
+test used Sparkle’s documented testing `SUFeedURL` preference to select the real
+signed stable endpoint; it was removed after installation. The released stable
+bundle embeds the production endpoint. No signed bundle or historical feed was
+modified for the test. Do not leave a test feed override in user preferences.
+
+See [VERIFICATION.md](VERIFICATION.md) for exact signatures, hashes, CI and
+retained live/injected evidence. Website/documentation commits after the tag do
+not change the binary’s source provenance.

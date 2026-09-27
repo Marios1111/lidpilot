@@ -5,7 +5,9 @@ The working tree was clean; the previously untracked duplicate driver was absent
 At the start, https://github.com/Marios1111/lidpilot was private and Pages was
 not configured. After the owner explicitly approved public RC testing, the
 reviewed source, signed RC1, and RC Pages feed were published. `dev` remains the
-default branch. No stable release is claimed.
+default branch at that checkpoint. Stable V1.0.0 was subsequently published
+on September 27; [VERIFICATION.md](VERIFICATION.md) is the current ledger. This
+document retains the original sequence, not a new request to repeat its tests.
 
 The user explicitly authorized real hardware tests, cleanly stopping the other
 closed-lid controller, signing/notarization, RC testing, normal development
