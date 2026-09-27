@@ -29,9 +29,20 @@ records release readiness; an RC is for supervised testing.
 LidPilot always starts **Off**, including at login and after an update.
 Keep Screen On does not require the helper.
 
-**Homebrew:** included in the V1 launch plan. The stable cask and project tap
-are not published yet; installation instructions will appear here when the
-exact command has been tested. See the [Homebrew guide](docs/HOMEBREW.md).
+### Homebrew
+
+The V1 launch command will be:
+
+```sh
+brew install --cask Marios1111/tap/lidpilot
+```
+
+**Not available yet:** the stable cask and project tap are being prepared.
+Use the DMG above until the tested Homebrew release is published.
+The project tap identifies LidPilot explicitly; a standalone
+`brew install --cask lidpilot` requires that tap to be configured first or
+acceptance into Homebrew's official cask repository. See the
+[Homebrew guide](docs/HOMEBREW.md) for setup and cleanup.
 
 ## Three modes. One place to stay in control.
 
