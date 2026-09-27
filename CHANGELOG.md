@@ -5,6 +5,14 @@ current development snapshot; it is not a release announcement.
 
 ## Unreleased
 
+- Add a user-invoked Copy Status snapshot in the panel and diagnostics settings.
+- Prepare stable Homebrew cask generation with exact artifact hashing and
+  documented native cleanup before removal or replacement; publication pending.
+- Coalesce duplicate updater finish callbacks so cleanup publishes Off once,
+  with seven tests of actual coordinator interruption and failure paths.
+- Publish the polished RC website and narrated introduction at `lidpilot.app`;
+  stage the future Homebrew copy-command block separately from live availability.
+
 - Isolate development app/helper identities and local state while preserving
   published production identity requirements and the shared power-state fence.
 - Add adaptive LP artwork and isolated native product captures.
@@ -12,6 +20,18 @@ current development snapshot; it is not a release announcement.
   compatibility; make Pages signature validation portable with OpenSSL 3.
 - Cover failed independent verification and cleanup read-back recovery paths.
 - Treat boundary child accounting as incomplete rather than a performance pass.
+
+## 1.0.0 - release candidate 10
+
+RC10 fixes a reproduced XPC error-callback actor-isolation crash and adds bounded
+notification delivery diagnostics. Signed installed testing confirmed a
+Notification Centre entry, a complete no-update cycle, helper coexistence and
+cleanup, and orderly uninstall followed by restoration of the same signed app.
+
+The controlled 600-second uninstrumented run passed the owner-revised performance
+limits: 0.799277% full-process-tree CPU and 72.262662 MiB mean physical memory
+(72.392181 MiB sampled maximum). This local RC is not a stable release; retained
+results and remaining gates are in [verification](docs/VERIFICATION.md).
 
 ## 1.0.0 - release candidate 9
 

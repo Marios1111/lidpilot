@@ -45,7 +45,7 @@ The prolonged RC6 diagnostic Save dialog did not starve
 renewals; RC10 subsequently completed the native save branch with independently
 verified UTF-8 output and SHA-256 in its validation record.
 
-Current local checks: **90 tests** (21 Core, 69 Runtime) pass, including the detached-executor XPC regression. Debug/Release builds pass for the callback correction and bounded notification diagnostics; [exact RC10 source CI](https://github.com/Marios1111/lidpilot/actions/runs/36275637607) passes. Retained earlier checks include isolated native smoke, native journal regressions, the icon-memory harness and the [bounded EOF runner regression](validation/2026-09-26-runner-eof.md).
+Signed RC10 source checks: **90 tests** (21 Core, 69 Runtime) pass, including the detached-executor XPC regression. Debug/Release builds pass for the callback correction and bounded notification diagnostics; [exact RC10 source CI](https://github.com/Marios1111/lidpilot/actions/runs/36275637607) passes. Retained earlier checks include isolated native smoke, native journal regressions, the icon-memory harness and the [bounded EOF runner regression](validation/2026-09-26-runner-eof.md).
 Earlier package identity inspection and isolated native smoke checks passed at `3b5a1e6`, including identity isolation, independent failed-read
 recovery regressions and native product captures. The [signed coexistence check](validation/2026-09-27-helper-coexistence.md) now
 verifies distinct production/development registrations and development XPC reachability
@@ -73,6 +73,25 @@ capture, Off was verified in native UI, SleepDisabled=0 and no LidPilot assertio
 The bounded runtime-icon correction was implemented in RC8 and retained in
 RC10. Its isolated harness showed reduced bitmap memory; final installed
 600-second RC10 installed acceptance now passes CPU and memory. UI latency remains open; CPU optimization has stopped.
+
+## Current source additions — September 27
+
+The owner-approved Homebrew tooling and public README are committed; the exact
+stable cask/install remains gated as recorded in
+[Homebrew staging](validation/2026-09-27-homebrew-staging.md). The website
+copy-command block is hidden until that installation passes. The previously
+authorized polished RC site is live at lidpilot.app.
+
+`9f7db73` adds seven actual `UpdateCoordinator` tests and fixes reproduced
+duplicate cleanup/Off publication. See the [fault regression record](validation/2026-09-27-updater-fault-tests.md).
+All **97 tests** pass locally: 69 Runtime, 21 Core, and 7 hostless app coordinator
+tests. [CI on `9f7db73`](https://github.com/Marios1111/lidpilot/actions/runs/36280880180)
+also passed the app tests, existing package/profile checks, and Debug/Release builds. Debug and Release builds, project/release checks, and the isolated Debug
+render/activation/cleanup smoke pass with the Copy Status and Settings Dock
+edits present. These builds are ad-hoc, not a new signed installed candidate.
+Native clipboard/Dock/window regression awaits an unlocked interactive session;
+source/build checks do not establish those interactions. The installed signed
+RC10 performance evidence remains unchanged.
 
 ## Feature checklist
 
