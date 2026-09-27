@@ -1,5 +1,10 @@
 # LidPilot film source
 
+The revised **45-second Homebrew launch edit** is staged separately. See
+[LAUNCH_CANDIDATE.md](LAUNCH_CANDIDATE.md) for its compositions, narration,
+timing review, export commands and publication prerequisites. The current
+public website still uses the 42-second film described below.
+
 This project builds four 42-second, 30 fps compositions from the shared
 storyboard: `LidPilotLandscape` and `LidPilotVertical` keep narration captions
 as a sidecar for web playback; `LidPilotLandscapeSocial` (1920×1080) and

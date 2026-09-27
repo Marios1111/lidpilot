@@ -93,6 +93,15 @@ Native clipboard/Dock/window regression awaits an unlocked interactive session;
 source/build checks do not establish those interactions. The installed signed
 RC10 performance evidence remains unchanged.
 
+[CI at `3847f72`](https://github.com/Marios1111/lidpilot/actions/runs/36281219525)
+also passed. The launch-film source at `2b3153c` passed lint/type checks, caption
+timeline validation and three full exports. The web export is 1,896,758 bytes;
+all variants have 1,350 video frames at 30 fps and AAC narration. Timing was
+checked against decoded audio pauses; subjective voice review remains with the
+owner. The Homebrew launch edit is staged, not published. Details and exact
+source/artifact hashes are retained in `media/film/LAUNCH_CANDIDATE.md` and the
+dated local deliverables README.
+
 ## Feature checklist
 
 | Feature | Implementation | Remaining evidence |

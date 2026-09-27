@@ -134,5 +134,9 @@ authorized and published through Pages; this does not approve stable release.
   native hidden attribute remains until exact published cask installation passes.
 - Owner requested Astra Max review of film pacing, pauses, synchronization and
   free/open-source/Homebrew messaging. Revised ElevenLabs narration generated
-  two takes; two failed provider concurrency limits without retries. New film
-  remains an isolated launch candidate until reviewed and Homebrew is available.
+  two takes; two failed provider concurrency limits without retries. The revised
+  45-second film is committed at `2b3153c`, with captioned 1080p landscape and
+  portrait exports and a 1.9 MB 720p web export in the dated local deliverables.
+  Scene cuts follow measured speech pauses without speeding up the voice.
+  Owner listening review and verified Homebrew availability remain publication
+  prerequisites. See `media/film/LAUNCH_CANDIDATE.md`.

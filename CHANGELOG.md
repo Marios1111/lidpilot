@@ -12,6 +12,8 @@ current development snapshot; it is not a release announcement.
   with seven tests of actual coordinator interruption and failure paths.
 - Publish the polished RC website and narrated introduction at `lidpilot.app`;
   stage the future Homebrew copy-command block separately from live availability.
+- Stage a revised 45-second narrated launch film with free/open-source and
+  Homebrew messaging, timed captions and landscape/portrait/web exports.
 
 - Isolate development app/helper identities and local state while preserving
   published production identity requirements and the shared power-state fence.
