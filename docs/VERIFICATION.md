@@ -21,7 +21,9 @@ blocked by the gates below. The repository is now
 to `origin/dev`. Historical sections below describe their own dated checkpoints.
 The latest public prerelease is [RC4](https://github.com/Marios1111/lidpilot/releases/tag/v1.0.0-rc.4),
 available for supervised testing through the [product site](https://lidpilot.app).
-RC5/RC6 are local diagnostic candidates; signed uninstrumented RC10 is the current local acceptance candidate, retaining RC8’s memory fix and correcting the reproduced RC9 XPC callback crash. See the current gate table below,
+RC5/RC6 are local diagnostic candidates. Signed uninstrumented RC11 is now installed
+for final lifecycle checks; RC10 retains the passing performance measurement.
+Both retain RC8’s memory fix and RC10's correction of the reproduced RC9 XPC callback crash. See the current gate table below,
 the dated records in `validation/`, and [V1_RELEASE_PLAN.md](V1_RELEASE_PLAN.md).
 No stable release is claimed.
 
@@ -76,6 +78,16 @@ RC10. Its isolated harness showed reduced bitmap memory; final installed
 
 ## Current source additions — September 27
 
+[RC11 installed validation](validation/2026-09-27-rc11-validation.md) records
+source `bfbec56`, Developer ID signing, accepted notarization/stapling, Gatekeeper,
+normal RC10 removal and RC11 registration, a real signed no-update cycle, and
+native Copy Status. The replacement helper reports parent bundle build 11;
+Off and SleepDisabled=0 were verified. A transient communication error during
+helper restart cleared after Refresh and remains documented. Latest engineering
+[CI at `7aca04d`](https://github.com/Marios1111/lidpilot/actions/runs/36283332045)
+passed. The later source changes were film-only; final signed native and
+response timing checks remain open.
+
 The owner-approved Homebrew tooling and public README are committed; the exact
 stable cask/install remains gated as recorded in
 [Homebrew staging](validation/2026-09-27-homebrew-staging.md). The website
@@ -104,7 +116,9 @@ also passed. The launch-film source at `2b3153c` passed lint/type checks, captio
 timeline validation and three full exports. The web export is 1,896,758 bytes;
 all variants have 1,350 video frames at 30 fps and AAC narration. Timing was
 checked against decoded audio pauses. The owner subsequently selected the more
-natural second narration take; its retimed exports are being prepared. The
+natural second narration take. Its 41-second exports now pass lint/type checks,
+caption validation and complete frame decoding: 1,230 frames and 13 cues, with
+an optimized web file of 1,811,978 bytes. The
 Homebrew launch edit is staged, not published. Details and exact
 source/artifact hashes are retained in `media/film/LAUNCH_CANDIDATE.md` and the
 dated local deliverables README.
