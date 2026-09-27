@@ -84,8 +84,11 @@ authorized polished RC site is live at lidpilot.app.
 
 `9f7db73` adds seven actual `UpdateCoordinator` tests and fixes reproduced
 duplicate cleanup/Off publication. See the [fault regression record](validation/2026-09-27-updater-fault-tests.md).
-All **97 tests** pass locally: 69 Runtime, 21 Core, and 7 hostless app coordinator
-tests. [CI on `9f7db73`](https://github.com/Marios1111/lidpilot/actions/runs/36280880180)
+Current RC11 source passes **100 tests** locally: 69 Runtime, 21 Core, and
+10 hostless app coordinator tests. The three additional injected tests cover
+lid changes during update preparation/installation and failed helper restoration;
+authorization is also checked again after returning Off. Debug and Release
+builds pass for build 11. [CI on `9f7db73`](https://github.com/Marios1111/lidpilot/actions/runs/36280880180)
 also passed the app tests, existing package/profile checks, and Debug/Release builds. Debug and Release builds, project/release checks, and the isolated Debug
 render/activation/cleanup smoke pass with the Copy Status and Settings Dock
 edits present. These builds are ad-hoc, not a new signed installed candidate.
@@ -100,8 +103,9 @@ separate checks. The installed RC10 performance evidence is unchanged.
 also passed. The launch-film source at `2b3153c` passed lint/type checks, caption
 timeline validation and three full exports. The web export is 1,896,758 bytes;
 all variants have 1,350 video frames at 30 fps and AAC narration. Timing was
-checked against decoded audio pauses; subjective voice review remains with the
-owner. The Homebrew launch edit is staged, not published. Details and exact
+checked against decoded audio pauses. The owner subsequently selected the more
+natural second narration take; its retimed exports are being prepared. The
+Homebrew launch edit is staged, not published. Details and exact
 source/artifact hashes are retained in `media/film/LAUNCH_CANDIDATE.md` and the
 dated local deliverables README.
 

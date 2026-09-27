@@ -159,12 +159,81 @@ import LidPilotRuntime
         XCTAssertEqual(fixture.model.transport.sendCount, 0)
 
         await fixture.model.controller.stop()
+        XCTAssertNoThrow(try fixture.coordinator.authorizeUpdateCheckForTesting(.updatesInBackground))
+        XCTAssertEqual(fixture.model.controller.assertions, .off)
+    }
+
+    func testLidClosureDuringPreparationCancelsCheckAndRestoresHelper() async throws {
+        let lid = TestUpdateLid()
+        let fixture = try makeFixture(build: "100", helperStatus: .enabled, lidIsOpen: { lid.isOpen })
+        defer { fixture.cleanupDefaults() }
+        fixture.helper.afterUnregister = { lid.isOpen = false }
+
+        fixture.coordinator.check()
+        let cleaned = await waitUntil {
+            fixture.helper.registerCount == 1 && !fixture.model.controller.updateBarrier
+        }
+        XCTAssertTrue(cleaned)
+        XCTAssertEqual(fixture.updater.checkCount, 0)
+        XCTAssertTrue(fixture.helper.enabled)
+        XCTAssertNil(fixture.defaults.object(forKey: "updatePendingBuild"))
+        XCTAssertNil(fixture.defaults.object(forKey: "updateRestoreHelper"))
+        XCTAssertEqual(fixture.model.controller.phase, .off)
+        XCTAssertEqual(fixture.model.controller.assertions, .off)
+        XCTAssertTrue(fixture.coordinator.status.contains("Keep the lid open"))
+        XCTAssertEqual(fixture.model.transport.sendCount, 0)
+    }
+
+    func testCommittedInstallCannotTerminateWithClosedLidAndResumesWhenOpen() async throws {
+        let lid = TestUpdateLid()
+        let fixture = try makeFixture(build: "100", helperStatus: .enabled, lidIsOpen: { lid.isOpen })
+        defer { fixture.cleanupDefaults() }
+        fixture.coordinator.check()
+        let started = await waitUntil { fixture.updater.checkCount == 1 }
+        XCTAssertTrue(started)
+        fixture.coordinator.commitInstallationForTesting()
+        XCTAssertTrue(fixture.coordinator.canTerminate)
+
+        lid.isOpen = false
+        XCTAssertFalse(fixture.coordinator.canTerminate)
+        fixture.coordinator.finishUpdateCycleForTesting(error: URLError(.cancelled))
+        await fixture.coordinator.waitForUpdateCycleCleanupForTesting()
+        XCTAssertTrue(fixture.model.controller.updateBarrier)
+        XCTAssertFalse(fixture.model.controller.canStart)
+        XCTAssertEqual(fixture.helper.registerCount, 0)
+        XCTAssertEqual(fixture.defaults.string(forKey: "updatePendingBuild"), "100")
+
+        lid.isOpen = true
+        XCTAssertTrue(fixture.coordinator.canTerminate)
+        XCTAssertEqual(fixture.model.controller.assertions, .off)
+    }
+
+    func testFailedHelperRestorationAfterCancellationKeepsRepairHint() async throws {
+        let fixture = try makeFixture(build: "100", helperStatus: .enabled,
+                                      registrationResult: .notRegistered)
+        defer { fixture.cleanupDefaults() }
+        fixture.coordinator.check()
+        let started = await waitUntil { fixture.updater.checkCount == 1 }
+        XCTAssertTrue(started)
+        fixture.coordinator.finishUpdateCycleForTesting(error: nil)
+        await fixture.coordinator.waitForUpdateCycleCleanupForTesting()
+
+        XCTAssertEqual(fixture.helper.registerCount, 1)
+        XCTAssertFalse(fixture.helper.enabled)
+        XCTAssertTrue(fixture.defaults.bool(forKey: "updateRestoreHelper"))
+        XCTAssertNil(fixture.defaults.object(forKey: "updatePendingBuild"))
+        XCTAssertFalse(fixture.model.controller.updateBarrier)
+        XCTAssertEqual(fixture.model.controller.phase, .off)
+        XCTAssertEqual(fixture.model.controller.assertions, .off)
+        XCTAssertTrue(fixture.coordinator.status.contains("Approve or repair"))
+        XCTAssertEqual(fixture.model.transport.sendCount, 0)
     }
 
     private func makeFixture(build: String, pendingBuild: String? = nil, restoreHelper: Bool = false,
                              helperStatus: SMAppService.Status = .notRegistered,
                              registrationResult: SMAppService.Status = .enabled,
-                             unregisterError: (any Error)? = nil) throws -> Fixture {
+                             unregisterError: (any Error)? = nil,
+                             lidIsOpen: @escaping @MainActor () -> Bool = { true }) throws -> Fixture {
         let suite = "com.lidpilot.UpdateCoordinatorTests.\(UUID().uuidString)"
         guard let defaults = UserDefaults(suiteName: suite) else {
             throw UpdateTestFailure.defaultsUnavailable
@@ -178,7 +247,7 @@ import LidPilotRuntime
         let model = makeModel(helper: helper)
         let updater = TestUpdater()
         let coordinator = UpdateCoordinator(testing: model, defaults: defaults, build: build,
-                                            updater: updater, lidIsOpen: { true })
+                                            updater: updater, lidIsOpen: lidIsOpen)
         return Fixture(suite: suite, defaults: defaults, model: model, helper: helper,
                        updater: updater, coordinator: coordinator)
     }
@@ -240,6 +309,7 @@ import LidPilotRuntime
 }
 
 @MainActor private final class TestUpdateHelper: UpdateCoordinatorHelper {
+    var afterUnregister: (@MainActor () -> Void)?
     let signed = true
     private(set) var status: SMAppService.Status
     let registrationResult: SMAppService.Status
@@ -266,7 +336,12 @@ import LidPilotRuntime
         unregisterCount += 1
         if let unregisterError { throw unregisterError }
         status = .notRegistered
+        afterUnregister?()
     }
+}
+
+@MainActor private final class TestUpdateLid {
+    var isOpen = true
 }
 
 @MainActor private final class TestUpdater: UpdateCoordinatorTestUpdater {

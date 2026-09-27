@@ -6,7 +6,7 @@ scripted helper/updater adapters, and unique temporary UserDefaults suites.
 It does not launch the GUI, register a helper, modify power state, or exercise
 Sparkle's live network and scheduler.
 
-Seven tests pass via `./scripts/test-app.sh` (exit 0). The script is included in
+Ten tests pass via `./scripts/test-app.sh` (exit 0). The script is included in
 CI; the test bundle is excluded from shipping app sources and uses its own
 bundle identifier. Test-only entrypoints are compiled only with
 `LIDPILOT_TESTING`; production feed, signing and identity guards remain intact.
@@ -23,7 +23,19 @@ Covered cases:
   returns the controller Off.
 - Committed/staged installation keeps its barrier across a same-build relaunch.
 - Automatic and manual checks during an active display session are rejected
-  without disturbing the in-memory session assertions.
+  without disturbing the in-memory session assertions; authorization succeeds
+  again after returning Off. This does not prove Sparkle's scheduled delivery.
+- A lid-close observation immediately after helper unregistration cancels
+  preparation, restores the helper, clears markers and leaves assertions Off.
+- After installation is committed, a closed lid blocks termination and preserves
+  the barrier and pending markers; reopening makes safe termination eligible.
+- Failed helper restoration after cancellation retains a visible repair hint
+  while ending the update barrier and remaining Off.
+
+The final three cases and post-Off authorization assertion were added after
+the initial seven-test run. All ten passed against RC11 source based on
+`2f09b77`; log: `/private/tmp/lidpilot-rc11-updater-final.log`. Only test code
+changed in this expansion; no shipping runtime behavior changed.
 
 ## Reproduced duplicate cleanup
 

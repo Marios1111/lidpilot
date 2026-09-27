@@ -11,7 +11,7 @@ current development snapshot; it is not a release announcement.
 - Prepare stable Homebrew cask generation with exact artifact hashing and
   documented native cleanup before removal or replacement; publication pending.
 - Coalesce duplicate updater finish callbacks so cleanup publishes Off once,
-  with seven tests of actual coordinator interruption and failure paths.
+  with ten tests of actual coordinator interruption and failure paths.
 - Publish the polished RC website and narrated introduction at `lidpilot.app`;
   stage the future Homebrew copy-command block separately from live availability.
 - Stage a revised 45-second narrated launch film with free/open-source and
