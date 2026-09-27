@@ -12,13 +12,13 @@ export const LaunchHookScene: React.FC<{ working?: boolean }> = ({
   const vertical = height > width;
   const title = appear(frame, 1, 20);
   const open = working
-    ? interpolate(frame, [40, 94], [1, 0], {
+    ? interpolate(frame, [36, 88], [1, 0], {
         extrapolateLeft: "clamp",
         extrapolateRight: "clamp",
         easing: lidEase,
       })
     : 1;
-  const progress = interpolate(frame, [0, 113], [0.43, 0.67], {
+  const progress = interpolate(frame, [0, 103], [0.43, 0.67], {
     extrapolateRight: "clamp",
   });
   return (

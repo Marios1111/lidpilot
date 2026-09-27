@@ -6,7 +6,7 @@ export const LaunchControlScene: React.FC = () => {
   const frame = useCurrentFrame();
   const { width, height } = useVideoConfig();
   const vertical = height > width;
-  const stopped = frame >= 88;
+  const stopped = frame >= 82;
   const cardWidth = vertical ? 620 : 452;
 
   return (

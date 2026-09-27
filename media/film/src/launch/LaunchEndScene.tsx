@@ -7,9 +7,9 @@ export const LaunchEndScene: React.FC<{ command: string }> = ({ command }) => {
   const { height, width } = useVideoConfig();
   const vertical = height > width;
   const nativeReveal = appear(frame, 0, 18);
-  const freeReveal = appear(frame, 52, 16);
-  const installReveal = appear(frame, 123, 18);
-  const taglineReveal = appear(frame, 309, 18);
+  const freeReveal = appear(frame, 56, 16);
+  const installReveal = appear(frame, 105, 18);
+  const taglineReveal = appear(frame, 282, 18);
   return (
     <LaunchSurface dark header={false}>
       <div

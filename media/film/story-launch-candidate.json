@@ -1,61 +1,120 @@
 {
   "status": "launch-candidate-unpublished",
   "fps": 30,
-  "durationInFrames": 1350,
+  "durationInFrames": 1230,
   "narration": {
-    "src": "narration-launch-candidate-take-1.mp3",
+    "src": "narration-launch-candidate-take-2.mp3",
     "from": 33,
-    "decodedDurationSeconds": 40.124082
+    "decodedDurationSeconds": 35.480091
   },
   "homebrewCommand": "brew install --cask Marios1111/tap/lidpilot",
   "scenes": [
-    { "id": "reading-hook", "from": 0, "duration": 90 },
-    { "id": "working-hook", "from": 90, "duration": 113 },
-    { "id": "reveal", "from": 203, "duration": 124 },
-    { "id": "screen", "from": 327, "duration": 136 },
-    { "id": "running", "from": 463, "duration": 158 },
-    { "id": "follow", "from": 621, "duration": 96 },
-    { "id": "control", "from": 717, "duration": 135 },
-    { "id": "end", "from": 852, "duration": 498 }
+    {
+      "id": "reading-hook",
+      "from": 0,
+      "duration": 85
+    },
+    {
+      "id": "working-hook",
+      "from": 85,
+      "duration": 103
+    },
+    {
+      "id": "reveal",
+      "from": 188,
+      "duration": 109
+    },
+    {
+      "id": "screen",
+      "from": 297,
+      "duration": 109
+    },
+    {
+      "id": "running",
+      "from": 406,
+      "duration": 128
+    },
+    {
+      "id": "follow",
+      "from": 534,
+      "duration": 86
+    },
+    {
+      "id": "control",
+      "from": 620,
+      "duration": 124
+    },
+    {
+      "id": "end",
+      "from": 744,
+      "duration": 486
+    }
   ],
   "captionCues": [
-    { "from": 30, "duration": 55, "text": "Keep the lecture in view." },
     {
-      "from": 100,
-      "duration": 95,
+      "from": 30,
+      "duration": 53,
+      "text": "Keep the lecture in view."
+    },
+    {
+      "from": 93,
+      "duration": 90,
       "text": "Let the build finish, even when you close the lid."
     },
     {
-      "from": 218,
-      "duration": 103,
+      "from": 197,
+      "duration": 97,
       "text": "LidPilot puts those choices right in your Mac’s menu bar."
     },
     {
-      "from": 338,
-      "duration": 120,
+      "from": 303,
+      "duration": 99,
       "text": "Keep Screen On for lectures, reading, and focused work."
     },
     {
-      "from": 477,
-      "duration": 84,
-      "text": "Keep Mac Running for builds, downloads,"
+      "from": 415,
+      "duration": 117,
+      "text": "Keep Mac Running for builds, downloads, or a local AI task."
     },
-    { "from": 563, "duration": 49, "text": "or a local AI task." },
     {
-      "from": 632,
-      "duration": 78,
+      "from": 541,
+      "duration": 77,
       "text": "Or let Follow Lid connect the two."
     },
-    { "from": 731, "duration": 52, "text": "Choose how long you need it." },
-    { "from": 796, "duration": 51, "text": "Stop whenever you want." },
-    { "from": 856, "duration": 43, "text": "Native to macOS." },
-    { "from": 909, "duration": 62, "text": "Free and open source." },
     {
-      "from": 980,
-      "duration": 127,
+      "from": 631,
+      "duration": 50,
+      "text": "Choose how long you need it."
+    },
+    {
+      "from": 692,
+      "duration": 50,
+      "text": "Stop whenever you want."
+    },
+    {
+      "from": 752,
+      "duration": 46,
+      "text": "Native to macOS."
+    },
+    {
+      "from": 802,
+      "duration": 47,
+      "text": "Free and open source."
+    },
+    {
+      "from": 859,
+      "duration": 115,
       "text": "Install with Homebrew, or download it from lidpilot.app."
     },
-    { "from": 1125, "duration": 30, "text": "LidPilot." },
-    { "from": 1173, "duration": 65, "text": "Your Mac, on your time." }
+    {
+      "from": 990,
+      "duration": 39,
+      "text": "LidPilot."
+    },
+    {
+      "from": 1033,
+      "duration": 65,
+      "text": "Your Mac, on your time."
+    }
   ]
 }

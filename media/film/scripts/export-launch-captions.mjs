@@ -20,11 +20,11 @@ for (const scene of story.scenes) {
 }
 if (
   story.fps !== 30 ||
-  story.durationInFrames !== 1350 ||
+  story.durationInFrames !== 1230 ||
   nextFrame !== story.durationInFrames
 ) {
   throw new Error(
-    "The launch candidate must contain exactly 1350 frames at 30 fps",
+    "The take 2 launch candidate must contain exactly 1230 frames at 30 fps",
   );
 }
 if (
@@ -80,5 +80,5 @@ await writeFile(
   "utf8",
 );
 console.log(
-  `Validated 45-second launch timeline and ${story.captionCues.length} caption cues; wrote sidecars to ${output}`,
+  `Validated 41-second launch timeline and ${story.captionCues.length} caption cues; wrote sidecars to ${output}`,
 );
