@@ -11,7 +11,7 @@ or update lifecycle has passed validation.
 | --- | --- | --- |
 | Hardware | Apple Silicon Mac with a built-in lid; V1 display support limited to the tested built-in-only setup | M4 MacBook Air/built-in panel has G1 and bounded G2 evidence; other models/topologies are untested |
 | Operating system | macOS 15 or later | CI builds and tests on macOS 15; installed hardware tests ran on the recorded macOS 27.2 beta host, not a macOS 15 machine |
-| Architecture | Native Swift 6, SwiftUI/AppKit, menu-bar app, arm64 | Debug/Release and macOS 15 CI passed; signed/notarized RC1–RC3 and their actual helpers ran on the recorded host |
+| Architecture | Native Swift 6, SwiftUI/AppKit, menu-bar app, arm64 | Debug/Release and macOS 15 CI passed; local RC11 is Developer ID signed, notarized, stapled and installed with its reachable build-11 helper |
 | Modes | Follow Lid, Keep Screen On, Keep Mac Running, and Off | Keep Screen On/Off observed; Follow Lid and Keep Mac Running continuity/reopen observed on the built-in display |
 | Sessions | Finite duration, absolute end time, indefinite session, explicit Stop | Core and Runtime logic evidence; delayed replies must not extend the hard deadline |
 | Safety | Thermal, battery floor, Low Power Mode, lid, topology, freshness, boot, and helper availability checks | Core and Runtime logic evidence; live sensor and physical behavior require opt-in validation |
@@ -19,11 +19,11 @@ or update lifecycle has passed validation.
 | Internal panel | Physical built-in panel/backlight behavior | Operator observed dark screen after about one minute closed under the current idle policy; immediate or universal shutdown is not claimed |
 | Closed-lid control | Authenticated helper lease around fixed `pmset` operations | Real ServiceManagement approval, signed helper and publisher/wrong-ID/ad-hoc/wrong-console enforcement passed; RC2–RC4 replacement helpers acquired the override. Genuine different-team client remains untested, explicitly deferred by owner review; exact Team ID and bundle signing requirement remains mandatory |
 | Recovery | Durable journal, read-back, ownership ambiguity, explicit recovery | Real RC1 and RC3 GUI crashes restored the override; RC2 lease expiry and helper crash/restart restored it with no false Recovery. RC3 finite deadline ended Off; remaining fault paths and post-crash UI check are open |
-| Updates | Sparkle 2 signed update path with an activation barrier | Real signed RC1→RC2→RC3→RC4 upgrades, Off relaunch, matching helper acquisition, canceled RC4 check cleanup and RC3 active-check disabling passed; updater fault paths and uninstall remain open |
+| Updates | Sparkle 2 signed update path with an activation barrier | Real signed RC1→RC2→RC3→RC4 upgrades, Off relaunch, replacement helpers and canceled-check cleanup passed. RC11 signed no-update cycle restored its helper and cleared markers; ten actual-coordinator tests cover injected interruption/failure paths. RC10 uninstall passed; exact stable upgrade/uninstall and remaining installed checks are open |
 | Performance | ≤1.0% mean inclusive CPU of one core over 600 s, ≤75 MiB combined physical footprint, no sustained busy-loop/runaway | RC10 600-second inclusive capture PASS: 0.799277% CPU, 72.262662 MiB mean / 72.392181 MiB maximum, recorded wakeups and no sustained runaway. macOS 27.2 beta 26B5091g. UI response remains open |
 | Removal | Open-lid cleanup, verified helper unregistration, then app removal | RC10 native login/helper cleanup, app removal from Applications and same-bundle restoration passed; final stable regression remains |
 | Accessibility | Native SwiftUI/AppKit controls and labels | Keyboard flows, user-assisted VoiceOver speech, Light/Dark and contrast/transparency/motion settings checked; preferred-reading-size scaling is not claimed |
-| Diagnostics | Local, bounded, redacted diagnostics | Seven retention, redaction, storage, and malformed-input tests pass; native preview and local Save dialog export passed |
+| Diagnostics | Local, bounded, redacted diagnostics | Seven retention, redaction, storage, and malformed-input tests pass; native preview/local export and RC11 Copy Status paste passed |
 | Privacy | No account, cloud service, analytics, AI-agent detection, CLI, or remote-control feature | V1 scope and source review; reassess every new dependency |
 
 The [September 25 owner decisions](validation/2026-09-25-audit-closeout.md) narrow
