@@ -32,7 +32,14 @@ import LidPilotRuntime
         #endif
 
         Window("LidPilot Settings", id: "settings") {
-            SettingsView(model: model).onAppear { delegate.model = model; model.refreshHelper() }
+            SettingsView(model: model)
+                .onAppear {
+                    delegate.model = model
+                    model.refreshHelper()
+                    NSApp.setActivationPolicy(.regular)
+                    NSApp.activate(ignoringOtherApps: true)
+                }
+                .onDisappear { NSApp.setActivationPolicy(.accessory) }
         }
         .defaultLaunchBehavior(.suppressed)
         .defaultSize(width: 640, height: 520)

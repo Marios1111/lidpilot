@@ -6,6 +6,8 @@ current development snapshot; it is not a release announcement.
 ## Unreleased
 
 - Add a user-invoked Copy Status snapshot in the panel and diagnostics settings.
+- Show LidPilot in the Dock and Cmd-Tab while Settings is open, returning to
+  menu-bar-only behavior when Settings closes.
 - Prepare stable Homebrew cask generation with exact artifact hashing and
   documented native cleanup before removal or replacement; publication pending.
 - Coalesce duplicate updater finish callbacks so cleanup publishes Off once,

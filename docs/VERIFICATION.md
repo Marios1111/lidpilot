@@ -89,9 +89,12 @@ tests. [CI on `9f7db73`](https://github.com/Marios1111/lidpilot/actions/runs/362
 also passed the app tests, existing package/profile checks, and Debug/Release builds. Debug and Release builds, project/release checks, and the isolated Debug
 render/activation/cleanup smoke pass with the Copy Status and Settings Dock
 edits present. These builds are ad-hoc, not a new signed installed candidate.
-Native clipboard/Dock/window regression awaits an unlocked interactive session;
-source/build checks do not establish those interactions. The installed signed
-RC10 performance evidence remains unchanged.
+The [targeted native preview check](validation/2026-09-27-copy-status-settings.md)
+verified the Copy Status paste and Settings close/reopen flow. The owner
+confirmed Dock/Cmd-Tab presence only while Settings was open; Computer could
+not inspect the Dock directly. The temporary Debug instance was then removed
+from the running state. Final signed-candidate accessibility and latency remain
+separate checks. The installed RC10 performance evidence is unchanged.
 
 [CI at `3847f72`](https://github.com/Marios1111/lidpilot/actions/runs/36281219525)
 also passed. The launch-film source at `2b3153c` passed lint/type checks, caption
