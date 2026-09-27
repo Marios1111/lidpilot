@@ -4,13 +4,14 @@ on:
   workflow_dispatch:
     inputs:
       publication:
-        description: Publish the committed RC website to GitHub Pages.
+        description: Publish the reviewed RC site from dev or stable site from main.
         required: true
         type: choice
         default: skip
         options:
           - skip
           - publish-rc
+          - publish-stable
 
 permissions:
   contents: read
@@ -21,7 +22,9 @@ concurrency:
 
 jobs:
   deploy:
-    if: github.ref == 'refs/heads/dev' && inputs.publication == 'publish-rc'
+    if: >-
+      (github.ref == 'refs/heads/dev' && inputs.publication == 'publish-rc') ||
+      (github.ref == 'refs/heads/main' && inputs.publication == 'publish-stable')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -37,8 +40,16 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Validate committed site and signed RC metadata without rewriting it
-        run: ruby scripts/validate_pages_site.rb
+      - name: Validate RC site and confirm stable endpoint is absent
+        if: inputs.publication == 'publish-rc'
+        run: ruby scripts/validate_pages_site.rb --publication rc --require-stable-feed-absent
+
+      - name: Validate stable site and fetched public release bytes
+        if: inputs.publication == 'publish-stable'
+        run: >-
+          ruby scripts/validate_pages_site.rb
+          --publication stable
+          --verify-public-assets
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # actions/configure-pages v5

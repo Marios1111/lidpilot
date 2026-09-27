@@ -112,7 +112,7 @@ Publication is deliberately outside the local script. After the final
 manifest has been reviewed:
 
 1. Create the GitHub Release with tag `v<release-label>` and upload the final
-   DMG, update archive, notes and manifest.
+   DMG, update archive, signed appcast, notes and manifest.
 2. Fetch every uploaded byte back from GitHub and compare its SHA-256 with the
    local manifest. Stop on any mismatch.
 3. For an RC, copy the exact signed appcast and release notes to `website/rc/`.
@@ -120,25 +120,51 @@ manifest has been reviewed:
    and compare the release assets with the manifest before committing. The
    scoped `.gitattributes` rule disables text conversion for `website/rc/*`;
    do not format, normalize, regenerate, or otherwise edit these signed bytes.
-   Any byte change requires new signatures and a new manifest hash. For a
-   future stable release, use the distinct `website/updates/appcast.xml` and
-   `website/updates/<signed-release-notes-name>.md` paths; do not place stable
-   metadata under `website/rc/`. The RC-only Pages workflow rejects a stable
-   feed until a real signed stable artifact and its validation path are ready.
-4. The current publisher at `.github/workflows/pages.yml` is RC-specific. To
-   publish an RC, review the committed `website/` tree, open Actions, select
-   the current default `dev` branch, and choose `publish-rc`; the default
-   `skip` choice does not deploy. The workflow runs only for
-   `workflow_dispatch`, requires that explicit choice, runs
-   `scripts/validate_pages_site.rb` to check the custom domain, exact RC feed
-   and immutable GitHub Release URLs, signed notes, Sparkle feed signature and
-   unchanged legacy RC4 bytes, then uploads `website/` unchanged. It has no
-   push, tag, release, or other automatic deployment
-   trigger. GitHub Pages must be configured to use GitHub Actions as its
-   publishing source. Adding the workflow and files does not dispatch it or
-   publish the site. Before a stable publication, separately validate the
-   stable feed and notes under `website/updates/` and update the manual
-   workflow's checks to cover them.
+   Any byte change requires new signatures and a new manifest hash. For stable,
+   copy the exact signed appcast and notes to `website/updates/` and the exact
+   release-generated `manifest.json` to `website/updates/manifest.json`; never
+   place stable metadata under `website/rc/`. The manifest records `version`,
+   `releaseLabel`, `channel`, `hardwareValidation`, `profilingEnabled`, `build`,
+   `feedURL`, `downloadURL`, and four `files` entries (`dmg`, `update-archive`,
+   `appcast`, `release-notes`), each with its exact basename and SHA-256.
+   Stable validation requires the numeric version and release label to match,
+   `channel=stable`, `hardwareValidation=approved`, profiling disabled, the
+   canonical `/updates/appcast.xml` feed and versioned GitHub ZIP URL, and the
+   exact four artifact identities. It verifies the feed signature, notes
+   signature and length, manifest hashes for local feed/notes, and the
+   archive's Sparkle Ed25519 signature against the configured public key. The
+   V1 stable feed is a single-release feed: its signed XML must contain exactly
+   one unqualified RSS `channel`, one unqualified `item`, and one unqualified
+   `enclosure`. Sparkle version, notes, hardware, and minimum-system fields,
+   plus Sparkle signatures and notes length, must use Sparkle's published XML
+   namespace. A second item requires a deliberately expanded manifest/feed
+   contract before it can be advertised.
+4. The Pages publisher at `.github/workflows/pages.yml` remains manual-only,
+   with `skip` as the default and no push, tag, or release trigger. To publish
+   an RC, review `website/`, select `dev`, and choose `publish-rc`. Before
+   upload, it validates the custom domain, signed RC metadata and unchanged
+   RC4 bytes, then anonymously checks `https://lidpilot.app/updates/appcast.xml`.
+   Only HTTP 404 or 410 means absent; a live feed, redirect, other status, or
+   network/TLS error stops the RC deployment. To publish stable, review the
+   complete `website/` tree with the exact stable files and manifest, select
+   `main`, and choose `publish-stable`. Before Pages configuration or upload,
+   the workflow fetches the versioned public GitHub Release manifest, DMG,
+   update ZIP, appcast and notes, checks the manifest bytes and every artifact
+   SHA-256, then verifies the downloaded ZIP against the signed appcast. It
+   uses anonymous HTTPS on port 443; downloads must start at `github.com` and
+   may follow at most three redirects through `github.com`,
+   `release-assets.githubusercontent.com`, or `objects.githubusercontent.com`.
+   Each asset is capped at 256 MiB, total downloads at 512 MiB, and each asset
+   request at 60 seconds; the manifest is capped at 1 MiB. The RC absence probe
+   allows only 404/410 and caps its response at 1 MiB and 30 seconds. The
+   workflow uploads `website/` unchanged only after all checks pass and rejects
+   stable publication from other branches and RC publication from other
+   branches. After the stable endpoint is live, RC publication from `dev` is
+   intentionally blocked by the endpoint guard so a full-site upload cannot
+   erase `/updates/`; a future RC website publication policy must preserve and
+   validate the live stable path first. GitHub Pages must use GitHub Actions as
+   its publishing source. These checks do not themselves dispatch the workflow
+   or authorize a release.
 5. Fetch the Pages files, validate signatures, URLs, build number, minimum OS
    and archive hashes, then perform the update smoke test from the last
    supported public build.
