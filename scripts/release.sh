@@ -418,8 +418,8 @@ run_dmg() {
 write_release_notes() {
   mkdir -p "$UPDATE_DIR"
   if ! awk -v version="$VERSION" '
-    $0 ~ "^##[[:space:]]+(\\[)?" version "(\\])?([[:space:]]|$)" { found = 1; print; next }
     found && $0 ~ /^##[[:space:]]/ { exit }
+    $0 ~ "^##[[:space:]]+(\\[)?" version "(\\])?([[:space:]]|$)" { found = 1; print; next }
     found { print }
     END { if (!found) exit 1 }
   ' "$CHANGELOG" > "$NOTES_PATH"; then

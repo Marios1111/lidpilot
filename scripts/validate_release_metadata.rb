@@ -241,7 +241,7 @@ def validate_bundle(bundle, version, build, team, feed_url)
   fail_validation("LaunchDaemon must run at load") unless daemon_info["RunAtLoad"] == true
   fail_validation("LaunchDaemon must keep the helper alive") unless daemon_info["KeepAlive"] == true
   fail_validation("LaunchDaemon ThrottleInterval must be 10") unless daemon_info["ThrottleInterval"].to_i == 10
-  fail_validation("LaunchDaemon process type must be Background") unless daemon_info["ProcessType"] == "Background"
+  fail_validation("LaunchDaemon process type must be Standard") unless daemon_info["ProcessType"] == "Standard"
   fail_validation("LaunchDaemon must not abandon its process group") if daemon_info.key?("AbandonProcessGroup")
 end
 
@@ -390,7 +390,7 @@ def write_fixture_bundle(bundle, options)
     "RunAtLoad" => true,
     "KeepAlive" => true,
     "ThrottleInterval" => 10,
-    "ProcessType" => "Background"
+    "ProcessType" => "Standard"
   })
 end
 
@@ -509,6 +509,11 @@ def self_test
     bundle = File.join(dir, "LidPilot.app")
     write_fixture_bundle(bundle, rc_base)
     accepted_rc = validate(rc_base.merge(bundle: bundle))
+    daemon_path = File.join(bundle, "Contents", "Library", "LaunchDaemons", "com.lidpilot.app.helper.plist")
+    daemon_fixture = read_plist(daemon_path, "fixture LaunchDaemon")
+    write_fixture_plist(daemon_path, daemon_fixture.merge("ProcessType" => "Background"))
+    expect_failure("obsolete helper scheduling class") { validate(rc_base.merge(bundle: bundle)) }
+    write_fixture_plist(daemon_path, daemon_fixture)
     expect_equal(accepted_rc.fetch("releaseLabel"), "1.0.0-rc.4", "validated RC label")
     expect_equal(accepted_rc.fetch("version"), "1.0.0", "RC numeric marketing version")
     expect_equal(accepted_rc.fetch("hardwareValidation"), "pending", "validated RC hardware status")
