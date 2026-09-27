@@ -14,7 +14,7 @@ current development snapshot; it is not a release announcement.
   with ten tests of actual coordinator interruption and failure paths.
 - Publish the polished RC website and narrated introduction at `lidpilot.app`;
   stage the future Homebrew copy-command block separately from live availability.
-- Stage a revised 45-second narrated launch film with free/open-source and
+- Stage the selected 41-second narrated launch film with free/open-source and
   Homebrew messaging, timed captions and landscape/portrait/web exports.
 
 - Isolate development app/helper identities and local state while preserving
@@ -30,7 +30,7 @@ current development snapshot; it is not a release announcement.
 Prepared for final lifecycle validation with Copy Status, temporary Dock and
 Cmd-Tab presence while Settings is open, and the duplicate updater-cleanup
 correction. Local native preview checks cover status copying and Settings
-close/reopen; installed signed-candidate validation is still required. No stable
+close/reopen; installed signed-candidate checks now verify build-11 helper acquisition, Off cleanup, status copying, a signed no-update cycle and GUI-crash recovery. Final timing and distribution checks remain. No stable
 release or new performance result is claimed by this build-number assignment.
 
 ## 1.0.0 - release candidate 10
