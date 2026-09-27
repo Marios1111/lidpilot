@@ -132,3 +132,10 @@ tests require a supervised baseline and the [hardware procedure](docs/HARDWARE_V
 See [CONTRIBUTING](CONTRIBUTING.md) for development, [SECURITY](SECURITY.md) for
 private vulnerability reporting, [CHANGELOG](CHANGELOG.md) for changes, and
 [Releasing](docs/RELEASING.md) for signing and publication.
+
+## Support LidPilot
+
+LidPilot is free and open source. If you find it useful, you can optionally
+[support its development on Ko-fi](https://ko-fi.com/lidpilot).
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/N2O327N8U3)
