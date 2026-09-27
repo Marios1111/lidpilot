@@ -128,6 +128,18 @@ internal struct RunningPOSIXCommand: Sendable {
     let outputDescriptor: Int32
 }
 
+/// The runner defaults to the real Darwin calls. Internal injection keeps the
+/// failed-reap path deterministic in tests without changing production behavior.
+internal struct POSIXCommandSyscalls: Sendable {
+    let waitForProcess: @Sendable (pid_t, UnsafeMutablePointer<Int32>, Int32) -> pid_t
+    let sendSignal: @Sendable (pid_t, Int32) -> Int32
+
+    internal static let darwin = POSIXCommandSyscalls(
+        waitForProcess: { Darwin.waitpid($0, $1, $2) },
+        sendSignal: { Darwin.kill($0, $1) }
+    )
+}
+
 /// Fixed-environment POSIX execution with a bounded wait and bounded drain.
 /// This type is internal so tests can exercise `/bin/sleep` or `/usr/bin/printf`
 /// without expanding PMSetDriver's public command surface.
@@ -144,10 +156,14 @@ internal struct POSIXCommandRunner: Sendable {
 
     private let executable: String
     private let timeout: TimeInterval
+    private let syscalls: POSIXCommandSyscalls
 
-    internal init(executable: String, timeout: TimeInterval = POSIXCommandRunner.maxExecutionSeconds) {
+    internal init(executable: String,
+                  timeout: TimeInterval = POSIXCommandRunner.maxExecutionSeconds,
+                  syscalls: POSIXCommandSyscalls = .darwin) {
         self.executable = executable
         self.timeout = min(max(timeout, 0), Self.maxExecutionSeconds)
+        self.syscalls = syscalls
     }
 
     internal func run(arguments: [String], inheritedFence: Int32?) throws -> String {
@@ -165,7 +181,7 @@ internal struct POSIXCommandRunner: Sendable {
 
         do {
             while true {
-                let waited = waitpid(child.pid, &status, WNOHANG)
+                let waited = syscalls.waitForProcess(child.pid, &status, WNOHANG)
                 if waited == child.pid {
                     childReaped = true
                     if try drain(child.outputDescriptor, into: &output, tooLarge: &outputTooLarge) {
@@ -320,12 +336,12 @@ internal struct POSIXCommandRunner: Sendable {
                                    status: inout Int32,
                                    output: inout Data,
                                    tooLarge: inout Bool) -> Bool {
-        let killFailed = kill(child.pid, SIGKILL) != 0 && errno != ESRCH
+        let killFailed = syscalls.sendSignal(child.pid, SIGKILL) != 0 && errno != ESRCH
 
         let deadline = DispatchTime.now().uptimeNanoseconds +
             UInt64(Self.finalDrainSeconds * 1_000_000_000)
         while DispatchTime.now().uptimeNanoseconds < deadline {
-            let waited = waitpid(child.pid, &status, WNOHANG)
+            let waited = syscalls.waitForProcess(child.pid, &status, WNOHANG)
             if waited == child.pid {
                 _ = try? drain(child.outputDescriptor, into: &output, tooLarge: &tooLarge)
                 return true

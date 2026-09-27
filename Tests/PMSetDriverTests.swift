@@ -62,6 +62,69 @@ struct PMSetDriverTests {
         }
     }
 
+    @Test func unreapedTimeoutRetainsMutationFenceUntilChildDies() throws {
+        let folder = try TestFenceDirectory()
+        let fence = try CommandFence(directoryDescriptor: folder.descriptor, owner: geteuid())
+        let child = SpawnedChildProcess()
+        defer {
+            let reaped = child.terminateAndReap()
+            #expect(reaped)
+            if reaped { folder.remove() }
+        }
+
+        let executable = folder.url.appendingPathComponent("long-running-command")
+        try Data("#!/bin/sh\nexec /bin/sleep 30\n".utf8).write(to: executable)
+        guard chmod(executable.path, 0o700) == 0 else {
+            throw RuntimeFailure.unavailable("could not make test child executable")
+        }
+
+        let syscalls = POSIXCommandSyscalls(
+            waitForProcess: { pid, _, _ in
+                child.record(pid)
+                return 0
+            },
+            sendSignal: { _, _ in
+                errno = EPERM
+                return -1
+            }
+        )
+        let runner = POSIXCommandRunner(executable: executable.path, timeout: 0, syscalls: syscalls)
+        let driver = PMSetDriver(fence: fence, runner: runner)
+
+        do {
+            try driver.withMutationFence {
+                #expect(fence.descriptorForCurrentBody() != nil)
+                _ = try driver.read()
+            }
+            Issue.record("the timed-out child unexpectedly completed")
+        } catch let error as RuntimeFailure {
+            #expect(error == .unavailable(
+                "Power command child could not be reaped: Power command timed out and could not be reaped; recovery is required."
+                    + "."
+            ))
+        } catch {
+            Issue.record("unexpected error from the unreaped child: \(error)")
+        }
+
+        #expect(child.processID != nil)
+        do {
+            try fence.withExclusive(timeout: 0.05) {}
+            Issue.record("the retained child fence was unexpectedly reacquired")
+        } catch let error as RuntimeFailure {
+            #expect(error == .unavailable("Timed out waiting for the command fence."))
+        } catch {
+            Issue.record("unexpected error reacquiring the retained child fence: \(error)")
+        }
+
+        #expect(child.terminateAndReap())
+        #expect(child.processID == nil)
+        do {
+            try fence.withExclusive(timeout: 0.5) {}
+        } catch {
+            Issue.record("the command fence did not become available after reaping its child: \(error)")
+        }
+    }
+
     @Test func runnerDrainsButBoundsOutput() throws {
         let runner = POSIXCommandRunner(executable: "/usr/bin/printf", timeout: 1)
         let payload = String(repeating: "x", count: 20_000)
@@ -157,6 +220,45 @@ private func currentThreadCPUSeconds() throws -> Double {
     let user = Double(info.user_time.seconds) + Double(info.user_time.microseconds) / 1_000_000
     let system = Double(info.system_time.seconds) + Double(info.system_time.microseconds) / 1_000_000
     return user + system
+}
+
+private final class SpawnedChildProcess: @unchecked Sendable {
+    private let lock = NSLock()
+    private var identifier: pid_t?
+
+    var processID: pid_t? {
+        lock.lock(); defer { lock.unlock() }
+        return identifier
+    }
+
+    func record(_ processID: pid_t) {
+        lock.lock(); identifier = processID; lock.unlock()
+    }
+
+    func terminateAndReap() -> Bool {
+        guard let processID else { return true }
+        let signalResult = Darwin.kill(processID, SIGKILL)
+        guard signalResult == 0 || errno == ESRCH else { return false }
+
+        var status: Int32 = 0
+        while true {
+            let result = Darwin.waitpid(processID, &status, 0)
+            if result == processID {
+                clear(processID)
+                return true
+            }
+            if result < 0 && errno == EINTR { continue }
+            let isGone = result < 0 && errno == ECHILD
+            if isGone { clear(processID) }
+            return isGone
+        }
+    }
+
+    private func clear(_ processID: pid_t) {
+        lock.lock()
+        if identifier == processID { identifier = nil }
+        lock.unlock()
+    }
 }
 
 private final class TestFenceDirectory {
