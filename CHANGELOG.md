@@ -7,6 +7,8 @@ on September 27, 2026; earlier RC sections retain their original checkpoint cont
 
 ## 2.0.1
 
+Released September 29, 2026 — build 16.
+
 - Switch agent task protection on or off directly in the menu bar. See when
   monitoring is waiting for events and which tasks are actually keeping the Mac
   awake. Turning off agent tasks preserves manual sessions and command tasks.

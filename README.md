@@ -16,9 +16,9 @@ Mac menu-bar app.
 
 ## Get LidPilot
 
-Download [**LidPilot 2.0.0**](https://github.com/Marios1111/lidpilot/releases/download/v2.0.0/LidPilot-2.0.0.dmg),
+Download [**LidPilot 2.0.1**](https://github.com/Marios1111/lidpilot/releases/download/v2.0.1/LidPilot-2.0.1.dmg),
 a Developer ID signed, notarized and stapled app for Apple Silicon.
-[Release notes](https://github.com/Marios1111/lidpilot/releases/tag/v2.0.0) ·
+[Release notes](https://github.com/Marios1111/lidpilot/releases/tag/v2.0.1) ·
 [Verification and support boundaries](docs/VERIFICATION.md)
 
 1. Download the DMG from the release page and move **LidPilot.app** to **Applications**.
