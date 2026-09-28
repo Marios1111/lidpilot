@@ -72,6 +72,8 @@ NOTES_PATH="$UPDATE_DIR/LidPilot-${RELEASE_LABEL}.md"
 MANIFEST_PATH="$STAGE_ROOT/manifest.json"
 
 PREFLIGHT_FAILURES=0
+SPARKLE_SIGNING_ARGS=()
+VALIDATOR_SIGNING_ARGS=()
 
 release_error() {
   printf 'release preflight: %s\n' "$1" >&2
@@ -237,8 +239,20 @@ preflight() {
     check_executable_file "$SPARKLE_TOOLS_DIR/sign_update" || release_error "Sparkle 2.10.0 sign_update is missing or not executable: set SPARKLE_TOOLS_DIR to its bin directory"
     check_executable_file "$SPARKLE_TOOLS_DIR/generate_appcast" || release_error "Sparkle 2.10.0 generate_appcast is missing or not executable: set SPARKLE_TOOLS_DIR to its bin directory"
   fi
-  check_env SPARKLE_PRIVATE_KEY_FILE
-  check_private_key
+  if [[ -n "${SPARKLE_KEYCHAIN_ACCOUNT:-}" && -n "${SPARKLE_PRIVATE_KEY_FILE:-}" ]]; then
+    release_error "choose SPARKLE_KEYCHAIN_ACCOUNT or SPARKLE_PRIVATE_KEY_FILE, not both"
+  elif [[ -n "${SPARKLE_KEYCHAIN_ACCOUNT:-}" ]]; then
+    if [[ ! "$SPARKLE_KEYCHAIN_ACCOUNT" =~ ^[A-Za-z0-9_.-]+$ ]]; then
+      release_error "SPARKLE_KEYCHAIN_ACCOUNT must be an existing signing account name"
+    fi
+    SPARKLE_SIGNING_ARGS=(--account "$SPARKLE_KEYCHAIN_ACCOUNT")
+    VALIDATOR_SIGNING_ARGS=(--keychain-account "$SPARKLE_KEYCHAIN_ACCOUNT")
+  else
+    check_env SPARKLE_PRIVATE_KEY_FILE
+    check_private_key
+    SPARKLE_SIGNING_ARGS=(--ed-key-file "${SPARKLE_PRIVATE_KEY_FILE:-}")
+    VALIDATOR_SIGNING_ARGS=(--private-key-file "${SPARKLE_PRIVATE_KEY_FILE:-}")
+  fi
   check_env LIDPILOT_SPARKLE_PUBLIC_KEY
   if [[ -n "${LIDPILOT_SPARKLE_PUBLIC_KEY:-}" ]] && has_placeholder "$LIDPILOT_SPARKLE_PUBLIC_KEY"; then
     release_error "LIDPILOT_SPARKLE_PUBLIC_KEY contains a placeholder"
@@ -441,9 +455,9 @@ run_sign_update() {
   ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" "$UPDATE_ARCHIVE"
   local sign_update="$SPARKLE_TOOLS_DIR/sign_update"
   local generate_appcast="$SPARKLE_TOOLS_DIR/generate_appcast"
-  "$sign_update" --ed-key-file "$SPARKLE_PRIVATE_KEY_FILE" "$UPDATE_ARCHIVE" > "$UPDATE_ARCHIVE.signature"
+  "$sign_update" "${SPARKLE_SIGNING_ARGS[@]}" "$UPDATE_ARCHIVE" > "$UPDATE_ARCHIVE.signature"
   "$generate_appcast" \
-    --ed-key-file "$SPARKLE_PRIVATE_KEY_FILE" \
+    "${SPARKLE_SIGNING_ARGS[@]}" \
     --download-url-prefix "${LIDPILOT_RELEASE_DOWNLOAD_URL%/*}/" \
     --release-notes-url-prefix "${LIDPILOT_PAGES_URL%/*}/" \
     --link "$LIDPILOT_PAGES_URL" \
@@ -464,9 +478,9 @@ run_sign_update() {
   ' "$APPCAST_PATH")"
   [[ -n "$archive_signature" ]] || { echo "Sparkle appcast has no archive signature" >&2; exit 1; }
   [[ -n "$notes_signature" ]] || { echo "Sparkle appcast has no release-notes signature" >&2; exit 1; }
-  "$sign_update" --ed-key-file "$SPARKLE_PRIVATE_KEY_FILE" --verify "$UPDATE_ARCHIVE" "$archive_signature"
-  "$sign_update" --ed-key-file "$SPARKLE_PRIVATE_KEY_FILE" --verify "$NOTES_PATH" "$notes_signature"
-  "$sign_update" --ed-key-file "$SPARKLE_PRIVATE_KEY_FILE" --verify "$APPCAST_PATH"
+  "$sign_update" "${SPARKLE_SIGNING_ARGS[@]}" --verify "$UPDATE_ARCHIVE" "$archive_signature"
+  "$sign_update" "${SPARKLE_SIGNING_ARGS[@]}" --verify "$NOTES_PATH" "$notes_signature"
+  "$sign_update" "${SPARKLE_SIGNING_ARGS[@]}" --verify "$APPCAST_PATH"
   ruby "$VALIDATOR" \
     --archive "$UPDATE_ARCHIVE" \
     --appcast "$APPCAST_PATH" \
@@ -482,7 +496,7 @@ run_sign_update() {
     --hardware-validation "$RELEASE_HARDWARE_VALIDATION" \
     --team "$DEVELOPMENT_TEAM" \
     --sign-tool "$SPARKLE_TOOLS_DIR/sign_update" \
-    --private-key-file "$SPARKLE_PRIVATE_KEY_FILE"
+    "${VALIDATOR_SIGNING_ARGS[@]}"
   echo "signed Sparkle update files in $UPDATE_DIR"
 }
 
@@ -515,7 +529,7 @@ run_manifest() {
     --hardware-validation "$RELEASE_HARDWARE_VALIDATION" \
     --team "$DEVELOPMENT_TEAM" \
     --sign-tool "$SPARKLE_TOOLS_DIR/sign_update" \
-    --private-key-file "$SPARKLE_PRIVATE_KEY_FILE" >/dev/null
+    "${VALIDATOR_SIGNING_ARGS[@]}" >/dev/null
   ruby -rjson -rdigest -e '
     version, release_label, channel, hardware_validation, build, feed, download, output, profiling = ARGV.shift(9)
     pairs = ARGV.each_slice(2).to_h

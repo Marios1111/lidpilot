@@ -18,7 +18,8 @@ by preflight:
 | `LIDPILOT_DEVELOPER_IDENTITY` | Developer ID Application signing identity. |
 | `LIDPILOT_NOTARY_PROFILE` | `notarytool` keychain profile. |
 | `SPARKLE_TOOLS_DIR` | The reviewed Sparkle 2.10.0 `bin` directory. |
-| `SPARKLE_PRIVATE_KEY_FILE` | The Ed25519 private key used only by Sparkle tooling. |
+| `SPARKLE_KEYCHAIN_ACCOUNT` | Preferred: existing Sparkle Ed25519 account; signing stays in Keychain. |
+| `SPARKLE_PRIVATE_KEY_FILE` | Alternative protected key file, mutually exclusive with the Keychain account. |
 | `LIDPILOT_SPARKLE_PUBLIC_KEY` | Optional override for the public key in `Config/ReleaseDefaults.json`. |
 | `LIDPILOT_GITHUB_REPOSITORY` | Optional override; defaults to `Marios1111/lidpilot`. |
 | `LIDPILOT_PAGES_URL` | Optional override; defaults to the stable or RC feed for the selected channel. |
@@ -30,7 +31,8 @@ by preflight:
 
 Keep notary credentials, Developer ID certificates, Sparkle private keys and
 recovery copies in protected local stores. Pull request jobs must never receive
-them. `SUFeedURL` and `SUPublicEDKey` remain empty in developer builds so an
+them. Prefer `SPARKLE_KEYCHAIN_ACCOUNT` for local releases; no private-key export
+is needed. `SUFeedURL` and `SUPublicEDKey` remain empty in developer builds so an
 unconfigured updater can be shown as unavailable rather than pretending to be
 ready. The checked-in Sparkle public key is not secret; the private key remains
 outside the repository.

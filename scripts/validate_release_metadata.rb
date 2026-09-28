@@ -255,16 +255,24 @@ def verify_signatures(options)
   notes = REXML::XPath.first(item, "*[local-name()='releaseNotesLink']")
   fail_validation("signed release notes are missing") unless notes && !notes.attributes["sparkle:edSignature"].to_s.empty?
   fail_validation("release-notes length does not match") unless notes.attributes["sparkle:length"].to_i == File.size(options.fetch(:notes))
-  key_file = options.fetch(:private_key_file)
+  key_file = options[:private_key_file]
+  account = options[:keychain_account]
+  fail_validation("choose exactly one Sparkle key file or Keychain account") unless !!key_file != !!account
+  if account
+    fail_validation("invalid Sparkle Keychain account") unless account.match?(/\A[A-Za-z0-9_.-]+\z/)
+    signing_arguments = ["--account", account]
+  else
+    require_regular_file(key_file, "Sparkle private key input (set SPARKLE_PRIVATE_KEY_FILE to a protected key file)")
+    signing_arguments = ["--ed-key-file", key_file]
+  end
   tool = options.fetch(:sign_tool)
   require_executable_file(tool, "Sparkle sign_update tool (set SPARKLE_TOOLS_DIR to Sparkle 2.10.0/bin)")
-  require_regular_file(key_file, "Sparkle private key input (set SPARKLE_PRIVATE_KEY_FILE to a protected key file)")
   verifier = File.join(__dir__, "verify_update_signature.swift")
   require_regular_file(verifier, "archive signature verifier")
   [[options.fetch(:archive), enclosure.attributes["sparkle:edSignature"]],
    [options.fetch(:notes), notes.attributes["sparkle:edSignature"]],
    [options.fetch(:appcast), nil]].each do |file, signature|
-    command = [tool, "--verify", "--ed-key-file", key_file, file]
+    command = [tool, "--verify", *signing_arguments, file]
     command << signature if signature
     _, _, status = Open3.capture3(*command)
     fail_validation("Sparkle signature verification failed for #{File.basename(file)}") unless status.success?
@@ -588,6 +596,7 @@ parser = OptionParser.new do |opts|
   opts.on("--team TEAM") { |value| options[:team] = value }
   opts.on("--sign-tool PATH") { |value| options[:sign_tool] = value }
   opts.on("--private-key-file PATH") { |value| options[:private_key_file] = value }
+  opts.on("--keychain-account ACCOUNT") { |value| options[:keychain_account] = value }
   opts.on("--self-test") { options[:self_test] = true }
 end
 
