@@ -2,7 +2,8 @@
 
 ## Agent Tasks usability follow-up — September 29, 2026
 
-Candidate **2.0.1 (build 16)** follows released V2. The requested changes are a
+Stable **2.0.1 (build 16)** is [published on GitHub](https://github.com/Marios1111/lidpilot/releases/tag/v2.0.1).
+The requested changes are a
 menu-bar agent switch, explicit monitoring/protection states, optional hiding
 while off, and native reversible Codex setup. The helper protocol, power policy,
 leases, recovery paths, and adapter event/version contract remain unchanged.
@@ -22,12 +23,46 @@ actual mock panel switch enabled monitoring without starting protection; a
 projected Codex event displayed one protected task. Switching it off preserved
 the manual timer. Set Up opened Agent Tasks directly. Hiding controls removed
 them while off, enabling monitoring restored them, and Turn Off All Requests
-cleared the mock session. The preview quit normally after verified Off. Signed
-packaging, public-byte verification and publication are in progress. No new
+cleared the mock session. The preview quit normally after verified Off. No new
 physical power or paid agent session is claimed. The prior V2 hardware record
 applies to unchanged power/helper behavior; fresh performance, live desktop G6
 and VoiceOver evidence remain unmeasured. Codex's hook trust step is explicit
 and is never bypassed or written by LidPilot.
+
+Exact tagged/binary source: **2690e3b85f874abe68b0e4410245b3564e2a515b**.
+[Final-source CI](https://github.com/Marios1111/lidpilot/actions/runs/36492960755)
+passed, including Debug/Release builds and the test/static/release checks.
+Developer ID app/helper/CLI signatures, hardened runtime, secure timestamps and
+Sparkle archive/feed/notes signatures passed. App notarization
+**504ec59a-bead-4969-b0dd-b5f41289768d** and DMG notarization
+**0f8bc644-22c6-4b6d-93a6-c29c1adfce7c** were Accepted. Staple validation and
+Gatekeeper's Notarized Developer ID assessment passed for the app and DMG.
+
+The public manifest and all four GitHub assets were downloaded and matched the
+signed local release. The **4,566,270-byte** DMG SHA-256 is
+`7c75756a8b8c71e0f5718699089f569c633102130fa25fc7bf05f897d6b2eb00`;
+the manifest SHA-256 is
+`88cd017955766d423317c7747403ca189a980d12b391ff3a86ab399041f9545d`.
+`validate_pages_site.rb --publication stable --verify-public-assets` passed.
+[Pages deployment](https://github.com/Marios1111/lidpilot/actions/runs/36493729790)
+passed from **0153e06c0c93977b11f26a875ecbaf6ca550a4f8**. The live homepage,
+stable feed, notes and manifest match the committed bytes; the historical RC4
+feed remains byte-identical.
+
+The [Homebrew tap update](https://github.com/Marios1111/homebrew-tap/commit/56f148d)
+publishes the verified 2.0.1 DMG checksum. `brew style` passed; `brew audit` was
+blocked before auditing by the host's outdated Command Line Tools. Homebrew's
+temporary developer setting was restored Off. The installed Homebrew app was
+preserved at **2.0.0 build 15**; no installed 2.0.0 → 2.0.1 upgrade or live
+Codex Desktop trust/setup session is claimed. The documented native cleanup
+and Homebrew update command remain the supported upgrade path.
+
+The owner's requested debug cleanup removed **21** generated build/test/cache
+directories (approximately **3.42 GiB** of allocated data) and unregistered
+**six** generated app copies after confirming no process used them. The
+installed app, signed release/candidate archives, rollback bundles, hardware
+evidence, native captures and the dependency/signing-tool cache were preserved.
+Publication and scoped debug cleanup are complete.
 
 
 ## V2 published artifacts — September 29, 2026
