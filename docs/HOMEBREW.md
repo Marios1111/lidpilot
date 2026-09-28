@@ -91,6 +91,13 @@ With the lid open, use the normal app UI and complete the same sequence as
 5. Only then run `brew uninstall --cask lidpilot`, or run the Homebrew upgrade
    or reinstall that will replace the bundle.
 
+Versions **2.0.0 and 2.0.1** have a quit bug for Homebrew/manual ownership. If
+the app is Off, the helper is removed and no update is running, but Quit shows
+“Finish the update with the lid open,” temporarily select **Sparkle** in
+Settings → Updates and quit normally. Do not start an in-app update. After
+upgrading to **2.0.2 or later**, restore **Homebrew** as the update method.
+The corrected versions quit normally with Homebrew selected.
+
 If LidPilot cannot launch or reports **Recovery required**, do not remove or
 replace the app bundle. Follow [Recovery](RECOVERY.md) or ask a maintainer to
 review the observed state. Homebrew does not remove helper registrations,

@@ -4,18 +4,18 @@ IMPORTANT: This file was signed by Sparkle. Any modifications to this file requi
     <channel>
         <title>LidPilot</title>
         <item>
-            <title>2.0.1</title>
-            <pubDate>Tue, 29 Sep 2026 01:33:32 +0300</pubDate>
+            <title>2.0.2</title>
+            <pubDate>Tue, 29 Sep 2026 01:50:59 +0300</pubDate>
             <link>https://lidpilot.app/updates/appcast.xml</link>
-            <sparkle:version>16</sparkle:version>
-            <sparkle:shortVersionString>2.0.1</sparkle:shortVersionString>
+            <sparkle:version>17</sparkle:version>
+            <sparkle:shortVersionString>2.0.2</sparkle:shortVersionString>
             <sparkle:minimumSystemVersion>15.0</sparkle:minimumSystemVersion>
             <sparkle:hardwareRequirements>arm64</sparkle:hardwareRequirements>
-            <sparkle:releaseNotesLink sparkle:edSignature="hnZpdazl1HTgWgQn2Uonmx6UPiJozYwc4KT2HQz83fk/mYmBz6wU8vyawa6gOb5+OgaKmmiNUVLOCBnH+meCDQ==" sparkle:length="914">https://lidpilot.app/updates/LidPilot-2.0.1.md</sparkle:releaseNotesLink>
-            <enclosure url="https://github.com/Marios1111/lidpilot/releases/download/v2.0.1/LidPilot-2.0.1.zip" length="4289403" type="application/octet-stream" sparkle:edSignature="gzoWMGar9PE7jqqzPvihszqBbpPvl9ME7yFKS0mfG0cyJlG4+SHaNEa2+8lnIc20pcDwsOLMRHjNIZFE0DsmCg=="></enclosure>
+            <sparkle:releaseNotesLink sparkle:edSignature="KkgklTxAhvxYEboJ8X4cWq/xM36ZPFO7mO7e8xv7i6wyZRqA/EWP8Q2he9BLzMm+NAtIPNuz6CZB7xx27WzmCQ==" sparkle:length="476">https://lidpilot.app/updates/LidPilot-2.0.2.md</sparkle:releaseNotesLink>
+            <enclosure url="https://github.com/Marios1111/lidpilot/releases/download/v2.0.2/LidPilot-2.0.2.zip" length="4289398" type="application/octet-stream" sparkle:edSignature="m8OuD7BJYBTSVIRmqtUnqKw9VixTaH5xwuQr5RGyqH4q+4JZKbOM8+kFE9vPCNoP4pIwLgXGweOuVqyWzK5KBQ=="></enclosure>
         </item>
     </channel>
 </rss><!-- sparkle-signatures:
-edSignature: It+daqXVUiZ6MbFwxgLUl5dN7kuVYvK/9sGcvQczcsG0kkLV/UmfaW81CnKjkV5PfXsd9BeXvTj+ss3KDcHaDA==
+edSignature: /P446BvT5GTEqLWJ9aTYHhLoE/3S0TLX+jX5hBJ3mLkbulyPSUpg1yLOo79wCOODjkKGOwb6S5IbsWuC850xAg==
 length: 1433
 -->

@@ -1,32 +1,32 @@
 {
-  "version": "2.0.1",
-  "releaseLabel": "2.0.1",
+  "version": "2.0.2",
+  "releaseLabel": "2.0.2",
   "channel": "stable",
   "hardwareValidation": "approved",
   "profilingEnabled": false,
-  "build": "16",
+  "build": "17",
   "feedURL": "https://lidpilot.app/updates/appcast.xml",
-  "downloadURL": "https://github.com/Marios1111/lidpilot/releases/download/v2.0.1/LidPilot-2.0.1.zip",
+  "downloadURL": "https://github.com/Marios1111/lidpilot/releases/download/v2.0.2/LidPilot-2.0.2.zip",
   "files": [
     {
       "name": "dmg",
-      "path": "LidPilot-2.0.1.dmg",
-      "sha256": "7c75756a8b8c71e0f5718699089f569c633102130fa25fc7bf05f897d6b2eb00"
+      "path": "LidPilot-2.0.2.dmg",
+      "sha256": "e3209bfb9aeb70d2c560ed3dd47b42deae6182bf4c59deba0a44d8d974fabae6"
     },
     {
       "name": "update-archive",
-      "path": "LidPilot-2.0.1.zip",
-      "sha256": "44fe2f64c3b1a3ae89b443066a525cee8aff4938459cbe2b1d3e687dab719181"
+      "path": "LidPilot-2.0.2.zip",
+      "sha256": "594102d8f9376417d5a4b227efe780b3ab022a18accc47d296a3a50e88ec3313"
     },
     {
       "name": "appcast",
       "path": "appcast.xml",
-      "sha256": "272b99be5d2b73c70815bbafc11164cf604ab20696bda7201805dc1a17c83dcf"
+      "sha256": "76979f5331b401bd565b4bebae1dbe534b52eef7c271cf174d97b9347182ded8"
     },
     {
       "name": "release-notes",
-      "path": "LidPilot-2.0.1.md",
-      "sha256": "208d2d817dee291c0050f068a143ce9a00a625b20ddfd87624dad2c45598ab4e"
+      "path": "LidPilot-2.0.2.md",
+      "sha256": "f66b61e78c15d7b76d487236f5e82d9feab86c7b33b7f09584eaa2b44648f34b"
     }
   ]
 }
