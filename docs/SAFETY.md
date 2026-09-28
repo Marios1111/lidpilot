@@ -22,6 +22,14 @@ A delayed response from an older generation cannot activate a newer session.
 There is no automatic resume after thermal, battery, Low Power Mode, stale
 observation, helper, or ownership pauses.
 
+Manual and task requests have independent ends. The V2 arbiter releases each
+capability only after its last relevant request ends, while mandatory safety
+withdraws all requests. System and display assertions use independent bounded
+timeouts. Same-owner helper lease replacement cannot enable an unowned flag or
+revive an expired lease. CLI, hooks and global shortcuts share these checks.
+Workload waiting is not completion; absent events become unknown. Turn Off and
+safety pauses disarm agent hooks, and late events cannot restart them.
+
 ## Required observations
 
 `PowerSnapshot` records a `ClockSample`, lid state, power source, optional

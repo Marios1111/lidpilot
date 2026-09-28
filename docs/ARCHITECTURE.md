@@ -13,6 +13,9 @@ that has logic and tests is not automatically a release or hardware claim.
 ```mermaid
 flowchart LR
     UI[SwiftUI menu-bar app] --> C[SessionController<br/>main-actor state owner]
+    CLI[Same-user CLI and projected hooks] --> IPC[Bounded local socket]
+    IPC --> C
+    C --> W[WorkloadRegistry<br/>independent requests]
     C --> Core[LidPilotCore<br/>deadlines and safety]
     C --> A[NativeAssertions<br/>app-scoped IOPM assertions]
     C --> X[XPCTransport<br/>bounded Codable DTOs]
@@ -27,7 +30,7 @@ flowchart LR
 
 | Component | Owns | Must not own |
 | --- | --- | --- |
-| `Core/` | `Mode`, deadlines, snapshots, policy reasons, and typed wire contracts | AppKit, IOKit, shell execution, UI, or root state |
+| `Core/` | `Mode`, deadlines, snapshots, policy reasons, workload records, and typed wire contracts | AppKit, IOKit, shell execution, UI, or root state |
 | `App/` | Menu-bar UI, preferences, onboarding, notifications, diagnostics, helper approval, and update UI | Direct power-setting writes or a second session state machine |
 | `SessionController` | Requested mode, effective mode, phase, deadline, generation, helper ownership, assertion cleanup, and serialized operations | Physical panel claims or arbitrary helper commands |
 | `SystemState`/`StateObserver` | Clock, lid, thermal, battery, Low Power Mode, display topology, wake, sleep, and screen-session observations | Deciding whether a session is safe |
@@ -59,9 +62,49 @@ nonfinite/nonpositive values and expire conservatively on boot mismatch.
 Indefinite sessions have no end. `remaining` is bounded by the original finite
 duration so a delayed or regressed sample cannot extend a session.
 
-The Core wire request carries the already-built deadline for acquire and renew.
+The Core wire request carries the already-built deadline for acquire, replace and renew.
 Renewal checks the stored deadline; it never rebuilds one from “now.” The helper
 also limits its renewable lease to 60 seconds and the remaining hard deadline.
+
+### Overlapping requests (V2)
+
+One manual request and a bounded `WorkloadRegistry` feed the same controller.
+Each workload has an opaque source/session/turn/task identity, ordered event ID,
+mode, state, hard deadline and current hold deadline. Working, waiting and idle
+may hold independently; ended/failed/unknown requests do not. Waiting does not
+extend on repeated waiting events, and continuation never resets the original
+hard deadline. Terminal identities remain tombstoned during the admission period.
+
+The arbiter unions display and closed-lid needs. The helper receives the last
+relevant closed-lid deadline; each app assertion receives its own last relevant
+request deadline, capped at 60 seconds. Heartbeats run at most every 15 seconds
+and sooner for an expiring request. An authenticated same-owner `replace`
+operation updates an existing live lease without toggling the global flag or
+requiring the lid to reopen. It cannot acquire ownership, resurrect an expired
+lease, bypass safety, or change the privileged command surface. Renew retains
+immutable parameters until another explicit replacement.
+
+Turn Off and mandatory safety clear all requests and disarm hooks. Explicit
+hook disarm removes agent requests while preserving manual and command work.
+Launch never restores workloads. The UI distinguishes requested/effective state
+from sampled observations and does not claim physical sleep or panel state.
+
+### User-level developer boundary
+
+The opt-in CLI talks to a 0600 Unix socket in an owned 0700 directory. Both ends
+check the peer UID; root and different users are rejected. Development,
+production and mock preview use separate endpoints. Frames, active connections,
+read/write time and request age are bounded. This authorizes the same user, not
+a particular executable; enabling control intentionally allows that user's
+scripts. The CLI never connects to privileged XPC.
+
+The generic wrapper spawns at the user's privilege, preserves a foreground TTY
+and signals, and tracks its process group with ten-second heartbeats. Detached
+process groups are explicitly out of scope. Hooks project an allowlist before
+IPC, discard content and paths, and always emit neutral JSON. Claude main-turn
+events without a native turn ID cannot safely reduce a newer turn's hold; they
+fall back to bounded stale/unknown handling. See `DEVELOPER_TOOLS.md` for the
+experimental compatibility boundary and version pins.
 
 ## Safety and observations
 
@@ -117,7 +160,7 @@ does not prove physical panel shutdown or exclusive ownership.
 ## Helper protocol and authentication
 
 The XPC payload is a bounded JSON encoding of `WireRequest`/`WireReply`. Requests
-include protocol version, session UUID, nonzero generation, and operation. An
+include protocol version 2, session UUID, nonzero generation, and operation. An
 acquire requires a validated deadline, policy, and non-display mode. A renew
 must carry the existing deadline; release, inspect, and recover carry no
 activation payload. Replies report build, flag, ownership, recovery pending,
@@ -158,6 +201,11 @@ after the user acknowledges the ambiguity.
 The generated Xcode project pins Sparkle 2.10.0 and the app configuration
 requires signed feeds, pre-extraction verification, daily checks, and manual
 installation. Developer builds leave `SUFeedURL` and `SUPublicEDKey` empty.
+
+`UpdateOwnership` selects one of in-app, Homebrew or manual ownership. Receipt
+and install-path evidence is only an overridable hint. Non-Sparkle ownership
+disables discovery and installation callbacks while retaining interrupted-update
+cleanup. An external package manager cannot be vetoed by the app.
 
 `UpdateCoordinator` uses one standard Sparkle controller. Both automatic and
 manual checks wait until Off. The install-capable callback rejects installation unless the app is Off, the update barrier is held, the lid
@@ -205,9 +253,9 @@ behavior across every Mac, or a notarized upgrade/uninstall lifecycle. The
 opt-in evidence plan is in [`docs/HARDWARE_VALIDATION.md`](HARDWARE_VALIDATION.md),
 and the supported boundary is in [`docs/SUPPORT_MATRIX.md`](SUPPORT_MATRIX.md).
 
-## Out of scope for V1
+## Out of scope for V2.0
 
 There is no general-purpose root command API, browser/web UI, analytics,
-account, cloud service, CLI, AI-agent detection, transcript access, process
-automation, remote control, Shortcuts action, widget, brightness write, fake
+account, cloud service, transcript access, process rules or schedules,
+remote control, Shortcuts action, widget, brightness write, fake
 input, or blanket external-display blanking path.

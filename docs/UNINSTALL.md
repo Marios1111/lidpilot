@@ -8,12 +8,15 @@ read the resulting state back, and record recovery if cleanup is uncertain.
 1. Open LidPilot with the lid open.
 2. Choose **Turn Off** and wait for the app to show confirmed cleanup. If it
    reports **Recovery required**, follow that repair path before uninstalling.
-3. Open **Settings → General** and turn off **Launch at login**. Then open
+3. For V2 developer tools, remove your LidPilot hooks and CLI symlink using the
+   commands in [Developer tools](DEVELOPER_TOOLS.md) while the bundle is still
+   present. These commands preserve other hook handlers and shell settings.
+4. Open **Settings → General** and turn off **Launch at login**. Then open
    **Helper & Recovery** and choose **Remove Helper…**. Confirm the action.
-4. Allow the app to remove its ServiceManagement registration through the
+5. Allow the app to remove its ServiceManagement registration through the
    supported API. Do not delete the daemon bundle while a session or cleanup
    operation is pending.
-5. Confirm that the app reports the helper as removed, quit LidPilot normally,
+6. Confirm that the app reports the helper as removed, quit LidPilot normally,
    then move the app to the Trash.
 
 If the app cannot launch, keep the Mac open and avoid deleting the bundle

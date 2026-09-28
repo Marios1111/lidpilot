@@ -5,7 +5,23 @@ on September 27, 2026; earlier RC sections retain their original checkpoint cont
 
 ## Unreleased
 
-No V1.1/V2 functionality has started.
+## 2.0.0
+
+Unreleased development build 13; includes the V1.1 developer tools and V2.0
+workload scope. Signing, hardware and live adapter acceptance remain separate.
+
+- Opt-in bundled CLI with versioned JSON status, verified Start/Stop, local
+  diagnostics export, reversible installation and supervised command execution.
+- Configurable global shortcuts with no defaults, clearer troubleshooting,
+  and an explicit choice of in-app, Homebrew or manual update ownership.
+- Independent manual and workload requests, waiting grace, idle settling,
+  bounded stale/unknown state, task outcomes and generation-safe cleanup.
+- Minimal, reversible Codex/Claude hook adapters. Both remain experimental;
+  uncorrelated Claude main-turn stop/wait events cannot end a newer turn.
+- Refined native panel and Settings layout, compact task status, adaptive
+  appearance and a programmatically accessible menu-bar popover.
+- Helper protocol 2 adds same-owner lease replacement for overlapping requests;
+  it retains the fixed power commands, identity checks and recovery boundary.
 
 ## 1.0.0
 

@@ -1,4 +1,57 @@
-# LidPilot V1 release verification
+# LidPilot verification
+
+## V1.1 / V2.0 implementation — September 28, 2026
+
+**Unreleased 2.0.0 (build 13)** implements the updated blueprint's V1.1 and
+V2.0 scope, including Settings and menu-bar polish. Exact tested source:
+**1c19c9084109b2e70de474f52ba18517f4b3404b** on `dev`. The documentation
+commit recording these results follows that source commit. No push, release,
+helper installation, production update, or physical power test was performed.
+The published V1 record below remains separate evidence.
+
+### Completed checks
+
+| Check | Result and scope |
+| --- | --- |
+| Automated tests | **139 PASS:** 90 Runtime, 34 Core, 15 hostless app tests. `scripts/test.sh` and `scripts/test-app.sh`; zero failures. |
+| Builds | **Debug and Release PASS** through `scripts/build.sh`. App, helper and embedded CLI compile. Deep/strict local signature verification passes; these are ad-hoc builds, not Developer ID/notarized release evidence. |
+| CLI/app integration | **PASS** with the actual Debug app and embedded CLI using isolated mock power controls. Confirms local IPC, overlapping manual/command/agent requests, continuation and subtask ordering, Stop/disarm, diagnostic privacy, export conflicts, exit status, terminal input/Ctrl-C, and reversible CLI/hook configuration in temporary directories. |
+| Heartbeat under hook traffic | **PASS:** `python3 scripts/smoke-cli.py --sustained-hooks` delivers events continuously for 65 seconds without status polling; the helper lease stays active. |
+| Native rendering | **PASS:** `scripts/smoke-ui.sh` renders 18 native mock captures, confirms activation/cleanup and normal exit. Settings and task panels were visually reviewed in light/dark. Captures are in `build/native-previews/`. |
+| Static/project/release fixtures | **PASS:** `scripts/verify.sh` and `git diff --check`. Includes generated-project consistency, release metadata, cryptographic tamper fixtures, stable/RC Pages fixtures and Homebrew metadata checks. No public artifacts were changed. |
+| Focused review | Lead reviewed worker changes and final integration. Independent Sol review covered workload arbitration, helper lease replacement, CLI/IPC and command supervision; its findings were fixed. A focused follow-up found no remaining heartbeat scheduling issue. |
+
+The review corrections preserve a fresh deadline after manual expiry, independent
+system/display assertion timeouts, and same-owner helper replacement sampled
+against a fresh clock. Uncorrelated Claude completion cannot cancel a newer
+turn. Hook traffic preserves an already scheduled heartbeat. The embedded CLI
+is named `lidpilot-cli` so it cannot overwrite `LidPilot` on case-insensitive
+macOS volumes.
+
+### Remaining native and release gates
+
+- **Native interaction/accessibility:** the mock window's accessibility tree was
+  inspected. A preview Settings-opening issue was corrected and rebuilt, but
+  macOS then remained locked, preventing the final native click-through.
+  Live global-shortcut delivery, VoiceOver and exact interaction latency have
+  not been established for this source. Rendered captures do not prove them.
+- **Signed helper and hardware:** protocol 2, overlapping closed-lid requests,
+  safety/lease recovery and build-12-to-13 replacement still require the explicit
+  opt-in procedures in [Hardware validation](HARDWARE_VALIDATION.md). No physical
+  panel, closed-lid continuity or new performance result is inferred from mocks.
+- **Agent gate G6:** Codex 0.154.0 and Claude Code 2.1.112 adapters are experimental.
+  Allowlisted lifecycle fixtures and local hook delivery pass; complete live
+  agent acceptance is unperformed. Claude main-turn events without correlation
+  cannot shorten the latest turn safely, so the bounded missing-event policy
+  releases that request as unknown. See [Developer tools](DEVELOPER_TOOLS.md).
+- **Distribution:** signed/notarized packaging, real Homebrew/Sparkle ownership
+  and upgrade/recovery acceptance remain release gates. The public download,
+  update feed and tap still describe V1; no V2 publication is claimed.
+
+Local check logs were retained under `/private/tmp/lidpilot-v2-*.log`. They
+supplement the recorded commands/results, and are not committed release assets.
+
+## Retained V1 release verification
 
 Updated September 27, 2026. Stable **1.0.0 (build 12)** is published.
 Source/tag: **af6adf78d4fa776e578132b3111dae11bee536ef**. Later documentation
@@ -15,7 +68,7 @@ publication alone is not treated as proof. Final stable cleanup, actual Homebrew
 installation/removal and restored native Off state have now passed. No retained
 mandatory V1 release blockers remain within the owner-approved support boundary.
 
-## Current gates
+## V1 release gates (retained)
 
 | Gate | Status | Evidence and boundary |
 | --- | --- | --- |

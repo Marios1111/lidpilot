@@ -1,5 +1,25 @@
 # Hardware validation checklist
 
+## V2 continuation gates
+
+Build 13 changes multi-request coordination and helper protocol. Retained V1
+hardware evidence is historical, not a new V2 pass. Before publishing V2, obtain
+explicit operator opt-in and check overlapping Display/Closed requests with
+the real signed helper, deadline transitions while closed, Stop/safety/crash
+cleanup, upgrade from build 12, and external Homebrew replacement. Keep physical
+panel observations distinct from sleep flags and mock assertions.
+
+G6 requires an opted-in disposable real session for each supported agent/version:
+work start, approval wait, continued Stop, two overlapping turns, parent/child
+completion, missing/duplicate/late hooks, restart, and manual-session survival.
+Retain only projected event metadata. Confirm neutral hook output cannot approve
+or continue an agent. Claude main-turn events without a native turn ID retain
+the documented stale/unknown fallback; do not promote that path as fully
+correlated completion. Native global-hotkey registration and VoiceOver on the
+new pages also need operator validation. None of these gates authorizes itself.
+
+## Retained hardware procedure
+
 This checklist is an opt-in test plan. Current V1 results and owner-accepted
 support boundaries are in [VERIFICATION.md](VERIFICATION.md); dated physical
 records remain evidence for their recorded builds. Logic tests and mock helpers can establish ordering, bounds, and

@@ -1,4 +1,27 @@
-# LidPilot V1 implementation plan
+# LidPilot implementation plan
+
+## Current implementation — September 28, V1.1 + V2.0
+
+The authorized scope is developer tools and workload sessions from the updated
+blueprint, plus modest Settings/menu-bar polish. V2.1/V2.2 rules, schedules,
+Shortcuts and remote control are excluded. Development source is 2.0.0 build 13;
+the published V1 artifacts remain unchanged.
+
+- Implemented: opt-in local CLI, JSON diagnostics, global shortcuts and update
+  ownership; bounded manual/task arbitration; command supervision; reversible,
+  minimal Codex/Claude hooks; native task UI and Settings.
+- Review corrections: fresh restart after manual expiry, independent assertion
+  timeouts, same-owner lease replacement with a fresh post-sampling clock, and
+  refusal to route an uncorrelated Claude Stop onto a newer turn.
+- Final proof: Core/Runtime and hostless app tests, Debug/Release builds, actual
+  mock-app CLI/TTY integration, light/dark rendering, and static release checks.
+  Consult `VERIFICATION.md` for their final results and exact source revision.
+- No physical power test, privileged helper installation, signed replacement,
+  public update, or live paid agent session is part of this implementation run.
+  Adapter promotion requires G6; the Claude correlation limit stays explicit.
+
+The historical V1 plan follows; its old continuation notes do not describe the
+current implementation or supersede the verification ledger.
 
 Initial implementation checkpoint (historical): implementation and safe automated/native smoke checks were complete. The user delegated final design to Astra Max, retaining Mode Cards and the compact timer. User-facing labels are Follow Lid, Keep Screen On, and Keep Mac Running; internal semantics remain smart/display/closed. The September 21 native mock interaction and accessibility-tree pass is complete, including timer choices, settings, export, onboarding, and two verified UI fixes. The follow-up accessibility QA is complete: keyboard navigation, user-assisted VoiceOver speech confirmation, Light/Dark, Increase Contrast, Reduce Transparency, and Reduce Motion. macOS does not list LidPilot as supporting its preferred-reading-size control; that limitation is documented. Original system settings were restored. Hardware, signed XPC, notarized upgrades, and performance measurements remain explicit release gates. No hardware power tests or privileged installation are authorized by this plan. See `VERIFICATION.md` for evidence and the exact resume point.
 

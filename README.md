@@ -1,5 +1,10 @@
 <p align="center"><img src="website/assets/icon-light.png" alt="LidPilot icon" width="112"></p>
 
+> Development source now includes V1.1/V2.0 in unreleased **2.0.0 (13)**:
+> CLI, global shortcuts, independent workload sessions and experimental agent
+> hooks. See [Developer tools](docs/DEVELOPER_TOOLS.md). The public download below
+> remains stable 1.0.0; no V2 release has been published.
+
 # LidPilot
 
 **Your Mac. On your time.**

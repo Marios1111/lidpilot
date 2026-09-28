@@ -95,6 +95,12 @@ that unrelated assertions have gone away.
 
 ## Stop & Sleep and updates
 
+In V2, Turn Off releases manual and workload requests and disarms agent hooks.
+A running command is not killed when its protection ends. Inspect its terminal
+and the app status; re-arm hooks or explicitly start a new request only after
+resolving the cause. Stale agent events produce unknown state, never a success
+notification. Restarted apps begin Off and do not reload task holds.
+
 Stop & Sleep first completes the normal release/read-back path. It requests
 macOS sleep only after assertions are Off and helper ownership is not pending.
 If either check fails, it does not repeatedly request sleep and leaves the app
