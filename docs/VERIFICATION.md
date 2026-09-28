@@ -37,9 +37,34 @@ before auditing by the host's outdated Command Line Tools; no toolchain change
 or bypass was made. Homebrew's temporary developer setting was restored Off.
 The test helper was removed through native Settings while Off before the
 original V1 bundle/receipt were restored for the actual Homebrew upgrade.
-Stable Pages deployment and final installed-V2 restoration are still in progress.
+[Stable Pages deployment passed](https://github.com/Marios1111/lidpilot/actions/runs/36487186248)
+from website revision **e671bdaf0c5c6764a3dff55fa8ec6620409d8b55**. The live
+homepage advertises V2; downloaded feed, notes and manifest match the public
+release byte-for-byte. No additional site deployment is needed for later
+documentation-only changes.
 
-## V2 stable package preparation — September 29, 2026
+The exact `brew update` then `brew upgrade --cask --greedy
+Marios1111/tap/lidpilot` path successfully upgraded the restored **1.0.0** bundle
+and receipt to **2.0.0**. The final installed app is build **15**; deep/strict
+signature verification, staple validation and Gatekeeper's Notarized Developer
+ID assessment passed. It launched Off and its newly approved helper reported
+build **15**, protocol **2**, the expected signing team, healthy read-back,
+SleepDisabled=0 and no lease/ownership/recovery pending.
+
+Native final Settings confirmed **Homebrew** update ownership with Sparkle
+checks disabled, Follow Lid / two hours, notifications On and restored Launch
+at login On. Temporary CLI access was turned Off, the production socket was
+removed, all global test shortcuts were cleared, and hooks stayed disarmed.
+Independent final read-back confirmed SleepDisabled=0 and no LidPilot wake
+assertion. No hook configuration or shell files were installed or changed.
+The original V1 and local candidates remain available in local rollback storage.
+
+V2 publication and the authorized installed acceptance are complete. The
+experimental G6 adapters, unmeasured fresh V2 performance/new-page VoiceOver,
+exact latency, deferred hardware topologies and blocked Homebrew audit remain
+explicit evidence boundaries; none is presented as a passing measurement.
+
+## Retained V2 stable preparation — September 29, 2026
 
 Corrected runtime source **ff9ec43c100fd598734784c72ed28665eb329fc9** passed
 [CI](https://github.com/Marios1111/lidpilot/actions/runs/36484945346): **140 tests**
@@ -76,7 +101,7 @@ The authorized bounded hardware/helper checks are complete on the recorded
 setup. Stable artifact signatures/notarization, publication, exact downloaded
 bytes and final Homebrew replacement remain the distribution steps.
 
-## V2 candidate validation — September 29, 2026
+## Retained V2 candidate validation — September 29, 2026
 
 The owner authorized V2 publication, candidate installation, signed-helper and
 upgrade checks, a 60-second closed-lid check, overlapping deadlines and GUI-loss
@@ -157,7 +182,7 @@ turn. Hook traffic preserves an already scheduled heartbeat. The embedded CLI
 is named `lidpilot-cli` so it cannot overwrite `LidPilot` on case-insensitive
 macOS volumes.
 
-### Remaining native and release gates
+### Initial native and release gates at the implementation checkpoint
 
 - **Native interaction/accessibility:** see the follow-up above for the passed
   native mock checks and the final popover, global shortcut and accessibility

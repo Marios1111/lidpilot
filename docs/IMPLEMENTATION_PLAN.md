@@ -1,11 +1,12 @@
 # LidPilot implementation plan
 
-## Current implementation — September 28, V1.1 + V2.0
+## Completed implementation and release — September 29, V1.1 + V2.0
 
 The authorized scope is developer tools and workload sessions from the updated
 blueprint, plus modest Settings/menu-bar polish. V2.1/V2.2 rules, schedules,
-Shortcuts and remote control are excluded. Stable packaging is 2.0.0 build 15;
-the published V1 artifacts remain unchanged.
+App Intents/Shortcuts and remote control are excluded. Stable **2.0.0 build 15**
+is published on GitHub, the Homebrew tap and the stable website/feed. The original
+V1 GitHub artifacts remain unchanged.
 
 - Implemented: opt-in local CLI, JSON diagnostics, global shortcuts and update
   ownership; bounded manual/task arbitration; command supervision; reversible,
@@ -19,8 +20,10 @@ the published V1 artifacts remain unchanged.
 - The owner subsequently authorized signed installation, bounded physical and
   recovery checks, and V2 publication. Build 13 continuity passed; a concurrent
   command admission race was found and fixed. Build 14 verified that fix, deadline
-  transitions and GUI-loss cleanup. Stable packaging and publication are now in
-  progress. Adapter promotion still requires G6; the Claude
+  transitions and GUI-loss cleanup. Stable signing/notarization, publication and
+  the real V1-to-V2 Homebrew upgrade passed. The installed app is Off, helper
+  and login preference restored, and temporary CLI access disabled. Adapter
+  promotion still requires G6; the Claude
   correlation limit stays explicit. See the current verification ledger.
 
 The historical V1 plan follows; its old continuation notes do not describe the
