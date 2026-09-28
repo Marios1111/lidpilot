@@ -591,7 +591,7 @@ end
 def self_test(defaults)
   self_test_openssl_selection
   site = ROOT.join("website")
-  puts validate_pages_site(site, defaults)
+  validate_stable_site(site, defaults) if site.join("updates").exist?
   fail_validation("self-test did not accept branded RC URL") unless validate_rc_feed_url(DEFAULT_BRANDED_RC_FEED) == :branded
   fail_validation("self-test did not accept the explicit legacy RC URL") unless validate_rc_feed_url(LEGACY_RC_FEED) == :legacy
   expect_failure("legacy stable GitHub Pages URL") { validate_rc_feed_url("https://marios1111.github.io/lidpilot/appcast.xml") }
@@ -600,6 +600,10 @@ def self_test(defaults)
   Dir.mktmpdir("lidpilot-pages-validator-") do |dir|
     copy = File.join(dir, "website")
     FileUtils.cp_r("#{site}/.", copy)
+    # Exercise RC-only publication on its own disposable fixture, even after
+    # the committed site gains a stable channel. Keep the production guard intact.
+    FileUtils.remove_entry(File.join(copy, "updates")) if File.exist?(File.join(copy, "updates"))
+    puts validate_pages_site(copy, defaults)
     valid_feed = Pathname(copy).join("rc", "appcast.xml")
     valid_notes = Pathname(copy).join("rc", "LidPilot-#{LEGACY_RC_LABEL}.md")
     feed_bytes = File.binread(valid_feed)
