@@ -28,6 +28,8 @@ import LidPilotRuntime
         Settings { SettingsView(model: model) }
             .commands {
                 CommandGroup(replacing: .appSettings) {
+                    Button("Open LidPilot") { model.openPanel?() }
+                    Divider()
                     Button("Settings…") { delegate.showSettings() }.keyboardShortcut(",", modifiers: .command)
                 }
             }

@@ -81,6 +81,9 @@ public struct ControlStatus: Codable, Sendable {
         integrationsArmed = controller.integrationsArmed; workloads = controller.workloads.records
         sampledAt = Date()
         switch controller.phase {
+        case .off: nextStep = controller.integrationsArmed
+            ? "Hooks are armed. Turn Off disarms them; a new task can request protection."
+            : "No request is active. Start a session when you need protection."
         case .recovery: nextStep = "Keep the lid open and use Settings → Helper & Recovery."
         case .paused: nextStep = "Resolve the pause, then explicitly start or re-arm tasks."
         case .unverified: nextStep = "Refresh helper status in Settings."
