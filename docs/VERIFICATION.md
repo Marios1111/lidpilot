@@ -1,5 +1,39 @@
 # LidPilot verification
 
+## V2 publication preparation — September 28, 2026
+
+The owner authorized GitHub V2 publication and a Homebrew update. Publication
+has **not occurred**. Local candidate **2.0.0-rc.1 (build 13)** was archived and
+exported from **400f0b34b4a2666a68303cfc117d11085e76b29a**. Developer ID signatures,
+team, hardened runtime, timestamps and arm64 slices passed for app, helper and
+CLI. The existing Keychain Sparkle account matches the published public key;
+release tooling now signs through that account without extracting a private key.
+
+After the Mac was unlocked, native mock checks passed for Settings opening and
+navigation, hook arming/disarming, shortcut recording/clearing, Homebrew update
+selection and its disabled Sparkle state, diagnostic preview/cancel, manual
+Start/Stop, mode switching with the original deadline, Settings close and normal
+app quit. No real power controls or helper registration were used. A misleading
+Off-state troubleshooting instruction was corrected, and both idle/disarmed and
+idle/armed JSON guidance passed against the rebuilt mock app. An app-menu
+**Open LidPilot** action now provides another route back to the popover.
+
+Final source follow-up: Debug build, **124 Core/Runtime tests**, static/release
+fixture checks and the Developer ID archive/export pass. The original 15 app
+tests remain applicable to unchanged coordinator/preferences code. The Mac
+locked again before checking the new app-menu entry and final popover behavior.
+Live global-shortcut delivery, VoiceOver and exact latency remain unmeasured.
+
+Candidate app:
+`/private/tmp/lidpilot-v2-candidate-20260928/2.0.0-rc.1-13/export/LidPilot.app`.
+The notarization ZIP was created, but submission exited 69 with
+`No Keychain password item found for profile: lidpilot-notary` while macOS was
+locked. Retry the existing saved profile after unlock; no credentials were
+recreated. The app is **not yet notarized, stapled or installed**. Explicit
+operator permission for the signed-helper/upgrade, overlapping deadlines,
+closed-lid continuity and GUI-loss cleanup checks is pending. Do not mark the
+stable hardware approval gate passed or publish stable/Homebrew artifacts yet.
+
 ## V1.1 / V2.0 implementation — September 28, 2026
 
 **Unreleased 2.0.0 (build 13)** implements the updated blueprint's V1.1 and
@@ -30,11 +64,9 @@ macOS volumes.
 
 ### Remaining native and release gates
 
-- **Native interaction/accessibility:** the mock window's accessibility tree was
-  inspected. A preview Settings-opening issue was corrected and rebuilt, but
-  macOS then remained locked, preventing the final native click-through.
-  Live global-shortcut delivery, VoiceOver and exact interaction latency have
-  not been established for this source. Rendered captures do not prove them.
+- **Native interaction/accessibility:** see the follow-up above for the passed
+  native mock checks and the final popover, global shortcut and accessibility
+  boundaries. Rendered captures do not prove native behavior.
 - **Signed helper and hardware:** protocol 2, overlapping closed-lid requests,
   safety/lease recovery and build-12-to-13 replacement still require the explicit
   opt-in procedures in [Hardware validation](HARDWARE_VALIDATION.md). No physical
