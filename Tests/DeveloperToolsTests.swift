@@ -52,6 +52,50 @@ struct DeveloperToolsTests {
         #expect(String(decoding: first, as: UTF8.self).contains("my-existing-hook"))
     }
 
+    @Test func hookInstallationDistinguishesMissingCompletePartialAndDifferentApp() throws {
+        let executable = "/Applications/LidPilot.app/Contents/MacOS/lidpilot-cli"
+        #expect(try HookConfiguration.installation(nil, source: .codex, executable: executable) == .missing)
+        let installed = try HookConfiguration.updated(nil, source: .codex, version: "0.154.0", executable: executable, install: true)
+        #expect(try HookConfiguration.installation(installed, source: .codex, executable: executable) == .installed)
+        #expect(try HookConfiguration.installation(installed, source: .codex, executable: "/different/lidpilot-cli") == .needsRepair)
+        var document = try #require(try JSONSerialization.jsonObject(with: installed) as? [String: Any])
+        var hooks = try #require(document["hooks"] as? [String: Any])
+        hooks.removeValue(forKey: "UserPromptSubmit"); document["hooks"] = hooks
+        let partial = try JSONSerialization.data(withJSONObject: document)
+        #expect(try HookConfiguration.installation(partial, source: .codex, executable: executable) == .needsRepair)
+        var duplicateDocument = try #require(try JSONSerialization.jsonObject(with: installed) as? [String: Any])
+        var duplicateHooks = try #require(duplicateDocument["hooks"] as? [String: Any])
+        let stop = try #require(duplicateHooks["Stop"] as? [[String: Any]])
+        duplicateHooks["Stop"] = stop + stop
+        duplicateDocument["hooks"] = duplicateHooks
+        #expect(try HookConfiguration.installation(JSONSerialization.data(withJSONObject: duplicateDocument), source: .codex, executable: executable) == .needsRepair)
+        let repaired = try HookConfiguration.updated(JSONSerialization.data(withJSONObject: duplicateDocument), source: .codex, version: "0.154.0", executable: executable, install: true)
+        #expect(try HookConfiguration.installation(repaired, source: .codex, executable: executable) == .installed)
+        #expect(throws: (any Error).self) {
+            try HookConfiguration.installation(Data("not JSON".utf8), source: .codex, executable: executable)
+        }
+    }
+
+    @Test func nativeHookSetupUsesGuardedFilesAndPreservesUnrelatedConfiguration() throws {
+        let folder = URL(fileURLWithPath: "/private/tmp/lidpilot-hook-setup-\(UUID().uuidString)")
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: false, attributes: [.posixPermissions: 0o700])
+        defer { try? FileManager.default.removeItem(at: folder) }
+        let url = folder.appendingPathComponent("hooks.json"), executable = URL(fileURLWithPath: "/bin/echo")
+        let original = Data(#"{"other":true,"hooks":{"Stop":[{"hooks":[{"type":"command","command":"other-hook"}]}]}}"#.utf8)
+        try CLIFileOperations.export(original, to: url)
+        try CLIFileOperations.configureHooks(at: url, source: .codex, version: "0.154.0", executable: executable, install: true)
+        #expect(try CLIFileOperations.hookInstallation(at: url, source: .codex, executable: executable) == .installed)
+        try CLIFileOperations.configureHooks(at: url, source: .codex, version: "0.154.0", executable: executable, install: false)
+        #expect(try JSONSerialization.jsonObject(with: Data(contentsOf: url)) as? NSDictionary == JSONSerialization.jsonObject(with: original) as? NSDictionary)
+        #expect(try CLIFileOperations.hookInstallation(at: url, source: .codex, executable: executable) == .missing)
+        let link = folder.appendingPathComponent("link.json")
+        try FileManager.default.createSymbolicLink(at: link, withDestinationURL: url)
+        #expect(throws: ControlError.unsafePath) { try CLIFileOperations.hookInstallation(at: link, source: .codex, executable: executable) }
+        #expect(throws: ControlError.unsafePath) {
+            try CLIFileOperations.configureHooks(at: link, source: .codex, version: "0.154.0", executable: executable, install: true)
+        }
+    }
+
     @Test func uncorrelatedClaudeStopCannotEndNewerTurnAndDisconnectReleasesChildren() throws {
         var router = HookRouter(), registry = WorkloadRegistry()
         let clock = ClockSample(continuousSeconds: 100, wallDate: Date(), bootID: "hooks-test")

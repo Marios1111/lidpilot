@@ -50,8 +50,16 @@ enum DurationChoice: String, CaseIterable, Identifiable {
     var workloadMode: Mode { didSet { defaults.set(workloadMode.rawValue, forKey: "workloadMode") } }
     var waitingGrace: Double { didSet { defaults.set(waitingGrace, forKey: "waitingGrace") } }
     var staleAfter: Double { didSet { defaults.set(staleAfter, forKey: "staleAfter") } }
+    var showAgentControls: Bool { didSet { defaults.set(showAgentControls, forKey: "showAgentControls") } }
+    var hookInstallations: [WorkloadSource: HookConfiguration.Installation] = [:]
+    var hookSetupErrors: [WorkloadSource: String] = [:]
+    var lastHookReceived: [WorkloadSource: Date] = [:]
+    var agentSetupMessage: String?
+    var changingAgentTasks = false
+    private(set) var controlAvailable = false
     var controlError: String?
     var openPanel: (() -> Void)?
+    var openAgentSettings: (() -> Void)?
     var onStatusChange: (() -> Void)?
     var shortcuts: GlobalShortcuts!
     private var controlServer: LocalControlServer?
@@ -76,6 +84,7 @@ enum DurationChoice: String, CaseIterable, Identifiable {
         updateOwnership = UpdateOwnership(defaults: defaults)
         let previewControl = isPreview && ProcessInfo.processInfo.environment["LIDPILOT_CONTROL_TESTING"] == "1"
         cliEnabled = previewControl || defaults.bool(forKey: "cliEnabled")
+        showAgentControls = defaults.object(forKey: "showAgentControls") as? Bool ?? true
         workloadMode = Mode(rawValue: defaults.string(forKey: "workloadMode") ?? "closed") ?? .closed
         let waiting = defaults.double(forKey: "waitingGrace")
         waitingGrace = (30...600).contains(waiting) ? waiting : 120
@@ -236,26 +245,115 @@ enum DurationChoice: String, CaseIterable, Identifiable {
     }
     func stopObserving() { heartbeat?.cancel(); observer?.stop(); controlServer?.stop(); shortcuts.stop() }
 
+    static let agentSources: [WorkloadSource] = [.codex, .claude]
+    var hookExecutable: URL { Bundle.main.bundleURL.appendingPathComponent("Contents/MacOS/lidpilot-cli") }
+    func hookConfigURL(_ source: WorkloadSource) -> URL {
+        if let path = defaults.string(forKey: "hookConfig.\(source.rawValue)") { return URL(fileURLWithPath: path) }
+        return FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent(source == .codex ? ".codex/hooks.json" : ".claude/settings.json")
+    }
+    func refreshHookSetup() {
+        // Mock UI never inspects or edits the user's agent configuration.
+        guard !isPreview else { return }
+        for source in Self.agentSources {
+            do {
+                hookInstallations[source] = try CLIFileOperations.hookInstallation(at: hookConfigURL(source), source: source, executable: hookExecutable)
+                hookSetupErrors[source] = nil
+            } catch {
+                hookInstallations[source] = nil
+                hookSetupErrors[source] = "Cannot read this configuration safely. Choose your agent's config folder or repair the file."
+            }
+        }
+    }
+    func chooseHookConfig(_ source: WorkloadSource) {
+        guard !isPreview else { return }
+        let panel = NSOpenPanel()
+        panel.title = "Choose the \(source == .codex ? "Codex" : "Claude Code") configuration folder"
+        panel.canChooseDirectories = true; panel.canChooseFiles = false
+        panel.allowsMultipleSelection = false
+        guard panel.runModal() == .OK, let folder = panel.url else { return }
+        let url = folder.appendingPathComponent(source == .codex ? "hooks.json" : "settings.json")
+        defaults.set(url.path, forKey: "hookConfig.\(source.rawValue)")
+        agentSetupMessage = nil
+        refreshHookSetup()
+    }
+    func configureAgent(_ source: WorkloadSource, install: Bool) {
+        guard !isPreview, !controller.integrationsArmed, !controller.hasSession, !controller.updateBarrier,
+              let version = HookSignal.versions[source] else { return }
+        do {
+            guard FileManager.default.isExecutableFile(atPath: hookExecutable.path) else { throw ControlError.unavailable }
+            try CLIFileOperations.configureHooks(at: hookConfigURL(source), source: source, version: version,
+                executable: hookExecutable, install: install)
+            if install { cliEnabled = true }
+            agentSetupMessage = install
+                ? "Connection installed. Review the hooks in your agent, then turn on Agent Tasks and start a new local turn."
+                : "LidPilot's hooks were removed. Your other hooks are unchanged."
+        } catch {
+            agentSetupMessage = "Could not change the connection: \(error.localizedDescription) Open your agent once to create its configuration folder, or choose that folder below."
+        }
+        refreshHookSetup()
+    }
+
+    var canEnableAgentTasks: Bool {
+        onboardingComplete && cliEnabled && controlAvailable && controller.canStart &&
+            (!workloadMode.needsHelper || closedLidReady)
+    }
+    var agentTaskStatus: String {
+        let active = controller.protectedWorkloads.filter { $0.source != .command }.count
+        if active > 0 { return "\(active) \(active == 1 ? "task" : "tasks") keeping Mac awake" }
+        guard controller.integrationsArmed else { return "Off · no agent protection" }
+        let records = controller.workloads.records.filter { $0.source != .command }
+        if controller.phase == .starting, !records.isEmpty { return "Starting task protection…" }
+        if records.contains(where: { $0.state == .unknown }) { return "Task status unknown · protection released" }
+        if records.contains(where: { $0.state == .waiting }) { return "Waiting for you · protection released" }
+        return lastHookReceived.isEmpty ? "On · waiting for first event" : "On · waiting for next task"
+    }
+    var agentTaskHint: String {
+        if !onboardingComplete { return "Finish Welcome & Help to enable agent tasks." }
+        if !cliEnabled { return "Connect your agent once to enable this switch." }
+        if !controlAvailable { return controlError ?? "Local connection unavailable. Check Agent Tasks settings." }
+        if workloadMode.needsHelper && !closedLidReady { return "Enable the helper in Settings for \(workloadMode.title)." }
+        if !controller.canStart { return controller.message }
+        if lastHookReceived.isEmpty && controller.integrationsArmed && !controller.workloads.records.contains(where: { $0.source != .command }) {
+            return "Start a new local turn in your agent. No event received yet."
+        }
+        return "Task behavior: \(workloadMode.title)"
+    }
+
     var workloadOptions: WorkloadOptions {
         WorkloadOptions(waitingGrace: waitingGrace, settlingInterval: 3, staleAfter: staleAfter, maximumDuration: 28_800)
     }
 
     func armTasks(_ armed: Bool) {
+        guard !changingAgentTasks else { return }
         if armed {
             do {
-                guard onboardingComplete, cliEnabled else { throw ControlError.unavailable }
+                guard canEnableAgentTasks else { controlError = agentTaskHint; return }
+                guard !controller.integrationsArmed else { return }
                 try controller.armWorkloads(); hookRouter.reset(); controlError = nil
+                lastHookReceived.removeAll()
+                onStatusChange?()
             } catch { controlError = error.localizedDescription }
         } else {
             hookRouter.reset()
-            Task { await controller.disarmWorkloads() }
+            changingAgentTasks = true
+            Task {
+                await controller.disarmWorkloads()
+                changingAgentTasks = false
+                onStatusChange?()
+            }
         }
     }
 
     private func configureControl() {
-        guard cliEnabled else { controlServer?.stop(); controlServer = nil; return }
+        controlAvailable = false
+        guard cliEnabled else {
+            controlServer?.stop(); controlServer = nil
+            if controller.integrationsArmed { armTasks(false) }
+            return
+        }
         let previewControl = isPreview && ProcessInfo.processInfo.environment["LIDPILOT_CONTROL_TESTING"] == "1"
-        guard !isPreview || previewControl else { return }
+        guard !isPreview || previewControl else { controlAvailable = true; return }
         let channel = previewControl ? "preview" : (HelperIdentity.applicationConfiguration()?.isProduction == true ? "production" : "development")
         if controlServer == nil {
             controlServer = LocalControlServer { [weak self] request in
@@ -263,7 +361,7 @@ enum DurationChoice: String, CaseIterable, Identifiable {
                 return await self.handleControl(request)
             }
         }
-        do { try controlServer?.start(path: LocalControl.path(channel: channel)); controlError = nil }
+        do { try controlServer?.start(path: LocalControl.path(channel: channel)); controlAvailable = true; controlError = nil }
         catch { controlError = error.localizedDescription }
     }
 
@@ -273,6 +371,7 @@ enum DurationChoice: String, CaseIterable, Identifiable {
         }
         guard cliEnabled else { return reply(.blocked, "CLI control is disabled.") }
         do { try request.validate() } catch { return reply(.invalidInput) }
+        if request.operation == .hook, let signal = request.hook { lastHookReceived[signal.source] = Date() }
         if request.operation == .status || request.operation == .diagnostics {
             if controller.hasSession { await controller.reconcile() } else { await controller.refreshWhileOff() }
             return reply(.success, diagnostics: request.operation == .diagnostics ? Array(diagnostics.entries.suffix(50)) : nil)
@@ -297,8 +396,12 @@ enum DurationChoice: String, CaseIterable, Identifiable {
                 let before = controller.generation
                 await controller.start(mode: mode, duration: .seconds(request.seconds!), policy: policy)
                 guard controller.phase == .active, controller.manualMode == mode, controller.generation >= before else { return reply(resultCode) }
-            case .arm: try controller.armWorkloads(); hookRouter.reset()
-            case .disarm: await controller.disarmWorkloads(); hookRouter.reset()
+            case .arm:
+                if !controller.integrationsArmed {
+                    try controller.armWorkloads(); hookRouter.reset(); lastHookReceived.removeAll()
+                    onStatusChange?()
+                }
+            case .disarm: await controller.disarmWorkloads(); hookRouter.reset(); onStatusChange?()
             case .taskStart, .taskEvent:
                 let options = WorkloadOptions(waitingGrace: waitingGrace, settlingInterval: 3, staleAfter: 60,
                                               maximumDuration: request.seconds ?? 28_800)

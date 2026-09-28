@@ -1,5 +1,14 @@
 # LidPilot implementation plan
 
+## Agent Tasks usability follow-up — September 29
+
+Implement the owner's menu-bar toggle, clear active task status, optional hiding
+while off, and native Codex connection setup. This is a 2.0.1 patch, retaining
+V2's experimental adapter and unchanged power/helper contracts. Implementation
+and focused review are complete; final native checks, signed publication,
+Homebrew update and scoped Xcode debug-artifact cleanup are in progress.
+See `VERIFICATION.md` for current evidence.
+
 ## Completed implementation and release — September 29, V1.1 + V2.0
 
 The authorized scope is developer tools and workload sessions from the updated

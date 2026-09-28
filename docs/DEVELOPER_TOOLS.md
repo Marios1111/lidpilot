@@ -6,8 +6,8 @@ V2.1 rules/schedules and V2.2 Shortcuts/URL automation are separate roadmap work
 
 ## Enable the CLI
 
-Open LidPilot, finish the welcome screen, then enable **Settings → Developer
-Tools → Allow local CLI control**. This permits programs running as your macOS
+Open LidPilot, finish the welcome screen, then enable **Settings → Command
+Line → Allow local CLI control**. This permits programs running as your macOS
 user to request the same actions as the app. The app must remain running.
 Closed-lid modes still require the signed helper's normal approval and a safe,
 open-lid starting state. The CLI never runs privileged commands.
@@ -79,6 +79,44 @@ Adapters are pinned to **Codex 0.154.0** and **Claude Code 2.1.112**. Their
 allowlisted event fixtures are tested; complete live G6 acceptance is not yet
 established. Check your installed version before opting in. Do not assume newer
 agent versions or the desktop app expose the same payloads.
+
+### Set up from the app (recommended)
+
+1. Open the menu bar's **Agent Tasks → Set Up…**. This opens the dedicated
+   **Settings → Agent Tasks** page directly.
+2. Click **Connect Codex**. LidPilot adds its handlers to `~/.codex/hooks.json`
+   and enables the existing same-user local control connection. No `PATH`, shell
+   profile, CLI symlink, agent permission, or trust setting is changed. Existing
+   hooks are preserved. For a custom `CODEX_HOME`, choose its folder under
+   **Configuration & compatibility** before connecting.
+3. Review and trust the hooks in Codex. New or changed non-managed hooks do not
+   run until Codex trusts them. If the desktop build has no hook-review UI, the
+   documented `/hooks` browser in Codex CLI can review the same configuration.
+   Start a new local turn after setup; do not assume an already-running turn
+   has adopted the new configuration.
+4. Switch **Agent Tasks** on in the menu bar before starting that turn. **On ·
+   waiting for first event** means monitoring is enabled, not that the Mac is
+   protected. A confirmed task shows **keeping Mac awake** and its source/state.
+
+**Hooks installed** is a configuration check, not a claim that Codex has trusted
+or delivered those hooks. Settings shows the last received event for the current
+monitoring period. The connection remains experimental until the complete live
+G6 checklist passes on the relevant desktop/CLI build. Remote and cloud tasks
+are not monitored by the local connection.
+
+**Remove Connection** removes only LidPilot's marked handlers. **Repair
+Connection** points them at the current app location and version. Both require
+LidPilot to be Off. If local control was disabled separately, **Enable Local
+Connection** restores it without rewriting hooks. Unreadable or partial
+configurations are reported instead of being called connected. Use **Refresh**
+after external edits. The app never automatically approves provider hooks.
+
+The agent switch releases only agent requests; the main **Turn Off All Requests**
+button also ends manual and command sessions. **Show Agent Tasks in the menu bar**
+can hide the controls while off; enabled monitoring always stays visible.
+Claude Code setup uses the same page under its disclosure row.
+
+### Command-line setup (optional)
 
 For an existing configuration directory, install only the integration you use:
 

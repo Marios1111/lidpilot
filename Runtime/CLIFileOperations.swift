@@ -3,6 +3,29 @@ import Darwin
 import LidPilotCore
 
 public enum CLIFileOperations {
+    public static func hookInstallation(at url: URL, source: WorkloadSource, executable: URL) throws -> HookConfiguration.Installation {
+        var info = stat()
+        guard lstat(url.path, &info) == 0 else {
+            if errno == ENOENT { return .missing }
+            throw ControlError.unsafePath
+        }
+        return try HookConfiguration.installation(readHooks(at: url, expected: info), source: source,
+            executable: executable.resolvingSymlinksInPath().path)
+    }
+
+    private static func readHooks(at url: URL, expected: stat) throws -> Data {
+        guard expected.st_mode & S_IFMT == S_IFREG, expected.st_uid == getuid(), expected.st_nlink == 1,
+              expected.st_mode & 0o022 == 0, expected.st_size <= 1_048_576 else { throw ControlError.unsafePath }
+        let fd = open(url.path, O_RDONLY | O_NOFOLLOW | O_CLOEXEC)
+        guard fd >= 0 else { throw ControlError.unsafePath }
+        defer { close(fd) }
+        var opened = stat()
+        guard fstat(fd, &opened) == 0, opened.st_ino == expected.st_ino, opened.st_dev == expected.st_dev else { throw ControlError.busy }
+        let data = try FileHandle(fileDescriptor: fd, closeOnDealloc: false).read(upToCount: 1_048_577) ?? Data()
+        guard data.count <= 1_048_576 else { throw ControlError.oversized }
+        return data
+    }
+
     public static func export(_ data: Data, to url: URL) throws {
         let fd = open(url.path, O_WRONLY | O_CREAT | O_EXCL | O_NOFOLLOW | O_CLOEXEC, 0o600)
         guard fd >= 0 else { throw ControlError.conflictError }
@@ -35,14 +58,7 @@ public enum CLIFileOperations {
         let exists = lstat(url.path, &original) == 0
         var prior: Data?
         if exists {
-            guard original.st_mode & S_IFMT == S_IFREG, original.st_uid == getuid(), original.st_nlink == 1,
-                  original.st_mode & 0o022 == 0, original.st_size <= 1_048_576 else { throw ControlError.unsafePath }
-            let fd = open(url.path, O_RDONLY | O_NOFOLLOW | O_CLOEXEC)
-            guard fd >= 0 else { throw ControlError.unsafePath }
-            defer { close(fd) }
-            let handle = FileHandle(fileDescriptor: fd, closeOnDealloc: false)
-            prior = try handle.read(upToCount: 1_048_577)
-            guard (prior?.count ?? 0) <= 1_048_576 else { throw ControlError.oversized }
+            prior = try readHooks(at: url, expected: original)
         }
         let replacement = try HookConfiguration.updated(prior, source: source, version: version,
             executable: executable.resolvingSymlinksInPath().path, install: install)

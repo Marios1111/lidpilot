@@ -3,15 +3,16 @@ import LidPilotCore
 import LidPilotRuntime
 
 enum SettingsSection: String, CaseIterable, Identifiable {
-    case general = "General", safety = "Safety", developer = "Developer Tools", shortcuts = "Shortcuts", helper = "Helper & Recovery", updates = "Updates", diagnostics = "Diagnostics"
+    case general = "General", safety = "Safety", agents = "Agent Tasks", developer = "Command Line", shortcuts = "Shortcuts", helper = "Helper & Recovery", updates = "Updates", diagnostics = "Diagnostics"
     var id: Self { self }
     var icon: String {
-        switch self { case .general: "slider.horizontal.3"; case .safety: "shield"; case .developer: "terminal"; case .shortcuts: "keyboard"; case .helper: "lock.shield"; case .updates: "arrow.triangle.2.circlepath"; case .diagnostics: "stethoscope" }
+        switch self { case .general: "slider.horizontal.3"; case .safety: "shield"; case .agents: "bolt.circle"; case .developer: "terminal"; case .shortcuts: "keyboard"; case .helper: "lock.shield"; case .updates: "arrow.triangle.2.circlepath"; case .diagnostics: "stethoscope" }
     }
     var detail: String {
         switch self {
         case .general: "Make room for the way you work."
         case .safety: "Your limits apply to every session and task."
+        case .agents: "Connect once. Control it from your menu bar."
         case .developer: "Local commands. Clear task boundaries."
         case .shortcuts: "Your most useful actions, one keystroke away."
         case .helper: "Understand what LidPilot can confirm."
@@ -68,6 +69,7 @@ struct SettingsView: View {
                     switch section {
                     case .general: general
                     case .safety: safety
+                    case .agents: AgentTasksSettings(model: model)
                     case .developer: developer
                     case .shortcuts: Section("Global shortcuts") { ShortcutSettingsView(shortcuts: model.shortcuts) }
                     case .helper: helper
@@ -82,6 +84,7 @@ struct SettingsView: View {
         .onAppear {
             if model.controller.phase == .recovery { section = .helper }
             Task { await model.controller.refreshWhileOff() }
+            model.refreshHookSetup()
         }
         .alert("Restore normal sleep policy?", isPresented: $model.showRecoveryConfirmation) {
             Button("Cancel", role: .cancel) {}
@@ -169,29 +172,10 @@ struct SettingsView: View {
                 Text("Creates a lidpilot link in a folder you choose. Existing files and shell settings are preserved.")
                     .font(.caption).foregroundStyle(.secondary)
             }
-            Section("Workload sessions") {
-                Toggle("Arm agent task hooks", isOn: Binding(get: { model.controller.integrationsArmed }, set: { model.armTasks($0) }))
-                    .disabled(!model.cliEnabled || model.controller.updateBarrier)
-                Picker("Task behavior", selection: $model.workloadMode) {
-                    ForEach(Mode.allCases, id: \.self) { Text($0.title).tag($0) }
-                }.disabled(model.controller.integrationsArmed || model.controller.hasSession)
-                Picker("Waiting grace", selection: $model.waitingGrace) {
-                    ForEach([30.0, 60, 120, 300, 600], id: \.self) { Text($0 < 60 ? "30 seconds" : "\(Int($0 / 60)) minutes").tag($0) }
-                }.disabled(model.controller.hasSession)
-                Picker("Missing-event limit", selection: $model.staleAfter) {
-                    ForEach([60.0, 300, 900, 1800], id: \.self) { Text("\(Int($0 / 60)) minutes").tag($0) }
-                }.disabled(model.controller.hasSession)
-                Text("Hooks start disarmed. Turn Off and safety pauses disarm them again. A quiet task is marked unknown when events go missing; it is never called finished.")
+            Section {
+                Text("For Codex and Claude Code, use Agent Tasks. You do not need to install a shell command for that connection.")
                     .font(.caption).foregroundStyle(.secondary)
-                Text("Agent turns settle for 3 seconds. Each task has an 8-hour maximum. Command wrappers send a heartbeat and expire after 60 seconds without one.")
-                    .font(.caption).foregroundStyle(.secondary)
-            }
-            Section("Adapters") {
-                Text("Codex 0.154.0 · Claude Code 2.1.112").font(.subheadline)
-                Text("Install or remove hooks with lidpilot hooks. Existing hooks are preserved. These adapters use lifecycle events; prompts, tool contents, paths, and transcripts are discarded. Compatibility is experimental: check your agent version before relying on unattended work.")
-                    .font(.caption).foregroundStyle(.secondary)
-                Text("Claude Code may keep protection until the missing-event limit because some turn events cannot be matched safely. Use a manual timer when you need a predictable end.")
-                    .font(.caption).foregroundStyle(.secondary)
+                Button("Open Agent Tasks") { section = .agents }
                 if let error = model.controlError { Text(error).font(.caption).foregroundStyle(.orange) }
             }
         }

@@ -1,5 +1,35 @@
 # LidPilot verification
 
+## Agent Tasks usability follow-up — September 29, 2026
+
+Candidate **2.0.1 (build 16)** follows released V2. The requested changes are a
+menu-bar agent switch, explicit monitoring/protection states, optional hiding
+while off, and native reversible Codex setup. The helper protocol, power policy,
+leases, recovery paths, and adapter event/version contract remain unchanged.
+
+Implementation and a bounded Sol High review are complete. The review corrected
+duplicate marked-handler detection and setup feedback placement. Package checks
+passed **94 Runtime + 34 Core** tests; **15 hostless app tests** passed. The
+review-corrected hook suite passed again. Native mock app/CLI integration passed
+IPC, overlapping requests, lifecycle fixtures, privacy, Off, exit status, TTY
+input/Ctrl-C, and reversible setup. The smoke check now reads the built bundle's
+version instead of assuming an old candidate number. A Pages self-test fixture
+also needed isolation from newer published release notes; production signature
+and latest-only directory checks remain intact.
+
+Final light/dark rendering, static checks and native interaction passed. The
+actual mock panel switch enabled monitoring without starting protection; a
+projected Codex event displayed one protected task. Switching it off preserved
+the manual timer. Set Up opened Agent Tasks directly. Hiding controls removed
+them while off, enabling monitoring restored them, and Turn Off All Requests
+cleared the mock session. The preview quit normally after verified Off. Signed
+packaging, public-byte verification and publication are in progress. No new
+physical power or paid agent session is claimed. The prior V2 hardware record
+applies to unchanged power/helper behavior; fresh performance, live desktop G6
+and VoiceOver evidence remain unmeasured. Codex's hook trust step is explicit
+and is never bypassed or written by LidPilot.
+
+
 ## V2 published artifacts — September 29, 2026
 
 Stable **2.0.0 (build 15)** is published at

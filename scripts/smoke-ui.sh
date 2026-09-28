@@ -37,7 +37,8 @@ except subprocess.TimeoutExpired:
 if result.returncode or 'Native mock views rendered; session ended Off.' not in result.stdout:
     raise SystemExit('Native mock smoke failed; see build/native-previews/smoke.log.')
 names = ['panel-off-light', 'panel-off-dark', 'panel-active', 'keep-screen-on', 'keep-mac-running', 'settings', 'welcome',
-         'panel-tasks-light', 'panel-tasks-dark', 'settings-developer', 'settings-developer-dark', 'settings-shortcuts', 'settings-updates', 'settings-diagnostics',
+         'panel-tasks-light', 'panel-tasks-dark', 'panel-agent-ready', 'panel-agent-visible-while-on', 'panel-agent-hidden',
+         'settings-agents', 'settings-agents-dark', 'settings-developer', 'settings-developer-dark', 'settings-shortcuts', 'settings-updates', 'settings-diagnostics',
          'product-off', 'product-follow-lid', 'product-keep-screen-on', 'product-keep-mac-running']
 if not all((output / (name + '.png')).is_file() for name in names):
     raise SystemExit('Native mock smoke is missing a rendered artifact.')

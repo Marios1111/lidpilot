@@ -94,6 +94,26 @@ import LidPilotCore
         #expect(c.effectiveMode == .smart)
     }
 
+    @Test func taskPresentationRequiresConfirmedProtectionAndReleasesExpiredWaitingGrace() async throws {
+        let (c, p, _, _) = setup()
+        try c.armWorkloads()
+        #expect(c.protectedWorkloads.isEmpty)
+        await c.start(mode: .display, duration: .seconds(300), policy: SafetyPolicy())
+        let options = WorkloadOptions(waitingGrace: 30)
+        try await c.handleWorkload(event(p, id: "codex", source: .codex), mode: .display, policy: SafetyPolicy(), options: options)
+        #expect(c.protectedWorkloads.count == 1)
+        try await c.handleWorkload(event(p, id: "codex", sequence: 2, state: .waiting, source: .codex), mode: .display, policy: SafetyPolicy(), options: options)
+        #expect(c.protectedWorkloads.first?.state == .waiting)
+        p.time += 31
+        // The label must stop claiming protection even before the next reconcile.
+        #expect(c.protectedWorkloads.isEmpty)
+        await c.reconcile()
+        #expect(c.phase == .active && c.manualMode == .display)
+        #expect(c.workloads.records.first?.state == .waiting)
+        await c.disarmWorkloads()
+        #expect(c.protectedWorkloads.isEmpty && c.manualMode == .display)
+    }
+
     @Test func safetyAndUpdateBarrierApplyToEveryRequest() async throws {
         let (c, p, a, _) = setup()
         try c.armWorkloads()

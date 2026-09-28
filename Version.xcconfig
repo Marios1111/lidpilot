@@ -1,7 +1,7 @@
 // Single source for the human-facing version and monotonically increasing
 // build number. Release automation validates both values before packaging.
-MARKETING_VERSION = 2.0.0
-CURRENT_PROJECT_VERSION = 15
+MARKETING_VERSION = 2.0.1
+CURRENT_PROJECT_VERSION = 16
 
 // The publisher supplies DEVELOPMENT_TEAM at build time. Never replace this
 // with a guessed team identifier.

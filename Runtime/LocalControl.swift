@@ -114,7 +114,7 @@ public enum ControlError: Error, LocalizedError, Equatable {
     public var errorDescription: String? {
         switch self {
         case .invalid: "Invalid or expired control request."
-        case .unavailable: "Open LidPilot and enable CLI control in Settings → Developer Tools."
+        case .unavailable: "Open LidPilot and connect your agent in Settings → Agent Tasks, or enable CLI control in Settings → Command Line."
         case .unsafePath: "The local control endpoint has unsafe ownership or permissions."
         case .busy: "Another LidPilot instance owns this control endpoint."
         case .oversized: "The local control message exceeds its size limit."

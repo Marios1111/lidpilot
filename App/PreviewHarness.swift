@@ -74,6 +74,8 @@ final class PreviewMachine: RuntimeClock, PowerSampling, SleepFlagControlling, R
         try data.write(to: folder.appendingPathComponent(name + ".png"), options: .atomic)
     }
     model.onboardingComplete = true
+    model.cliEnabled = false
+    model.showAgentControls = true
     model.selectedMode = .smart
     model.duration = .hour
     await model.controller.refreshWhileOff()
@@ -105,20 +107,49 @@ final class PreviewMachine: RuntimeClock, PowerSampling, SleepFlagControlling, R
             throw RuntimeFailure.unavailable("Product preview cleanup failed.")
         }
     }
+    model.cliEnabled = true
+    model.hookInstallations[.codex] = .installed
+    model.armTasks(true)
+    guard model.controller.integrationsArmed, model.controller.protectedWorkloads.isEmpty else {
+        throw RuntimeFailure.unavailable("Agent monitoring was not enabled independently of protection.")
+    }
+    try render(PilotPanel(model: model), name: "panel-agent-ready", width: 370)
+    model.showAgentControls = false
+    try render(PilotPanel(model: model), name: "panel-agent-visible-while-on", width: 370)
+    model.showAgentControls = true
     model.selectedMode = .display
     await model.controller.start(mode: .display, duration: .seconds(3600), policy: model.policy)
     try model.controller.armWorkloads()
     let task = WorkloadEvent(eventID: UUID().uuidString, source: .codex, adapterVersion: "0.154.0",
         sessionID: "preview", turnID: "turn", sequence: 1, timestamp: Date(), state: .working, exitCode: nil)
     try await model.controller.handleWorkload(task, mode: .closed, policy: model.policy, options: model.workloadOptions)
+    model.lastHookReceived[.codex] = Date()
     try render(PilotPanel(model: model), name: "panel-tasks-light", width: 370)
     try render(PilotPanel(model: model), name: "panel-tasks-dark", width: 370, scheme: .dark)
+    model.armTasks(false)
+    for _ in 0..<200 where model.changingAgentTasks { try await Task.sleep(for: .milliseconds(5)) }
+    guard !model.controller.integrationsArmed, model.controller.manualMode == .display,
+          model.controller.workloads.records.isEmpty else {
+        throw RuntimeFailure.unavailable("The agent switch must preserve the manual session.")
+    }
+    model.armTasks(true)
+    model.cliEnabled = false
+    for _ in 0..<200 where model.changingAgentTasks { try await Task.sleep(for: .milliseconds(5)) }
+    guard !model.controller.integrationsArmed else {
+        throw RuntimeFailure.unavailable("Disabling the connection must also turn off agent monitoring.")
+    }
     await model.controller.stop()
+    model.showAgentControls = false
+    try render(PilotPanel(model: model), name: "panel-agent-hidden", width: 370)
+    model.showAgentControls = true
+    model.cliEnabled = true
     try render(SettingsView(model: model), name: "settings", width: 706)
-    for section in [SettingsSection.developer, .shortcuts, .updates, .diagnostics] {
+    for section in [SettingsSection.agents, .developer, .shortcuts, .updates, .diagnostics] {
         try render(SettingsView(model: model, initialSection: section), name: "settings-" + String(describing: section), width: 706)
     }
     try render(SettingsView(model: model, initialSection: .developer), name: "settings-developer-dark", width: 706, scheme: .dark)
+    try render(SettingsView(model: model, initialSection: .agents), name: "settings-agents-dark", width: 706, scheme: .dark)
+    model.cliEnabled = false
     try render(WelcomeView(model: model), name: "welcome", width: 520)
     FileHandle.standardOutput.write(Data("Native mock views rendered; session ended Off.\n".utf8))
 }

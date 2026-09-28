@@ -53,6 +53,12 @@ public enum SessionPhase: String, Codable, Sendable {
 
     public var remaining: Double? { deadline?.remaining(at: clock.now()) }
     public var manualRemaining: Double? { manualDeadline?.remaining(at: clock.now()) }
+    /// Only confirmed, unexpired requests may be presented as keeping the Mac awake.
+    public var protectedWorkloads: [WorkloadRecord] {
+        guard phase == .active else { return [] }
+        let ids = Set(workloads.activeHolds(at: clock.now()).map(\.id))
+        return workloads.records.filter { ids.contains($0.id) }
+    }
     public var nextCheckDelay: Double {
         max(0.1, min(15, currentHolds().compactMap { $0.deadline.remaining(at: clock.now()) }.min() ?? 15))
     }
@@ -126,7 +132,7 @@ public enum SessionPhase: String, Codable, Sendable {
             $0.turnID == event.turnID && $0.taskID == event.taskID
         }
         guard event.source == .command ? (explicitStart || existing != nil) : integrationsArmed else {
-            throw RuntimeFailure.unavailable("Task hooks are disarmed. Arm them explicitly in Settings or with lidpilot tasks arm.")
+            throw RuntimeFailure.unavailable("Agent tasks are off. Turn them on in the menu bar or with lidpilot tasks arm.")
         }
         if event.state == .working && existing == nil {
             try preflight(mode: mode, policy: policy, requireOpenLid: mode.needsHelper)

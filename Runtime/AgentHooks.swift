@@ -134,6 +134,44 @@ public struct HookRouter: Sendable {
 public enum HookConfiguration {
     private static let marker = " # lidpilot-hook-v1"
 
+    public enum Installation: Equatable, Sendable {
+        case missing, installed, needsRepair
+    }
+
+    /// Configuration is not proof of delivery or provider trust. Require every
+    /// event to target this app before describing the installation as complete.
+    public static func installation(_ data: Data?, source: WorkloadSource, executable: String) throws -> Installation {
+        guard let data else { return .missing }
+        guard data.count <= 1_048_576,
+              let document = try JSONSerialization.jsonObject(with: data) as? [String: Any] else { throw ControlError.invalid }
+        guard let rawHooks = document["hooks"] else { return .missing }
+        guard let hooks = rawHooks as? [String: Any], let version = HookSignal.versions[source] else { throw ControlError.invalid }
+        let expected = command(source: source, version: version, executable: executable)
+        var found = false
+        var complete = true
+        for name in HookSignal.events(for: source) {
+            guard let rawGroups = hooks[name] else { complete = false; continue }
+            guard let groups = rawGroups as? [[String: Any]] else { throw ControlError.invalid }
+            var matches = false
+            var ownedCount = 0
+            for group in groups {
+                guard let entries = group["hooks"] as? [[String: Any]] else { throw ControlError.invalid }
+                let ours = entries.filter { isOurs($0, source: source) }
+                ownedCount += ours.count
+                found = found || !ours.isEmpty
+                if (group["matcher"] == nil || (group["matcher"] as? String) == ""),
+                   ours.contains(where: { $0["command"] as? String == expected }) { matches = true }
+            }
+            complete = complete && matches && ownedCount == 1
+        }
+        return complete ? .installed : (found ? .needsRepair : .missing)
+    }
+
+    private static func command(source: WorkloadSource, version: String, executable: String) -> String {
+        let quoted = "'" + executable.replacingOccurrences(of: "'", with: "'\\''") + "'"
+        return "\(quoted) hook \(source.rawValue) --adapter-version \(version)\(marker)"
+    }
+
     /// Returns replacement bytes so callers can preview/test edits and perform a
     /// guarded atomic save. Unrelated hook handlers and all other keys survive.
     public static func updated(_ data: Data?, source: WorkloadSource, version: String, executable: String, install: Bool) throws -> Data {
@@ -146,8 +184,7 @@ public enum HookConfiguration {
         } else { document = [:] }
         if let existing = document["hooks"], !(existing is [String: Any]) { throw ControlError.invalid }
         var hooks = document["hooks"] as? [String: Any] ?? [:]
-        let quoted = "'" + executable.replacingOccurrences(of: "'", with: "'\\''") + "'"
-        let command = "\(quoted) hook \(source.rawValue) --adapter-version \(version)\(marker)"
+        let command = command(source: source, version: version, executable: executable)
         for name in HookSignal.events(for: source) {
             if let existing = hooks[name], !(existing is [[String: Any]]) { throw ControlError.invalid }
             var groups = hooks[name] as? [[String: Any]] ?? []

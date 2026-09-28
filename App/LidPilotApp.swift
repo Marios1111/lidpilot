@@ -94,6 +94,7 @@ import LidPilotRuntime
             onWelcome: { [weak self] in self?.showWelcome() }))
         popover = panel
         model.openPanel = { [weak self] in self?.togglePanel() }
+        model.openAgentSettings = { [weak self] in self?.showSettings(section: .agents) }
         model.onStatusChange = { [weak self] in self?.refreshMenuBar() }
         refreshMenuBar()
     }
@@ -101,9 +102,10 @@ import LidPilotRuntime
     private func refreshMenuBar() {
         guard let model, let button = statusItem?.button else { return }
         let symbol = model.controller.hasSession ? "laptopcomputer.and.arrow.down" : "laptopcomputer"
-        button.image = NSImage(systemSymbolName: symbol, accessibilityDescription: "LidPilot, \(model.controller.phase.title)")
+        let agentState = model.controller.integrationsArmed ? "On" : "Off"
+        button.image = NSImage(systemSymbolName: symbol, accessibilityDescription: "LidPilot, \(model.menuBarStatus), Agent Tasks \(agentState)")
         button.image?.isTemplate = true
-        button.toolTip = "LidPilot · \(model.controller.phase.title)"
+        button.toolTip = "LidPilot · \(model.menuBarStatus)\nAgent Tasks: \(agentState)"
     }
 
     @objc private func togglePanel() {
@@ -117,7 +119,7 @@ import LidPilotRuntime
         }
     }
 
-    fileprivate func showSettings() {
+    fileprivate func showSettings(section: SettingsSection? = nil) {
         guard let model else { return }
         popover?.performClose(nil)
         if settingsWindow == nil {
@@ -128,6 +130,9 @@ import LidPilotRuntime
             window.delegate = self
             window.center()
             settingsWindow = window
+        }
+        if let section {
+            settingsWindow?.contentViewController = NSHostingController(rootView: SettingsView(model: model, initialSection: section))
         }
         NSApp.setActivationPolicy(.regular)
         settingsWindow?.makeKeyAndOrderFront(nil)
@@ -241,5 +246,11 @@ extension SessionPhase {
     }
     var color: Color {
         switch self { case .active: .green; case .paused, .unverified, .recovery: .orange; case .starting, .stopping, .updating: .accentColor; case .off: .secondary }
+    }
+}
+
+extension AppModel {
+    var menuBarStatus: String {
+        controller.integrationsArmed && !controller.hasSession && controller.phase == .off ? "Waiting for tasks" : controller.phase.title
     }
 }

@@ -5,6 +5,18 @@ on September 27, 2026; earlier RC sections retain their original checkpoint cont
 
 ## Unreleased
 
+## 2.0.1
+
+- Switch agent task protection on or off directly in the menu bar. See when
+  monitoring is waiting for events and which tasks are actually keeping the Mac
+  awake. Turning off agent tasks preserves manual sessions and command tasks.
+- Connect Codex from the new Agent Tasks settings page without installing a
+  shell command. Review installation state, the last received event, and the
+  separate Codex trust step; repair or remove only LidPilot's hooks.
+- Optionally hide agent controls while off. Active monitoring remains visible.
+- Separate advanced command-line controls and fix stale arming when local
+  control is disabled. Agent adapters remain experimental.
+
 ## 2.0.0
 
 Released September 29, 2026 — build 15, including the V1.1 developer tools

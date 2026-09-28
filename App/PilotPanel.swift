@@ -26,8 +26,8 @@ struct PilotPanel: View {
                 }
                 Spacer()
                 HStack(spacing: 5) {
-                    Circle().fill(model.controller.phase.color).frame(width: 5, height: 5)
-                    Text(model.controller.phase.title).font(.system(size: 10, weight: .medium))
+                    Circle().fill(model.controller.integrationsArmed && !model.controller.hasSession ? Color.accentColor : model.controller.phase.color).frame(width: 5, height: 5)
+                    Text(model.menuBarStatus).font(.system(size: 10, weight: .medium))
                 }
                 .padding(.horizontal, 9).padding(.vertical, 5)
                 .background(Color.primary.opacity(0.045), in: Capsule())
@@ -104,8 +104,26 @@ struct PilotPanel: View {
                 }
             }
 
-            if !model.controller.workloads.records.isEmpty || model.controller.integrationsArmed {
-                workloadSummary
+            if model.showAgentControls || model.controller.integrationsArmed {
+                VStack(alignment: .leading, spacing: 9) {
+                    AgentTaskControl(model: model)
+                    WorkloadActivityView(model: model)
+                    HStack {
+                        Text(agentConnections).font(.system(size: 10)).foregroundStyle(.secondary)
+                        Spacer(minLength: 6)
+                        Button(model.hookInstallations.values.contains(.installed) || !model.lastHookReceived.isEmpty ? "Manage…" : "Set Up…") { model.openAgentSettings?() }
+                            .font(.system(size: 11)).buttonStyle(.link)
+                            .accessibilityLabel("Set up and manage agent tasks")
+                    }
+                }
+                .padding(12)
+                .background(Color.primary.opacity(0.035), in: RoundedRectangle(cornerRadius: 10))
+            }
+            if model.controller.workloads.records.contains(where: { $0.source == .command }) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Label("COMMAND TASKS", systemImage: "terminal").font(.system(size: 10, weight: .semibold))
+                    WorkloadActivityView(model: model, agents: false)
+                }.padding(12).background(Color.primary.opacity(0.035), in: RoundedRectangle(cornerRadius: 10))
             }
 
             HStack(alignment: .top, spacing: 9) {
@@ -170,6 +188,7 @@ struct PilotPanel: View {
         }
         .onAppear {
             visible = true
+            model.refreshHookSetup()
             if !model.onboardingComplete && !model.isPreview { model.showOnboarding = true }
         }
         .onDisappear { visible = false }
@@ -210,35 +229,12 @@ struct PilotPanel: View {
         case .off: "power"
         }
     }
-    private var workloadSummary: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Label("TASKS", systemImage: "terminal").font(.system(size: 10, weight: .semibold))
-                Spacer()
-                Text(model.controller.integrationsArmed ? "Hooks armed" : "Hooks disarmed")
-                    .font(.system(size: 10)).foregroundStyle(.secondary)
-            }
-            ForEach(Array(model.controller.workloads.records.suffix(3))) { record in
-                HStack(spacing: 7) {
-                    Image(systemName: record.state == .working ? "circle.dotted" : (record.state == .unknown ? "questionmark.circle" : "circle"))
-                        .foregroundStyle(record.state == .unknown ? .orange : .secondary)
-                    Text(record.source == .command ? "Command" : (record.source == .codex ? "Codex" : "Claude Code"))
-                    if record.taskID != nil { Text("subtask").foregroundStyle(.secondary) }
-                    Spacer()
-                    Text(record.state == .waiting ? "Waiting for you" : record.state.rawValue.capitalized)
-                        .foregroundStyle(.secondary)
-                }.font(.system(size: 11)).accessibilityElement(children: .combine)
-            }
-            if model.controller.workloads.records.count > 3 {
-                Text("\(model.controller.workloads.records.count) tracked requests · full details in diagnostics")
-                    .font(.caption2).foregroundStyle(.secondary)
-            }
-            if let mode = model.controller.effectiveMode {
-                Text("Together: \(mode.title)").font(.caption2).foregroundStyle(.secondary)
-            }
-        }
-        .padding(12)
-        .background(Color.primary.opacity(0.035), in: RoundedRectangle(cornerRadius: 10))
+    private var agentConnections: String {
+        let connected = AppModel.agentSources.filter { model.hookInstallations[$0] == .installed }
+        if !connected.isEmpty { return "Hooks: " + connected.map(\.agentTitle).joined(separator: " · ") }
+        let received = AppModel.agentSources.filter { model.lastHookReceived[$0] != nil }
+        if !received.isEmpty { return received.map(\.agentTitle).joined(separator: " · ") + " · events received" }
+        return model.hookSetupErrors.isEmpty ? "No connection set up" : "Setup needs attention"
     }
     private var primarySymbol: String {
         model.controller.phase == .recovery ? "arrow.clockwise" :
