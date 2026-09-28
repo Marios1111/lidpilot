@@ -17,11 +17,17 @@ extension HelperManager: UpdateCoordinatorHelper {}
 @MainActor protocol UpdateCoordinatorModel: AnyObject {
     var controller: SessionController { get }
     var onboardingComplete: Bool { get }
+    var updateMethod: UpdateMethod { get }
     var updateHelper: any UpdateCoordinatorHelper { get }
     func refreshHelper()
 }
 
+extension UpdateCoordinatorModel {
+    var updateMethod: UpdateMethod { .sparkle }
+}
+
 extension AppModel: UpdateCoordinatorModel {
+    var updateMethod: UpdateMethod { updateOwnership.method }
     var updateHelper: any UpdateCoordinatorHelper { helper }
 }
 
@@ -41,6 +47,7 @@ extension AppModel: UpdateCoordinatorModel {
         "https://lidpilot.app/rc/appcast.xml",
         "https://marios1111.github.io/lidpilot/rc/appcast.xml"
     ]
+    private static let sparkleAutomaticPreferenceKey = "update.sparkle.automaticChecks"
 
     @ObservationIgnored private weak var model: (any UpdateCoordinatorModel)?
     @ObservationIgnored private var standard: SPUStandardUpdaterController?
@@ -52,6 +59,7 @@ extension AppModel: UpdateCoordinatorModel {
     private let build: String
     @ObservationIgnored private let lidIsOpen: @MainActor () -> Bool
     @ObservationIgnored private var cycleCleanupScheduled = false
+    @ObservationIgnored private var appliedUpdateMethod: UpdateMethod = .sparkle
 #if LIDPILOT_TESTING
     @ObservationIgnored private var testUpdater: (any UpdateCoordinatorTestUpdater)?
 #endif
@@ -60,36 +68,51 @@ extension AppModel: UpdateCoordinatorModel {
     private(set) var canCheck = false
     @ObservationIgnored private var capabilityObservation: NSKeyValueObservation?
 
+    var isBusy: Bool { preparing || prepared || installationCommitted || cycleCleanupScheduled }
+
     var automaticChecks: Bool {
         get {
-#if LIDPILOT_TESTING
-            if let testUpdater { return testUpdater.automaticallyChecksForUpdates }
-#endif
-            return standard?.updater.automaticallyChecksForUpdates ?? false
+            guard model?.updateMethod == .sparkle else { return false }
+            return updaterAutomaticChecks
         }
         set {
-#if LIDPILOT_TESTING
-            if let testUpdater {
-                testUpdater.automaticallyChecksForUpdates = newValue
-                return
-            }
-#endif
-            standard?.updater.automaticallyChecksForUpdates = newValue
+            guard model?.updateMethod == .sparkle else { return }
+            setUpdaterAutomaticChecks(newValue)
+            defaults.set(newValue, forKey: Self.sparkleAutomaticPreferenceKey)
         }
+    }
+
+    private var updaterAutomaticChecks: Bool {
+#if LIDPILOT_TESTING
+        if let testUpdater { return testUpdater.automaticallyChecksForUpdates }
+#endif
+        return standard?.updater.automaticallyChecksForUpdates ?? false
+    }
+
+    private func setUpdaterAutomaticChecks(_ enabled: Bool) {
+#if LIDPILOT_TESTING
+        if let testUpdater {
+            testUpdater.automaticallyChecksForUpdates = enabled
+            return
+        }
+#endif
+        standard?.updater.automaticallyChecksForUpdates = enabled
     }
 
     init(model: AppModel) {
         self.model = model
         defaults = .standard
+        appliedUpdateMethod = model.updateMethod
+        if model.updateMethod != .sparkle { status = Self.ownershipStatus(model.updateMethod) }
         build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "unconfigured"
         lidIsOpen = { SystemPowerSampler().sample().lid == .open }
         super.init()
         guard let configuration = HelperIdentity.applicationConfiguration() else {
-            status = "Updates are unavailable for this app identity."
+            if model.updateMethod == .sparkle { status = "Updates are unavailable for this app identity." }
             return
         }
         guard configuration.isProduction else {
-            status = "Updates are disabled in development builds."
+            if model.updateMethod == .sparkle { status = "Updates are disabled in development builds." }
             return
         }
         guard !model.isPreview, let feed = Bundle.main.object(forInfoDictionaryKey: "SUFeedURL") as? String,
@@ -101,17 +124,18 @@ extension AppModel: UpdateCoordinatorModel {
               Data(base64Encoded: key)?.count == 32, model.helper.signed else { return }
         configured = true
         standard = SPUStandardUpdaterController(startingUpdater: false, updaterDelegate: self, userDriverDelegate: nil)
+        restoreOrDisableAutomaticChecks(for: model.updateMethod)
         capabilityObservation = standard?.updater.observe(\.canCheckForUpdates, options: [.initial, .new]) { [weak self] _, _ in
             Task { @MainActor [weak self] in
                 guard let self else { return }
-                self.canCheck = self.standard?.updater.canCheckForUpdates ?? false
+                self.refreshCheckAvailability(preserveSparkleStatus: true)
             }
         }
         if defaults.string(forKey: "updatePendingBuild") != nil {
             model.controller.holdInterruptedUpdate()
         }
         standard?.startUpdater()
-        status = "Signed updates. Manual installation."
+        refreshCheckAvailability()
         Task { await reconcilePreviousUpdate() }
     }
 
@@ -124,9 +148,10 @@ extension AppModel: UpdateCoordinatorModel {
         self.testUpdater = updater
         self.lidIsOpen = lidIsOpen
         super.init()
+        appliedUpdateMethod = model.updateMethod
         configured = true
-        canCheck = updater.canCheckForUpdates
-        status = "Signed updates. Manual installation."
+        restoreOrDisableAutomaticChecks(for: model.updateMethod)
+        refreshCheckAvailability()
         if defaults.string(forKey: "updatePendingBuild") != nil {
             model.controller.holdInterruptedUpdate()
         }
@@ -160,6 +185,72 @@ extension AppModel: UpdateCoordinatorModel {
         return standard?.updater.canCheckForUpdates ?? false
     }
 
+    private func refreshCheckAvailability(preserveSparkleStatus: Bool = false) {
+        guard let model else {
+            canCheck = false
+            return
+        }
+        switch model.updateMethod {
+        case .sparkle:
+            canCheck = configured && updaterCanCheck
+            if configured && !preserveSparkleStatus { status = "Signed updates. Manual installation." }
+        case .homebrew:
+            canCheck = false
+            status = Self.ownershipStatus(.homebrew)
+        case .manual:
+            canCheck = false
+            status = Self.ownershipStatus(.manual)
+        }
+    }
+
+    private static func ownershipStatus(_ method: UpdateMethod) -> String {
+        switch method {
+        case .sparkle: "Signed updates. Manual installation."
+        case .homebrew: "Updates are managed by Homebrew. Sparkle checks are off."
+        case .manual: "Updates are managed manually. Sparkle checks are off."
+        }
+    }
+
+    private func restoreOrDisableAutomaticChecks(for method: UpdateMethod) {
+        guard method != .sparkle else {
+            if let saved = defaults.object(forKey: Self.sparkleAutomaticPreferenceKey) as? Bool {
+                setUpdaterAutomaticChecks(saved)
+            } else {
+                defaults.set(updaterAutomaticChecks, forKey: Self.sparkleAutomaticPreferenceKey)
+            }
+            return
+        }
+
+        if defaults.object(forKey: Self.sparkleAutomaticPreferenceKey) == nil {
+            defaults.set(updaterAutomaticChecks, forKey: Self.sparkleAutomaticPreferenceKey)
+        }
+        setUpdaterAutomaticChecks(false)
+    }
+
+    /// Reapplies ownership without replacing the existing Sparkle updater instance.
+    /// Call after the user selects a method and only when no update cycle is active.
+    @discardableResult
+    func refreshUpdateOwnership() -> Bool {
+        guard let model else { return false }
+        let method = model.updateMethod
+        guard method != appliedUpdateMethod else {
+            refreshCheckAvailability()
+            return true
+        }
+        guard !isBusy else {
+            status = "Finish or cancel the current update activity before changing update ownership."
+            return false
+        }
+
+        if appliedUpdateMethod == .sparkle && method != .sparkle {
+            defaults.set(updaterAutomaticChecks, forKey: Self.sparkleAutomaticPreferenceKey)
+        }
+        restoreOrDisableAutomaticChecks(for: method)
+        appliedUpdateMethod = method
+        refreshCheckAvailability()
+        return true
+    }
+
     private func checkForUpdates() {
 #if LIDPILOT_TESTING
         if let testUpdater {
@@ -171,7 +262,12 @@ extension AppModel: UpdateCoordinatorModel {
     }
 
     func check() {
-        guard configured, let model, !preparing, !installationCommitted, updaterCanCheck else { return }
+        guard let model else { return }
+        guard model.updateMethod == .sparkle else {
+            refreshCheckAvailability()
+            return
+        }
+        guard configured, !preparing, !installationCommitted, updaterCanCheck else { return }
         // Sparkle can show a synchronous error alert after shouldProceed rejects an update.
         // Its modal loop can delay our assertion renewal task until the alert is dismissed.
         guard !model.controller.hasSession else {
@@ -209,6 +305,10 @@ extension AppModel: UpdateCoordinatorModel {
     }
 
     private func authorizeUpdateCheck(_ updateCheck: SPUUpdateCheck) throws {
+        guard model?.updateMethod == .sparkle else {
+            refreshCheckAvailability()
+            throw updateError("Sparkle is not the selected update method.")
+        }
         guard model?.onboardingComplete == true else {
             throw updateError("Finish the welcome screen before checking for updates.")
         }
@@ -218,7 +318,12 @@ extension AppModel: UpdateCoordinatorModel {
     }
 
     func updater(_ updater: SPUUpdater, shouldProceedWithUpdate updateItem: SUAppcastItem, updateCheck: SPUUpdateCheck) throws {
-        guard let model, prepared, model.controller.updateBarrier, !model.controller.hasSession,
+        guard let model else { throw updateError("LidPilot is unavailable for this update.") }
+        guard model.updateMethod == .sparkle else {
+            refreshCheckAvailability()
+            throw updateError("Sparkle is not the selected update method.")
+        }
+        guard prepared, model.controller.updateBarrier, !model.controller.hasSession,
               model.controller.assertions == .off, lidIsOpen(),
               model.updateHelper.status == .notRegistered || model.updateHelper.status == .notFound else {
             status = "An update is available. Turn LidPilot Off, then choose Check for Updates to install."
@@ -231,6 +336,10 @@ extension AppModel: UpdateCoordinatorModel {
     }
 
     private func commitInstallation() {
+        guard model?.updateMethod == .sparkle else {
+            refreshCheckAvailability()
+            return
+        }
         // The pre-download gate already holds the barrier and the helper has been unregistered.
         installationCommitted = true
         status = "Update ready. LidPilot will restart Off."
@@ -272,7 +381,8 @@ extension AppModel: UpdateCoordinatorModel {
     }
 
     var canTerminate: Bool {
-        guard let model, model.controller.updateBarrier else { return true }
+        guard let model, model.updateMethod == .sparkle else { return false }
+        guard model.controller.updateBarrier else { return true }
         return prepared && !model.controller.hasSession && model.controller.assertions == .off &&
             lidIsOpen() &&
             (model.updateHelper.status == .notRegistered || model.updateHelper.status == .notFound)
@@ -286,6 +396,10 @@ extension AppModel: UpdateCoordinatorModel {
             return
         }
         if previous == build {
+            if model.updateMethod != .sparkle {
+                await finishPreparation(error: "The interrupted Sparkle update was cleaned up because updates are managed by \(model.updateMethod.title).")
+                return
+            }
             // An interrupted staged update must be resolved before new sessions are permitted.
             model.controller.holdInterruptedUpdate()
             status = "A previous update was interrupted. Choose Check for Updates to finish it."
@@ -310,7 +424,13 @@ extension AppModel: UpdateCoordinatorModel {
         }
         model.controller.endUpdate(error: error)
         await model.controller.refreshWhileOff()
-        status = error ?? (restoreHelper ? "Update finished. Approve or repair the helper in Settings." : "Signed updates. Manual installation.")
+        if let error {
+            status = error
+        } else if restoreHelper {
+            status = "Update finished. Approve or repair the helper in Settings."
+        } else {
+            refreshCheckAvailability()
+        }
     }
 
     private func updateError(_ message: String) -> NSError {

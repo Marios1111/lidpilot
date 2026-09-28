@@ -45,7 +45,7 @@ final class WireTests: CoreTestCase {
         XCTAssertThrowsError(try zeroGeneration.validate())
 
         var wrongProtocol = valid
-        wrongProtocol.protocolVersion = 2
+        wrongProtocol.protocolVersion = 3
         XCTAssertThrowsError(try wrongProtocol.validate())
 
         var invalidPolicy = valid

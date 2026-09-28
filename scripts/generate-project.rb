@@ -20,6 +20,8 @@ DEVELOPMENT_HELPER_IDENTIFIER = "com.lidpilot.app.dev.helper"
 APP_TEST_IDENTIFIER = "com.lidpilot.app.tests"
 APP_TEST_SOURCES = [
   "App/UpdateCoordinator.swift",
+  "App/UpdateOwnership.swift",
+  "App/GlobalShortcuts.swift",
   "App/HelperManager.swift",
   "App/AppModel.swift",
   "App/DiagnosticsStore.swift",
@@ -171,9 +173,15 @@ def project_invariants(project)
   targets = project.targets.to_h { |target| [target.name, target] }
   app = targets["LidPilot"]
   helper = targets["LidPilotHelper"]
+  cli = targets["LidPilotCLI"]
   app_tests = targets["LidPilotAppTests"]
   raise "missing LidPilot application target" unless app
   raise "missing LidPilotHelper tool target" unless helper
+  raise "missing lidpilot command-line tool" unless cli && cli.product_type == "com.apple.product-type.tool" && cli.product_reference.path == "lidpilot-cli"
+  cli_phase = app&.copy_files_build_phases&.find { |phase| phase.name == "Embed lidpilot CLI" }
+  raise "CLI must be embedded in Contents/MacOS" unless cli_phase && cli_phase.dst_path == "Contents/MacOS" && cli_phase.dst_subfolder_spec == "1"
+  raise "embedded CLI must be signed" unless cli_phase.files.any? { |file| file.file_ref == cli.product_reference && file.settings&.fetch("ATTRIBUTES", [])&.include?("CodeSignOnCopy") }
+  raise "CLI source set is stale" unless cli.source_build_phase.files_references.map(&:path).sort == relative_files("CLI", ".swift").sort
   raise "missing hostless LidPilotAppTests bundle target" unless app_tests
   raise "LidPilotAppTests is not a unit-test bundle" unless app_tests.product_type == "com.apple.product-type.bundle.unit-test"
   app_tests.build_configurations.each do |config|
@@ -300,8 +308,14 @@ def generate
 
   app = project.new_target(:application, "LidPilot", :osx, "15.0")
   helper = project.new_target(:tool, "LidPilotHelper", :osx, "15.0")
+  cli = project.new_target(:tool, "LidPilotCLI", :osx, "15.0")
   app_tests = project.new_target(:unit_test_bundle, "LidPilotAppTests", :osx, "15.0")
   helper.product_type = "com.apple.product-type.tool"
+  cli.product_type = "com.apple.product-type.tool"
+  # The embedded filename must differ beyond case from the app's LidPilot
+  # executable on ordinary case-insensitive APFS volumes.
+  cli.product_reference.path = "lidpilot-cli"
+  cli.product_reference.name = "lidpilot-cli"
   app.product_reference.name = "LidPilot.app"
   helper.product_reference.name = "LidPilotHelper"
   app_tests.product_reference.name = "LidPilotAppTests.xctest"
@@ -313,9 +327,19 @@ def generate
   configure_target_settings(app, "Config/App-Info.plist")
   configure_target_settings(helper, "Config/Helper-Info.plist", helper: true)
   configure_app_test_target(app_tests)
+  cli.build_configurations.each do |config|
+    configure_common_settings(config, release: config.name == "Release")
+    config.base_configuration_reference = xcconfig_reference
+    config.build_settings["PRODUCT_BUNDLE_IDENTIFIER"] = IDENTITIES.fetch(config.name).fetch("app") + ".cli"
+    config.build_settings["PRODUCT_NAME"] = "lidpilot-cli"
+    config.build_settings["SWIFT_VERSION"] = "6.0"
+    config.build_settings["SWIFT_ACTIVE_COMPILATION_CONDITIONS"] = config.name == "Debug" ? "DEBUG" : ""
+    config.build_settings["SKIP_INSTALL"] = "YES"
+  end
 
   add_group_files(project, app, "App", "App", ".swift")
   add_group_files(project, helper, "Helper", "Helper", ".swift")
+  add_group_files(project, cli, "CLI", "CLI", ".swift")
   app_test_group = project.main_group.find_subpath("AppTests", true)
   app_test_group.name = "AppTests"
   app_references = app.source_build_phase.files_references.to_h { |reference| [reference.path, reference] }
@@ -329,7 +353,7 @@ def generate
 
   root_package = add_package_reference(project, ".")
   core_package = add_package_reference(project, "Core")
-  [app, helper].each do |target|
+  [app, helper, cli].each do |target|
     add_package_product(target, root_package, "LidPilotRuntime")
     add_package_product(target, core_package, "LidPilotCore")
   end
@@ -350,6 +374,13 @@ def generate
   # proxy, then run the normal generator again after the dependency exists.
   project.predictabilize_uuids
   app.add_dependency(helper)
+  app.add_dependency(cli)
+  embed_cli = project.new(Xcodeproj::Project::Object::PBXCopyFilesBuildPhase)
+  embed_cli.name = "Embed lidpilot CLI"
+  embed_cli.dst_subfolder_spec = "1"
+  embed_cli.dst_path = "Contents/MacOS"
+  app.build_phases << embed_cli
+  add_copy_file(project, embed_cli, cli.product_reference, ["CodeSignOnCopy"])
   embed_helper = project.new(Xcodeproj::Project::Object::PBXCopyFilesBuildPhase)
   embed_helper.name = "Embed LidPilotHelper"
   embed_helper.dst_subfolder_spec = "1"
@@ -379,6 +410,7 @@ def generate
   scheme = Xcodeproj::XCScheme.new
   scheme.configure_with_targets(app, app_tests)
   scheme.add_build_target(helper)
+  scheme.add_build_target(cli)
   PROJECT_PATH.mkpath
   scheme.save_as(PROJECT_RELATIVE_PATH.to_s, "LidPilot", true)
 
@@ -422,7 +454,7 @@ def check
   raise "project is missing expected settings: #{missing.join(", ")}" unless missing.empty?
   expected_app_sources = relative_files("App", ".swift")
   expected_helper_sources = relative_files("Helper", ".swift")
-  source_fragments = (expected_app_sources + expected_helper_sources + APP_TEST_SOURCES)
+  source_fragments = (expected_app_sources + expected_helper_sources + relative_files("CLI", ".swift") + APP_TEST_SOURCES)
   missing_sources = source_fragments.reject { |source| pbx.include?(source) }
   raise "project is missing source references: #{missing_sources.join(", ")}" unless missing_sources.empty?
   config_inputs = [

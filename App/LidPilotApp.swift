@@ -13,54 +13,40 @@ import LidPilotRuntime
         delegate.model = model
     }
     var body: some Scene {
-        MenuBarExtra {
-            PilotPanel(model: model)
-                .onAppear { delegate.model = model; model.refreshHelper() }
-        } label: {
-            Image(systemName: model.controller.hasSession ? "laptopcomputer.and.arrow.down" : "laptopcomputer")
-                .accessibilityLabel("LidPilot, \(model.controller.phase.rawValue)")
-        }
-        .menuBarExtraStyle(.window)
-
         #if DEBUG
         Window("LidPilot · UI Preview", id: "ui-preview") {
-            if model.isPreview { PilotPanel(model: model).onAppear { delegate.model = model } }
+            if model.isPreview {
+                PilotPanel(model: model, onSettings: { delegate.showSettings() }, onWelcome: { delegate.showWelcome() })
+                    .onAppear { delegate.model = model }
+            }
         }
         .defaultLaunchBehavior(model.isPreview ? .presented : .suppressed)
         .windowResizability(.contentSize)
         .defaultPosition(.center)
         #endif
 
-        Window("LidPilot Settings", id: "settings") {
-            SettingsView(model: model)
-                .onAppear {
-                    delegate.model = model
-                    model.refreshHelper()
-                    NSApp.setActivationPolicy(.regular)
-                    NSApp.activate(ignoringOtherApps: true)
+        Settings { SettingsView(model: model) }
+            .commands {
+                CommandGroup(replacing: .appSettings) {
+                    Button("Settings…") { delegate.showSettings() }.keyboardShortcut(",", modifiers: .command)
                 }
-                .onDisappear { NSApp.setActivationPolicy(.accessory) }
-        }
-        .defaultLaunchBehavior(.suppressed)
-        .defaultSize(width: 640, height: 520)
-        .windowResizability(.contentSize)
+            }
 
-        Window("Welcome to LidPilot", id: "welcome") {
-            WelcomeView(model: model).onAppear { delegate.model = model }
-        }
-        .windowResizability(.contentSize)
-        .defaultLaunchBehavior(.suppressed)
-        .defaultSize(width: 520, height: 440)
     }
 }
 
-@MainActor final class AppDelegate: NSObject, NSApplicationDelegate {
+@MainActor final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate {
     weak var model: AppModel?
     private var terminationRequested = false
     private var cleanupConfirmed = false
+    private var statusItem: NSStatusItem?
+    private var popover: NSPopover?
+    private var settingsWindow: NSWindow?
+    private var welcomeWindow: NSWindow?
     private var iconAppearanceObservation: NSKeyValueObservation?
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
+        installMenuBar()
         // The center keeps its delegate weakly. SwiftUI's application adaptor
         // retains this delegate for the lifetime of the process.
         if model?.isPreview != true {
@@ -93,6 +79,86 @@ import LidPilotRuntime
         }
         #endif
     }
+    private func installMenuBar() {
+        guard let model else { return }
+        let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        statusItem = item
+        item.button?.target = self
+        item.button?.action = #selector(togglePanel)
+        let panel = NSPopover()
+        panel.behavior = .transient
+        panel.contentViewController = NSHostingController(rootView: PilotPanel(model: model,
+            onSettings: { [weak self] in self?.showSettings() },
+            onWelcome: { [weak self] in self?.showWelcome() }))
+        popover = panel
+        model.openPanel = { [weak self] in self?.togglePanel() }
+        model.onStatusChange = { [weak self] in self?.refreshMenuBar() }
+        refreshMenuBar()
+    }
+
+    private func refreshMenuBar() {
+        guard let model, let button = statusItem?.button else { return }
+        let symbol = model.controller.hasSession ? "laptopcomputer.and.arrow.down" : "laptopcomputer"
+        button.image = NSImage(systemSymbolName: symbol, accessibilityDescription: "LidPilot, \(model.controller.phase.title)")
+        button.image?.isTemplate = true
+        button.toolTip = "LidPilot · \(model.controller.phase.title)"
+    }
+
+    @objc private func togglePanel() {
+        guard let popover, let button = statusItem?.button else { return }
+        if popover.isShown { popover.performClose(nil) }
+        else {
+            model?.refreshHelper()
+            NSApp.activate(ignoringOtherApps: true)
+            popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
+            popover.contentViewController?.view.window?.makeKey()
+        }
+    }
+
+    fileprivate func showSettings() {
+        guard let model else { return }
+        popover?.performClose(nil)
+        if settingsWindow == nil {
+            let window = NSWindow(contentViewController: NSHostingController(rootView: SettingsView(model: model)))
+            window.title = "LidPilot Settings"
+            window.styleMask = [.titled, .closable, .miniaturizable]
+            window.isReleasedWhenClosed = false
+            window.delegate = self
+            window.center()
+            settingsWindow = window
+        }
+        NSApp.setActivationPolicy(.regular)
+        settingsWindow?.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+    }
+
+    fileprivate func showWelcome() {
+        guard let model else { return }
+        popover?.performClose(nil)
+        if welcomeWindow == nil {
+            let view = WelcomeView(model: model, onDismiss: { [weak self] in self?.welcomeWindow?.close() })
+            let window = NSWindow(contentViewController: NSHostingController(rootView: view))
+            window.title = "Welcome to LidPilot"
+            window.styleMask = [.titled, .closable]
+            window.isReleasedWhenClosed = false
+            window.delegate = self
+            window.center()
+            welcomeWindow = window
+        }
+        NSApp.setActivationPolicy(.regular)
+        welcomeWindow?.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
+    }
+
+    func windowWillClose(_ notification: Notification) {
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            if self.settingsWindow?.isVisible != true && self.welcomeWindow?.isVisible != true {
+                NSApp.setActivationPolicy(.accessory)
+            }
+        }
+    }
+
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         if cleanupConfirmed { return .terminateNow }
         guard let model else { return .terminateNow }

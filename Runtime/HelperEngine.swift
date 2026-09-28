@@ -77,6 +77,10 @@ public final class HelperEngine {
                 try acquire(request, client: client)
             case .renew:
                 try renew(request, client: client)
+            case .replace:
+                guard request.generation > previous else { throw failure("Replayed replacement rejected.") }
+                try replace(request, client: client)
+                lastGeneration[client] = request.generation
             case .release:
                 guard lease == nil || lease?.client == client else { throw failure("Another client owns the lease.") }
                 if let lease {
@@ -235,6 +239,34 @@ public final class HelperEngine {
             do { try restore() } catch { throw failure("Activation failed and cleanup remains unverified.") }
             throw activationError
         }
+    }
+
+    /// Reconcile the authenticated app's overlapping requests without dropping an
+    /// existing closed-lid lease. This never enables the global setting: expiry,
+    /// lost ownership, safety or a different client requires a fresh open-lid start.
+    private func replace(_ request: WireRequest, client: UUID) throws {
+        guard let current = lease, current.client == client, current.session == request.sessionID,
+              request.generation > current.generation, owns, !recoveryPending,
+              let deadline = request.deadline, let policy = request.policy, let mode = request.mode else {
+            throw failure("An active owned lease is required to replace its requests.")
+        }
+        let flag = try readObserved("replace_verify")
+        let snapshot = sampler.sample(flag: flag)
+        let now = clock.now()
+        guard deadline.bootID == now.bootID, !deadline.isExpired(at: now),
+              now.continuousSeconds < current.expires else {
+            try restore()
+            throw failure("The session deadline has passed.")
+        }
+        guard flag == .on,
+              policy.evaluate(snapshot: snapshot, mode: mode, clock: now) == nil else {
+            try restore()
+            throw failure("The replacement failed its safety check.")
+        }
+        lease = Lease(client: client, session: current.session, generation: request.generation,
+                      deadline: deadline, policy: policy, mode: mode,
+                      expires: min(now.continuousSeconds + 60, now.continuousSeconds + (deadline.remaining(at: now) ?? 60)))
+        lastMessage = "Combined requests verified; physical panel state is not measured."
     }
 
     private func renew(_ request: WireRequest, client: UUID) throws {

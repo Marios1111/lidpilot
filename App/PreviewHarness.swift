@@ -24,7 +24,7 @@ final class PreviewMachine: RuntimeClock, PowerSampling, SleepFlagControlling, R
 
 @MainActor final class PreviewAssertions: PowerAssertions {
     private var state = AssertionState.off
-    func apply(system: Bool, display: Bool, timeout: Double) throws -> AssertionState {
+    func apply(system: Bool, display: Bool, timeout: Double, displayTimeout: Double) throws -> AssertionState {
         state = AssertionState(system: system ? .on : .off, display: display ? .on : .off)
         return state
     }
@@ -105,7 +105,20 @@ final class PreviewMachine: RuntimeClock, PowerSampling, SleepFlagControlling, R
             throw RuntimeFailure.unavailable("Product preview cleanup failed.")
         }
     }
-    try render(SettingsView(model: model), name: "settings", width: 650)
+    model.selectedMode = .display
+    await model.controller.start(mode: .display, duration: .seconds(3600), policy: model.policy)
+    try model.controller.armWorkloads()
+    let task = WorkloadEvent(eventID: UUID().uuidString, source: .codex, adapterVersion: "0.154.0",
+        sessionID: "preview", turnID: "turn", sequence: 1, timestamp: Date(), state: .working, exitCode: nil)
+    try await model.controller.handleWorkload(task, mode: .closed, policy: model.policy, options: model.workloadOptions)
+    try render(PilotPanel(model: model), name: "panel-tasks-light", width: 370)
+    try render(PilotPanel(model: model), name: "panel-tasks-dark", width: 370, scheme: .dark)
+    await model.controller.stop()
+    try render(SettingsView(model: model), name: "settings", width: 706)
+    for section in [SettingsSection.developer, .shortcuts, .updates, .diagnostics] {
+        try render(SettingsView(model: model, initialSection: section), name: "settings-" + String(describing: section), width: 706)
+    }
+    try render(SettingsView(model: model, initialSection: .developer), name: "settings-developer-dark", width: 706, scheme: .dark)
     try render(WelcomeView(model: model), name: "welcome", width: 520)
     FileHandle.standardOutput.write(Data("Native mock views rendered; session ended Off.\n".utf8))
 }

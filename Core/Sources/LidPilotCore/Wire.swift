@@ -4,6 +4,7 @@ public enum WireOperation: String, Codable, CaseIterable, Sendable {
     case inspect
     case acquire
     case renew
+    case replace
     case release
     case recover
 }
@@ -24,7 +25,7 @@ public enum WireCodecError: Error, Equatable, Sendable {
 }
 
 public struct WireRequest: Codable, Equatable, Sendable {
-    public static let protocolVersion = 1
+    public static let protocolVersion = 2
     public static let maximumEncodedSize = 16 * 1024
 
     public var protocolVersion: Int
@@ -62,7 +63,7 @@ public struct WireRequest: Codable, Equatable, Sendable {
         }
 
         switch operation {
-        case .acquire:
+        case .acquire, .replace:
             guard let deadline, let policy, let mode else {
                 throw WireValidationError.payloadRequired(operation)
             }
@@ -177,7 +178,7 @@ public struct HelperHealth: Codable, Equatable, Sendable {
 }
 
 public struct WireReply: Codable, Equatable, Sendable {
-    public static let protocolVersion = 1
+    public static let protocolVersion = WireRequest.protocolVersion
     public static let maximumEncodedSize = 16 * 1024
 
     public var protocolVersion: Int

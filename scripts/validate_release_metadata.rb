@@ -233,6 +233,9 @@ def validate_bundle(bundle, version, build, team, feed_url)
   helper = File.join(bundle, "Contents", "Library", "HelperTools", "LidPilotHelper")
   require_regular_file(helper, "embedded helper")
   fail_validation("embedded helper is not executable") unless File.executable?(helper)
+  if Gem::Version.new(version.to_s) >= Gem::Version.new("2.0.0")
+    require_executable_file(File.join(bundle, "Contents", "MacOS", "lidpilot-cli"), "embedded CLI")
+  end
   daemon = File.join(bundle, "Contents", "Library", "LaunchDaemons", "com.lidpilot.app.helper.plist")
   daemon_info = read_plist(daemon, "embedded LaunchDaemon plist")
   fail_validation("LaunchDaemon label is wrong") unless daemon_info["Label"] == "com.lidpilot.app.helper"
@@ -382,6 +385,10 @@ def write_fixture_bundle(bundle, options)
   FileUtils.mkdir_p(File.dirname(helper))
   File.write(helper, "fixture helper")
   FileUtils.chmod(0o755, helper)
+  cli = File.join(contents, "MacOS", "lidpilot-cli")
+  FileUtils.mkdir_p(File.dirname(cli))
+  File.write(cli, "fixture CLI")
+  FileUtils.chmod(0o755, cli)
 
   write_fixture_plist(File.join(contents, "Library", "LaunchDaemons", "com.lidpilot.app.helper.plist"), {
     "Label" => "com.lidpilot.app.helper",

@@ -6,6 +6,95 @@ import LidPilotCore
 import LidPilotRuntime
 
 @MainActor final class UpdateCoordinatorTests: XCTestCase {
+    func testShortcutsHaveNoDefaultsAndPreserveAssignmentsOnConflicts() throws {
+        let suite = "com.lidpilot.ShortcutTests.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let shortcuts = GlobalShortcuts(defaults: defaults, enabled: false) { _ in XCTFail("No shortcut should run in this test.") }
+        XCTAssertTrue(shortcuts.bindings.isEmpty)
+        XCTAssertFalse(shortcuts.setShortcut(for: .openPanel, keyCode: 40, modifiers: [.command], keyLabel: "k"))
+        XCTAssertTrue(shortcuts.setShortcut(for: .openPanel, keyCode: 40, modifiers: [.command, .option], keyLabel: "k"))
+        XCTAssertFalse(shortcuts.setShortcut(for: .toggleSession, keyCode: 40, modifiers: [.command, .option], keyLabel: "k"))
+        let restored = GlobalShortcuts(defaults: defaults, enabled: false) { _ in }
+        XCTAssertEqual(restored.shortcut(for: .openPanel), shortcuts.shortcut(for: .openPanel))
+        restored.clearShortcut(for: .openPanel)
+        XCTAssertTrue(GlobalShortcuts(defaults: defaults, enabled: false) { _ in }.bindings.isEmpty)
+    }
+
+    func testHomebrewOwnershipDisablesSparkleAndRestoresPreferenceWhenSelectedAgain() throws {
+        let fixture = try makeFixture(build: "100", updateMethod: .homebrew)
+        defer { fixture.cleanupDefaults() }
+
+        XCTAssertFalse(fixture.updater.automaticallyChecksForUpdates)
+        XCTAssertFalse(fixture.coordinator.automaticChecks)
+        XCTAssertFalse(fixture.coordinator.canCheck)
+        XCTAssertTrue(fixture.coordinator.status.contains("Homebrew"))
+        XCTAssertThrowsError(try fixture.coordinator.authorizeUpdateCheckForTesting(.updatesInBackground))
+
+        fixture.coordinator.check()
+        XCTAssertEqual(fixture.updater.checkCount, 0)
+        XCTAssertEqual(fixture.helper.unregisterCount, 0)
+
+        fixture.model.updateMethod = .sparkle
+        XCTAssertTrue(fixture.coordinator.refreshUpdateOwnership())
+        XCTAssertTrue(fixture.updater.automaticallyChecksForUpdates)
+        XCTAssertTrue(fixture.coordinator.canCheck)
+    }
+
+    func testInstallationCallbackCannotCommitAfterOwnershipChanges() async throws {
+        let fixture = try makeFixture(build: "100", helperStatus: .enabled)
+        defer { fixture.cleanupDefaults() }
+        fixture.coordinator.check()
+        let updateCheckStarted = await waitUntil { fixture.updater.checkCount == 1 }
+        XCTAssertTrue(updateCheckStarted)
+
+        fixture.model.updateMethod = .manual
+        fixture.coordinator.commitInstallationForTesting()
+        fixture.coordinator.finishUpdateCycleForTesting(error: nil)
+        await fixture.coordinator.waitForUpdateCycleCleanupForTesting()
+
+        XCTAssertTrue(fixture.helper.enabled)
+        XCTAssertFalse(fixture.model.controller.updateBarrier)
+        XCTAssertNil(fixture.defaults.object(forKey: "updatePendingBuild"))
+        XCTAssertFalse(fixture.coordinator.canCheck)
+        XCTAssertTrue(fixture.coordinator.status.contains("manually"))
+    }
+
+    func testSameBuildInterruptedUpdateCleansUpAfterSwitchToHomebrew() async throws {
+        let fixture = try makeFixture(build: "100", pendingBuild: "100", restoreHelper: true,
+                                      helperStatus: .notRegistered, updateMethod: .homebrew)
+        defer { fixture.cleanupDefaults() }
+        XCTAssertTrue(fixture.model.controller.updateBarrier)
+
+        await fixture.coordinator.reconcilePreviousUpdateForTesting()
+
+        XCTAssertTrue(fixture.helper.enabled)
+        XCTAssertNil(fixture.defaults.object(forKey: "updatePendingBuild"))
+        XCTAssertNil(fixture.defaults.object(forKey: "updateRestoreHelper"))
+        XCTAssertFalse(fixture.model.controller.updateBarrier)
+        XCTAssertFalse(fixture.coordinator.canCheck)
+    }
+
+    func testUpdateOwnershipUsesResolvedHomebrewPathAsAutomaticHint() throws {
+        let suite = "com.lidpilot.UpdateOwnershipTests.\(UUID().uuidString)"
+        guard let defaults = UserDefaults(suiteName: suite) else {
+            throw UpdateTestFailure.defaultsUnavailable
+        }
+        defer { defaults.removePersistentDomain(forName: suite) }
+
+        let bundleURL = URL(fileURLWithPath: "/opt/homebrew/Caskroom/lidpilot/1.0.0/LidPilot.app")
+        let detected = UpdateOwnership(defaults: defaults, bundleURL: bundleURL)
+        XCTAssertEqual(detected.method, .homebrew)
+        XCTAssertFalse(detected.isExplicitChoice)
+        XCTAssertTrue(detected.selectionDescription.contains("Detected"))
+
+        detected.select(.manual)
+        let selected = UpdateOwnership(defaults: defaults, bundleURL: URL(fileURLWithPath: "/Applications/LidPilot.app"))
+        XCTAssertEqual(selected.method, .manual)
+        XCTAssertTrue(selected.isExplicitChoice)
+        XCTAssertEqual(selected.selectionDescription, "Selected by you")
+    }
+
     func testCurrentBuildInterruptionHoldsBarrierSynchronouslyAndWaitsForUser() async throws {
         let fixture = try makeFixture(build: "100", pendingBuild: "100", restoreHelper: true)
         defer { fixture.cleanupDefaults() }
@@ -233,6 +322,7 @@ import LidPilotRuntime
                              helperStatus: SMAppService.Status = .notRegistered,
                              registrationResult: SMAppService.Status = .enabled,
                              unregisterError: (any Error)? = nil,
+                             updateMethod: UpdateMethod = .sparkle,
                              lidIsOpen: @escaping @MainActor () -> Bool = { true }) throws -> Fixture {
         let suite = "com.lidpilot.UpdateCoordinatorTests.\(UUID().uuidString)"
         guard let defaults = UserDefaults(suiteName: suite) else {
@@ -244,7 +334,7 @@ import LidPilotRuntime
 
         let helper = TestUpdateHelper(status: helperStatus, registrationResult: registrationResult,
                                      unregisterError: unregisterError)
-        let model = makeModel(helper: helper)
+        let model = makeModel(helper: helper, updateMethod: updateMethod)
         let updater = TestUpdater()
         let coordinator = UpdateCoordinator(testing: model, defaults: defaults, build: build,
                                             updater: updater, lidIsOpen: lidIsOpen)
@@ -252,7 +342,8 @@ import LidPilotRuntime
                        updater: updater, coordinator: coordinator)
     }
 
-    private func makeModel(helper: TestUpdateHelper = TestUpdateHelper()) -> TestUpdateModel {
+    private func makeModel(helper: TestUpdateHelper = TestUpdateHelper(),
+                           updateMethod: UpdateMethod = .sparkle) -> TestUpdateModel {
         let stamp = ClockSample(continuousSeconds: 10, wallDate: Date(timeIntervalSince1970: 1_700_000_000), bootID: "test-boot")
         let sample = PowerSnapshot(sampledAt: stamp, lid: .open, power: .external, thermal: .nominal,
                                    lowPowerMode: false, externalDisplayCount: 0, sleepDisabled: .off)
@@ -260,7 +351,8 @@ import LidPilotRuntime
         let controller = SessionController(clock: FixedUpdateClock(sample: stamp),
                                            sampler: FixedUpdateSampler(sample: sample),
                                            power: TestUpdateAssertions(), helper: transport)
-        return TestUpdateModel(controller: controller, helper: helper, transport: transport)
+        return TestUpdateModel(controller: controller, helper: helper, transport: transport,
+                               updateMethod: updateMethod)
     }
 
     private func waitUntil(_ predicate: @MainActor () -> Bool, attempts: Int = 200) async -> Bool {
@@ -290,14 +382,17 @@ import LidPilotRuntime
     let helper: TestUpdateHelper
     let transport: TestUpdateTransport
     var onboardingComplete = true
+    var updateMethod: UpdateMethod
     private(set) var offEventCount = 0
 
     var updateHelper: any UpdateCoordinatorHelper { helper }
 
-    init(controller: SessionController, helper: TestUpdateHelper, transport: TestUpdateTransport) {
+    init(controller: SessionController, helper: TestUpdateHelper, transport: TestUpdateTransport,
+         updateMethod: UpdateMethod) {
         self.controller = controller
         self.helper = helper
         self.transport = transport
+        self.updateMethod = updateMethod
         controller.onEvent = { [weak self] phase, _ in
             if phase == .off { self?.offEventCount += 1 }
         }
@@ -369,7 +464,7 @@ private struct FixedUpdateSampler: PowerSampling {
 
 @MainActor private final class TestUpdateAssertions: PowerAssertions {
     private(set) var state = AssertionState.off
-    func apply(system: Bool, display: Bool, timeout: Double) throws -> AssertionState {
+    func apply(system: Bool, display: Bool, timeout: Double, displayTimeout: Double) throws -> AssertionState {
         state = AssertionState(system: system ? .on : .off, display: display ? .on : .off)
         return state
     }

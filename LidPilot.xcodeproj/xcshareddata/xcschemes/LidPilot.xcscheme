@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "8552BA7F9619A283E7F85A3E4E4299B1"
+               BlueprintIdentifier = "D1150D095644F3C3DABF327F691F7646"
                BuildableName = "LidPilot.app"
                BlueprintName = "LidPilot"
                ReferencedContainer = "container:LidPilot.xcodeproj">
@@ -28,7 +28,7 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "101367711CE79C512DC83EA1545771FD"
+               BlueprintIdentifier = "92FC42AA68875BFDDA7A411B0B105B0F"
                BuildableName = "LidPilotAppTests.xctest"
                BlueprintName = "LidPilotAppTests"
                ReferencedContainer = "container:LidPilot.xcodeproj">
@@ -42,9 +42,23 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "72077D9073496C62341494F0E41829D3"
+               BlueprintIdentifier = "BC11E0C00F68683D5BC062BF28596DBF"
                BuildableName = "LidPilotHelper"
                BlueprintName = "LidPilotHelper"
+               ReferencedContainer = "container:LidPilot.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "A26C30B71FC1FFB1E118540BD29A9E30"
+               BuildableName = "lidpilot-cli"
+               BlueprintName = "LidPilotCLI"
                ReferencedContainer = "container:LidPilot.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -60,7 +74,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "101367711CE79C512DC83EA1545771FD"
+               BlueprintIdentifier = "92FC42AA68875BFDDA7A411B0B105B0F"
                BuildableName = "LidPilotAppTests.xctest"
                BlueprintName = "LidPilotAppTests"
                ReferencedContainer = "container:LidPilot.xcodeproj">

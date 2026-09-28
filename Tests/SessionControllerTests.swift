@@ -7,7 +7,10 @@ import LidPilotCore
     var state = AssertionState.off
     var sleepRequests = 0
     var failRelease = false
-    func apply(system: Bool, display: Bool, timeout: Double) throws -> AssertionState {
+    var systemTimeout: Double = 0
+    var screenTimeout: Double = 0
+    func apply(system: Bool, display: Bool, timeout: Double, displayTimeout: Double) throws -> AssertionState {
+        systemTimeout = timeout; screenTimeout = displayTimeout
         state = AssertionState(system: system ? .on : .off, display: display ? .on : .off)
         return state
     }

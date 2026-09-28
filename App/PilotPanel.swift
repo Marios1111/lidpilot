@@ -9,16 +9,21 @@ struct PilotPanel: View {
     // preview windows keep the notice; simulated power controls stay isolated.
     var showsPreviewNotice = true
     #endif
+    var onSettings: (() -> Void)?
+    var onWelcome: (() -> Void)?
     @Environment(\.openWindow) private var openWindow
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
     @Environment(\.colorSchemeContrast) private var contrast
     @State private var visible = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: 14) {
             HStack(spacing: 10) {
                 PilotMark(size: 32)
-                Text("LidPilot").font(.system(size: 18, weight: .semibold))
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("LidPilot").font(.system(size: 18, weight: .semibold))
+                    Text("A little more time awake.").font(.system(size: 10)).foregroundStyle(.secondary)
+                }
                 Spacer()
                 HStack(spacing: 5) {
                     Circle().fill(model.controller.phase.color).frame(width: 5, height: 5)
@@ -46,9 +51,9 @@ struct PilotPanel: View {
 
             VStack(alignment: .leading, spacing: 10) {
                 HStack {
-                    Text("SESSION").font(.system(size: 10, weight: .semibold)).tracking(1).foregroundStyle(.secondary)
+                    Text("MANUAL SESSION").font(.system(size: 10, weight: .semibold)).tracking(0.8).foregroundStyle(.secondary)
                     Spacer()
-                    if model.controller.hasSession {
+                    if model.controller.manualMode != nil {
                         TimelineView(.animation(minimumInterval: 1, paused: !visible)) { _ in
                             #if LIDPILOT_PROFILE
                             let _ = PerformanceTrace.event("ui_timeline_render", fields: ["visible": String(visible)])
@@ -80,8 +85,8 @@ struct PilotPanel: View {
                     } label: { Image(systemName: "ellipsis").frame(width: 22, height: 27) }
                         .menuStyle(.borderlessButton).fixedSize().accessibilityLabel("More session durations")
                 }
-                .disabled(model.controller.hasSession)
-                if !model.controller.hasSession, model.duration == .custom {
+                .disabled(model.controller.manualMode != nil)
+                if model.controller.manualMode == nil, model.duration == .custom {
                     HStack {
                         Text("Minutes").foregroundStyle(.secondary)
                         TextField("Minutes", value: $model.customMinutes, format: .number)
@@ -89,10 +94,18 @@ struct PilotPanel: View {
                         Stepper("Minutes", value: $model.customMinutes, in: 1...10_080).labelsHidden()
                     }.font(.subheadline)
                 }
-                if !model.controller.hasSession, model.duration == .until {
+                if model.controller.manualMode == nil, model.duration == .until {
                     DatePicker("End at", selection: $model.untilDate, in: Date()..., displayedComponents: [.date, .hourAndMinute])
                         .datePickerStyle(.field).font(.subheadline)
                 }
+                if model.controller.hasSession || model.controller.integrationsArmed, model.controller.manualMode == nil {
+                    Button("Add a manual session") { model.start() }
+                        .font(.subheadline).disabled(model.controller.updateBarrier)
+                }
+            }
+
+            if !model.controller.workloads.records.isEmpty || model.controller.integrationsArmed {
+                workloadSummary
             }
 
             HStack(alignment: .top, spacing: 9) {
@@ -109,13 +122,13 @@ struct PilotPanel: View {
 
             VStack(spacing: 10) {
                 Button {
-                    if model.controller.hasSession { Task { await model.controller.stop() } }
+                    if model.controller.hasSession || model.controller.integrationsArmed { Task { await model.controller.stop() } }
                     else if model.controller.phase == .recovery { showSettings() }
                     else if needsHelperSetup { showSettings() }
                     else { model.start() }
                 } label: {
                     HStack(spacing: 7) {
-                        Image(systemName: model.controller.hasSession ? "stop.fill" : primarySymbol).font(.system(size: 10, weight: .semibold))
+                        Image(systemName: model.controller.hasSession || model.controller.integrationsArmed ? "stop.fill" : primarySymbol).font(.system(size: 10, weight: .semibold))
                         Text(primaryTitle).font(.system(size: 13, weight: .semibold))
                     }.frame(maxWidth: .infinity).padding(.vertical, 5)
                 }
@@ -139,7 +152,7 @@ struct PilotPanel: View {
                         Button("Copy Status") { model.copyStatus() }
                         Button("Check for Updates…") { model.updater?.check() }
                             .disabled(model.updater?.canCheck != true || model.controller.hasSession)
-                        Button("Welcome & Help") { openWindow(id: "welcome"); NSApp.activate(ignoringOtherApps: true) }
+                        Button("Welcome & Help") { showWelcome() }
                         Divider()
                         Button("Quit LidPilot") { NSApp.terminate(nil) }.keyboardShortcut("q")
                     } label: { Image(systemName: "ellipsis.circle") }.menuStyle(.borderlessButton).fixedSize()
@@ -161,7 +174,7 @@ struct PilotPanel: View {
         }
         .onDisappear { visible = false }
         .onChange(of: model.showOnboarding) { _, value in
-            if value { openWindow(id: "welcome"); model.showOnboarding = false; NSApp.activate(ignoringOtherApps: true) }
+            if value { showWelcome(); model.showOnboarding = false }
         }
     }
 
@@ -181,7 +194,7 @@ struct PilotPanel: View {
                 Image(systemName: selected ? "checkmark.circle.fill" : "circle")
                     .font(.system(size: 14)).foregroundStyle(selected ? Color.accentColor : Color.secondary.opacity(0.5))
             }
-            .padding(.horizontal, 12).padding(.vertical, 11).frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 12).padding(.vertical, 10).frame(maxWidth: .infinity, alignment: .leading)
             .background(selected ? Color.accentColor.opacity(0.045) : Color(nsColor: .controlBackgroundColor).opacity(0.82), in: RoundedRectangle(cornerRadius: 12))
             .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(selected ? Color.accentColor.opacity(0.55) : Color.primary.opacity(contrast == .increased ? 0.45 : 0.08), lineWidth: 1))
         }
@@ -197,6 +210,36 @@ struct PilotPanel: View {
         case .off: "power"
         }
     }
+    private var workloadSummary: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Label("TASKS", systemImage: "terminal").font(.system(size: 10, weight: .semibold))
+                Spacer()
+                Text(model.controller.integrationsArmed ? "Hooks armed" : "Hooks disarmed")
+                    .font(.system(size: 10)).foregroundStyle(.secondary)
+            }
+            ForEach(Array(model.controller.workloads.records.suffix(3))) { record in
+                HStack(spacing: 7) {
+                    Image(systemName: record.state == .working ? "circle.dotted" : (record.state == .unknown ? "questionmark.circle" : "circle"))
+                        .foregroundStyle(record.state == .unknown ? .orange : .secondary)
+                    Text(record.source == .command ? "Command" : (record.source == .codex ? "Codex" : "Claude Code"))
+                    if record.taskID != nil { Text("subtask").foregroundStyle(.secondary) }
+                    Spacer()
+                    Text(record.state == .waiting ? "Waiting for you" : record.state.rawValue.capitalized)
+                        .foregroundStyle(.secondary)
+                }.font(.system(size: 11)).accessibilityElement(children: .combine)
+            }
+            if model.controller.workloads.records.count > 3 {
+                Text("\(model.controller.workloads.records.count) tracked requests · full details in diagnostics")
+                    .font(.caption2).foregroundStyle(.secondary)
+            }
+            if let mode = model.controller.effectiveMode {
+                Text("Together: \(mode.title)").font(.caption2).foregroundStyle(.secondary)
+            }
+        }
+        .padding(12)
+        .background(Color.primary.opacity(0.035), in: RoundedRectangle(cornerRadius: 10))
+    }
     private var primarySymbol: String {
         model.controller.phase == .recovery ? "arrow.clockwise" :
             (needsHelperSetup ? "lock.shield" : "play.fill")
@@ -205,20 +248,26 @@ struct PilotPanel: View {
         model.selectedMode.needsHelper && (!model.closedLidReady || model.controller.phase == .unverified)
     }
     private var primaryTitle: String {
-        if model.controller.hasSession { return "Turn Off" }
+        if model.controller.integrationsArmed { return "Turn Off All Requests" }
+        if model.controller.hasSession { return model.controller.workloads.records.isEmpty ? "Turn Off" : "Turn Off All Requests" }
         if model.controller.phase == .recovery { return "Open Recovery" }
         if needsHelperSetup { return model.controller.phase == .unverified ? "Check Helper Status" : "Set Up Closed-Lid Support" }
         return "Start Session"
     }
     private var remainingText: String {
-        guard let seconds = model.controller.remaining else { return "Until you stop" }
+        guard let seconds = model.controller.manualRemaining else { return "Until you stop" }
         let value = max(0, Int(seconds.rounded(.up)))
         return value >= 3600 ? String(format: "%d:%02d:%02d", value / 3600, value / 60 % 60, value % 60) : String(format: "%d:%02d", value / 60, value % 60)
     }
     private func shortTitle(_ choice: DurationChoice) -> String {
         switch choice { case .halfHour: "30m"; case .hour: "1h"; case .twoHours: "2h"; default: "4h" }
     }
-    private func showSettings() { openWindow(id: "settings"); NSApp.activate(ignoringOtherApps: true) }
+    private func showSettings() {
+        if let onSettings { onSettings() } else { openWindow(id: "settings"); NSApp.activate(ignoringOtherApps: true) }
+    }
+    private func showWelcome() {
+        if let onWelcome { onWelcome() } else { openWindow(id: "welcome"); NSApp.activate(ignoringOtherApps: true) }
+    }
 }
 
 /// The same light/dark LP artwork used by the native application icon.

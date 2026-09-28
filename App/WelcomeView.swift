@@ -2,6 +2,7 @@ import SwiftUI
 
 struct WelcomeView: View {
     @Bindable var model: AppModel
+    var onDismiss: (() -> Void)?
     @Environment(\.dismissWindow) private var dismissWindow
     var body: some View {
         VStack(alignment: .leading, spacing: 22) {
@@ -20,7 +21,7 @@ struct WelcomeView: View {
             HStack {
                 Text("Local. Open source. No analytics.").font(.caption).foregroundStyle(.secondary)
                 Spacer()
-                Button("Got It") { model.onboardingComplete = true; dismissWindow(id: "welcome") }
+                Button("Got It") { model.onboardingComplete = true; if let onDismiss { onDismiss() } else { dismissWindow(id: "welcome") } }
                     .buttonStyle(.borderedProminent).controlSize(.large).keyboardShortcut(.defaultAction)
             }
         }

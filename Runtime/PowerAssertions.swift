@@ -25,10 +25,16 @@ enum AssertionRemovalOutcome: Equatable {
 }
 
 @MainActor public protocol PowerAssertions: AnyObject {
-    func apply(system: Bool, display: Bool, timeout: Double) throws -> AssertionState
+    func apply(system: Bool, display: Bool, timeout: Double, displayTimeout: Double) throws -> AssertionState
     func release() throws -> AssertionState
     func observed() -> AssertionState
     func sleep() throws
+}
+
+public extension PowerAssertions {
+    func apply(system: Bool, display: Bool, timeout: Double) throws -> AssertionState {
+        try apply(system: system, display: display, timeout: timeout, displayTimeout: timeout)
+    }
 }
 
 @MainActor public final class NativeAssertions: PowerAssertions {
@@ -36,15 +42,16 @@ enum AssertionRemovalOutcome: Equatable {
     private var displayID: IOPMAssertionID?
     public init() {}
 
-    public func apply(system: Bool, display: Bool, timeout: Double) throws -> AssertionState {
-        guard timeout.isFinite, timeout > 0, timeout <= 60 else {
+    public func apply(system: Bool, display: Bool, timeout: Double, displayTimeout: Double) throws -> AssertionState {
+        guard timeout.isFinite, timeout > 0, timeout <= 60,
+              displayTimeout.isFinite, displayTimeout > 0, displayTimeout <= 60 else {
             throw RuntimeFailure.unavailable("Invalid assertion lease duration.")
         }
         // On lid close, drop the display assertion before doing any other work.
         if !display { try remove(&displayID) }
         if !system { try remove(&systemID) }
         if system { try maintain(&systemID, type: kIOPMAssertionTypePreventUserIdleSystemSleep as CFString, timeout: timeout) }
-        if display { try maintain(&displayID, type: kIOPMAssertionTypePreventUserIdleDisplaySleep as CFString, timeout: timeout) }
+        if display { try maintain(&displayID, type: kIOPMAssertionTypePreventUserIdleDisplaySleep as CFString, timeout: displayTimeout) }
         let state = observed()
         guard state.system == (system ? .on : .off), state.display == (display ? .on : .off) else {
             throw RuntimeFailure.unavailable("LidPilot's assertions could not be verified.")

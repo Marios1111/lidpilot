@@ -25,6 +25,7 @@ enum DurationChoice: String, CaseIterable, Identifiable {
     let controller: SessionController
     let helper = HelperManager()
     let diagnostics: DiagnosticsStore
+    let updateOwnership: UpdateOwnership
     let isPreview: Bool
     var updater: UpdateCoordinator?
     var selectedMode: Mode { didSet { defaults.set(selectedMode.rawValue, forKey: "preferredMode") } }
@@ -45,9 +46,20 @@ enum DurationChoice: String, CaseIterable, Identifiable {
     var launchAtLogin = SMAppService.mainApp.status == .enabled
     var showOnboarding = false
     var exportPreview = ""
+    var cliEnabled: Bool { didSet { defaults.set(cliEnabled, forKey: "cliEnabled"); configureControl() } }
+    var workloadMode: Mode { didSet { defaults.set(workloadMode.rawValue, forKey: "workloadMode") } }
+    var waitingGrace: Double { didSet { defaults.set(waitingGrace, forKey: "waitingGrace") } }
+    var staleAfter: Double { didSet { defaults.set(staleAfter, forKey: "staleAfter") } }
+    var controlError: String?
+    var openPanel: (() -> Void)?
+    var onStatusChange: (() -> Void)?
+    var shortcuts: GlobalShortcuts!
+    private var controlServer: LocalControlServer?
+    private var hookRouter = HookRouter()
     private let defaults: UserDefaults
     private let observer: StateObserver?
     private var heartbeat: Task<Void, Never>?
+    private var heartbeatDue: Double?
     private var heartbeatGeneration = 0
 
     init(defaults store: UserDefaults = .standard) {
@@ -61,6 +73,14 @@ enum DurationChoice: String, CaseIterable, Identifiable {
         helper.mutationsAllowed = !isPreview
         let defaults = isPreview ? UserDefaults(suiteName: "com.lidpilot.ui-testing")! : store
         self.defaults = defaults
+        updateOwnership = UpdateOwnership(defaults: defaults)
+        let previewControl = isPreview && ProcessInfo.processInfo.environment["LIDPILOT_CONTROL_TESTING"] == "1"
+        cliEnabled = previewControl || defaults.bool(forKey: "cliEnabled")
+        workloadMode = Mode(rawValue: defaults.string(forKey: "workloadMode") ?? "closed") ?? .closed
+        let waiting = defaults.double(forKey: "waitingGrace")
+        waitingGrace = (30...600).contains(waiting) ? waiting : 120
+        let stale = defaults.double(forKey: "staleAfter")
+        staleAfter = (60...1800).contains(stale) ? stale : 900
         selectedMode = Mode(rawValue: defaults.string(forKey: "preferredMode") ?? "smart") ?? .smart
         duration = DurationChoice(rawValue: defaults.string(forKey: "duration") ?? "hour") ?? .hour
         let savedMinutes = defaults.integer(forKey: "customMinutes")
@@ -70,7 +90,7 @@ enum DurationChoice: String, CaseIterable, Identifiable {
         allowBattery = defaults.bool(forKey: "allowBattery")
         respectLowPower = defaults.object(forKey: "respectLowPower") as? Bool ?? true
         notify = defaults.bool(forKey: "notifications")
-        onboardingComplete = defaults.bool(forKey: "onboardingComplete")
+        onboardingComplete = previewControl || defaults.bool(forKey: "onboardingComplete")
         let clock = SystemClock()
         let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "unconfigured"
         #if DEBUG
@@ -90,6 +110,7 @@ enum DurationChoice: String, CaseIterable, Identifiable {
         controller.helperAvailable = closedLidReady
         controller.onOwnershipChange = { [weak self] owned in self?.defaults.set(owned, forKey: "cleanupPending") }
         controller.onEvent = { [weak self] phase, message in self?.sessionChanged(phase, message) }
+        controller.onWorkloadCompletion = { [weak self] message in self?.notifyWorkload(message) }
         observer?.onChange = { [weak self] in
             guard let self else { return }
             Task { @MainActor in
@@ -106,6 +127,18 @@ enum DurationChoice: String, CaseIterable, Identifiable {
             Task { await self.controller.stop(reason: "Stopped for macOS sleep or a user-session change.", safety: true) }
         }
         updater = UpdateCoordinator(model: self)
+        shortcuts = GlobalShortcuts(defaults: defaults, enabled: !isPreview) { [weak self] action in
+            guard let self else { return }
+            switch action {
+            case .openPanel: self.openPanel?()
+            case .toggleSession:
+                if self.controller.hasSession || self.controller.integrationsArmed { Task { await self.controller.stop() } } else { self.start() }
+            case .smart: self.chooseMode(.smart)
+            case .display: self.chooseMode(.display)
+            case .closed: self.chooseMode(.closed)
+            }
+        }
+        configureControl()
         Task { await controller.refreshWhileOff() }
     }
 
@@ -125,10 +158,10 @@ enum DurationChoice: String, CaseIterable, Identifiable {
 
     func chooseMode(_ mode: Mode) {
         selectedMode = mode
-        if controller.hasSession {
+        if controller.manualMode != nil {
             Task {
                 await controller.start(mode: mode, duration: sessionDuration, policy: policy)
-                if let requested = controller.requestedMode { selectedMode = requested }
+                if let manual = controller.manualMode { selectedMode = manual }
             }
         }
     }
@@ -179,35 +212,134 @@ enum DurationChoice: String, CaseIterable, Identifiable {
 
     func exportDiagnostics() {
         let panel = NSSavePanel()
-        panel.nameFieldStringValue = "LidPilot-diagnostics.txt"
-        panel.allowedContentTypes = [.plainText]
+        panel.nameFieldStringValue = "LidPilot-diagnostics.json"
+        panel.allowedContentTypes = [.json]
         if panel.runModal() == .OK, let url = panel.url {
             do { try exportPreview.write(to: url, atomically: true, encoding: .utf8) }
             catch { diagnostics.record(.off, "Diagnostic export failed.") }
         }
     }
-    func stopObserving() { heartbeat?.cancel(); observer?.stop() }
+    func diagnosticReport() -> String {
+        let report = ControlReply(code: .success, message: controller.message, status: ControlStatus(controller: controller),
+                                  diagnostics: Array(diagnostics.entries.suffix(50)))
+        return (try? report.encoded()).flatMap { String(data: $0, encoding: .utf8) } ?? "Could not encode diagnostics."
+    }
+    func installCLI() {
+        let panel = NSOpenPanel()
+        panel.title = "Choose a folder for the lidpilot command"
+        panel.canChooseDirectories = true; panel.canChooseFiles = false
+        panel.allowsMultipleSelection = false
+        guard panel.runModal() == .OK, let directory = panel.url else { return }
+        let executable = Bundle.main.bundleURL.appendingPathComponent("Contents/MacOS/lidpilot-cli")
+        do { try CLIFileOperations.install(executable: executable, directory: directory); controlError = "CLI link installed. Enable local CLI control to use it." }
+        catch { controlError = error.localizedDescription }
+    }
+    func stopObserving() { heartbeat?.cancel(); observer?.stop(); controlServer?.stop(); shortcuts.stop() }
+
+    var workloadOptions: WorkloadOptions {
+        WorkloadOptions(waitingGrace: waitingGrace, settlingInterval: 3, staleAfter: staleAfter, maximumDuration: 28_800)
+    }
+
+    func armTasks(_ armed: Bool) {
+        if armed {
+            do {
+                guard onboardingComplete, cliEnabled else { throw ControlError.unavailable }
+                try controller.armWorkloads(); hookRouter.reset(); controlError = nil
+            } catch { controlError = error.localizedDescription }
+        } else {
+            hookRouter.reset()
+            Task { await controller.disarmWorkloads() }
+        }
+    }
+
+    private func configureControl() {
+        guard cliEnabled else { controlServer?.stop(); controlServer = nil; return }
+        let previewControl = isPreview && ProcessInfo.processInfo.environment["LIDPILOT_CONTROL_TESTING"] == "1"
+        guard !isPreview || previewControl else { return }
+        let channel = previewControl ? "preview" : (HelperIdentity.applicationConfiguration()?.isProduction == true ? "production" : "development")
+        if controlServer == nil {
+            controlServer = LocalControlServer { [weak self] request in
+                guard let self else { return ControlReply(code: .unavailable, message: "LidPilot is closing.") }
+                return await self.handleControl(request)
+            }
+        }
+        do { try controlServer?.start(path: LocalControl.path(channel: channel)); controlError = nil }
+        catch { controlError = error.localizedDescription }
+    }
+
+    func handleControl(_ request: ControlRequest) async -> ControlReply {
+        func reply(_ code: ControlCode, _ text: String? = nil, diagnostics entries: [DiagnosticEntry]? = nil) -> ControlReply {
+            ControlReply(code: code, message: text ?? controller.message, status: ControlStatus(controller: controller), diagnostics: entries)
+        }
+        guard cliEnabled else { return reply(.blocked, "CLI control is disabled.") }
+        do { try request.validate() } catch { return reply(.invalidInput) }
+        if request.operation == .status || request.operation == .diagnostics {
+            if controller.hasSession { await controller.reconcile() } else { await controller.refreshWhileOff() }
+            return reply(.success, diagnostics: request.operation == .diagnostics ? Array(diagnostics.entries.suffix(50)) : nil)
+        }
+        if request.operation == .stop {
+            hookRouter.reset()
+            await controller.stop()
+            return reply(controller.phase == .off ? .success : .unverified)
+        }
+        guard onboardingComplete else { return reply(.approvalRequired, "Complete LidPilot's welcome screen first.") }
+        guard controller.canStart else { return reply(.blocked) }
+        refreshHelper()
+        let mode = request.mode ?? workloadMode
+        if [.start, .taskStart, .arm].contains(request.operation), mode.needsHelper, !closedLidReady {
+            return reply(.approvalRequired, "Approve the helper in LidPilot Settings before starting closed-lid work.")
+        }
+        do {
+            switch request.operation {
+            case .start:
+                // The CLI owns the same manual request as the menu-bar Start.
+                // Its existing deadline is preserved by mode changes.
+                let before = controller.generation
+                await controller.start(mode: mode, duration: .seconds(request.seconds!), policy: policy)
+                guard controller.phase == .active, controller.manualMode == mode, controller.generation >= before else { return reply(resultCode) }
+            case .arm: try controller.armWorkloads(); hookRouter.reset()
+            case .disarm: await controller.disarmWorkloads(); hookRouter.reset()
+            case .taskStart, .taskEvent:
+                let options = WorkloadOptions(waitingGrace: waitingGrace, settlingInterval: 3, staleAfter: 60,
+                                              maximumDuration: request.seconds ?? 28_800)
+                try await controller.handleWorkload(request.event!, mode: mode, policy: policy, options: options,
+                                                    explicitStart: request.operation == .taskStart)
+            case .hook:
+                guard controller.integrationsArmed else { return reply(.blocked, "Task hooks are disarmed.") }
+                let events = try hookRouter.events(for: request.hook!, workloads: controller.workloads.records)
+                for event in events { try await controller.handleWorkload(event, mode: workloadMode, policy: policy, options: workloadOptions) }
+            default: return reply(.invalidInput)
+            }
+            return reply(.success)
+        } catch is WorkloadError {
+            return reply(.invalidInput, "Invalid or stale workload event.")
+        } catch ControlError.invalid {
+            return reply(.invalidInput, "Invalid task hook event.")
+        } catch {
+            return reply(resultCode, error.localizedDescription)
+        }
+    }
+
+    private var resultCode: ControlCode {
+        if controller.phase == .recovery || controller.phase == .unverified { return .unverified }
+        if controller.helperState?.flag == .on, controller.helperState?.ownsOverride == false { return .conflict }
+        if controller.requestedMode?.needsHelper == true, !closedLidReady { return .approvalRequired }
+        return .blocked
+    }
+
+    private func notifyWorkload(_ message: String) {
+        diagnostics.record(controller.phase, message)
+        guard !isPreview, notify else { return }
+        let content = UNMutableNotificationContent()
+        content.title = "LidPilot task update"; content.body = message; content.sound = .default
+        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+        Task { try? await UNUserNotificationCenter.current().add(request) }
+    }
 
     private func sessionChanged(_ phase: SessionPhase, _ message: String) {
         diagnostics.record(phase, message)
-        if controller.hasSession {
-            if heartbeat == nil {
-                heartbeatGeneration += 1
-                let heartbeatToken = heartbeatGeneration
-                heartbeat = Task { [weak self] in
-                    while let self, self.controller.hasSession, !Task.isCancelled {
-                        let delay = max(0.1, min(15, self.controller.remaining ?? 15))
-                        do { try await Task.sleep(for: .seconds(delay)) } catch { break }
-                        #if LIDPILOT_PROFILE
-                        PerformanceTrace.event("heartbeat", fields: ["stage": "fire", "delay_s": String(delay), "phase": String(describing: self.controller.phase)])
-                        PerformanceTrace.event("reconcile_trigger", fields: ["source": "heartbeat", "phase": String(describing: self.controller.phase)])
-                        #endif
-                        await self.controller.reconcile()
-                    }
-                    if self?.heartbeatGeneration == heartbeatToken { self?.heartbeat = nil }
-                }
-            }
-        } else { heartbeatGeneration += 1; heartbeat?.cancel(); heartbeat = nil }
+        onStatusChange?()
+        scheduleHeartbeat()
         if !isPreview, notify, phase == .paused || phase == .recovery || (phase == .off && message == "Your session has ended.") {
             let content = UNMutableNotificationContent()
             content.title = phase == .recovery ? "Cleanup needs attention" : (phase == .paused ? "LidPilot paused" : "Session finished")
@@ -224,6 +356,32 @@ enum DurationChoice: String, CaseIterable, Identifiable {
                     self?.diagnostics.record(phase, "Could not queue a session notification: \(error.localizedDescription)")
                 }
             }
+        }
+    }
+
+    private func scheduleHeartbeat() {
+        guard controller.hasSession else {
+            heartbeatGeneration += 1; heartbeat?.cancel(); heartbeat = nil; heartbeatDue = nil
+            return
+        }
+        let delay = controller.nextCheckDelay
+        let due = ProcessInfo.processInfo.systemUptime + delay
+        // Busy hook traffic must never postpone a scheduled lease renewal.
+        if heartbeat != nil, let heartbeatDue, heartbeatDue <= due { return }
+        heartbeatGeneration += 1
+        let token = heartbeatGeneration
+        heartbeat?.cancel()
+        heartbeatDue = due
+        heartbeat = Task { [weak self] in
+            do { try await Task.sleep(for: .seconds(delay)) } catch { return }
+            guard let self, !Task.isCancelled, token == self.heartbeatGeneration else { return }
+            self.heartbeat = nil; self.heartbeatDue = nil
+            #if LIDPILOT_PROFILE
+            PerformanceTrace.event("heartbeat", fields: ["stage": "fire", "delay_s": String(delay), "phase": String(describing: self.controller.phase)])
+            PerformanceTrace.event("reconcile_trigger", fields: ["source": "heartbeat", "phase": String(describing: self.controller.phase)])
+            #endif
+            await self.controller.reconcile()
+            self.scheduleHeartbeat()
         }
     }
 }

@@ -373,14 +373,14 @@ verify_signed_bundle() {
   require_exported_app
   codesign --verify --deep --strict "$APP_PATH"
   local target metadata expected
-  for target in "$APP_PATH" "$APP_PATH/Contents/Library/HelperTools/LidPilotHelper"; do
+  for target in "$APP_PATH" "$APP_PATH/Contents/Library/HelperTools/LidPilotHelper" "$APP_PATH/Contents/MacOS/lidpilot-cli"; do
     metadata="$(codesign -d --verbose=4 "$target" 2>&1)"
     [[ "$metadata" == *"TeamIdentifier=$DEVELOPMENT_TEAM"* ]] || { echo "publisher signing team mismatch" >&2; exit 1; }
     [[ "$metadata" == *"runtime"* ]] || { echo "hardened runtime is required" >&2; exit 1; }
     [[ "$metadata" == *"Timestamp="* ]] || { echo "secure signing timestamp is required" >&2; exit 1; }
   done
-  for target in "$APP_PATH/Contents/MacOS/LidPilot" "$APP_PATH/Contents/Library/HelperTools/LidPilotHelper"; do
-    [[ "$(lipo -archs "$target")" == "arm64" ]] || { echo "app and helper must be arm64 only" >&2; exit 1; }
+  for target in "$APP_PATH/Contents/MacOS/LidPilot" "$APP_PATH/Contents/Library/HelperTools/LidPilotHelper" "$APP_PATH/Contents/MacOS/lidpilot-cli"; do
+    [[ "$(lipo -archs "$target")" == "arm64" ]] || { echo "app, helper, and CLI must be arm64 only" >&2; exit 1; }
   done
 }
 
