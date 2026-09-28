@@ -2,6 +2,7 @@
 """Actual app/CLI integration with Debug-only mock power controls. No helper install."""
 import json
 import os
+import plistlib
 from pathlib import Path
 import pty
 import select
@@ -91,7 +92,9 @@ with tempfile.TemporaryDirectory(prefix="lidpilot-cli-smoke-", dir="/private/tmp
                 time.sleep(0.1)
             assert ready, Path(log.name).read_text()
             assert status()["phase"] == "off"
-            assert status()["appBuild"] == "13"
+            with (bundle / "Contents/Info.plist").open("rb") as info:
+                expected_build = plistlib.load(info)["CFBundleVersion"]
+            assert status()["appBuild"] == expected_build
             started = json.loads(invoke("start", "--mode", "display", "--for", "30s").stdout)["status"]
             assert started["effectiveMode"] == "display"
             invoke("run", "--mode", "closed", "--", "/bin/sh", "-c", "exit 23", expected=23)

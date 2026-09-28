@@ -629,6 +629,9 @@ def self_test(defaults)
     fixture_root = File.join(dir, "stable-signed-fixture")
     FileUtils.cp_r("#{site}/.", fixture_root)
     fixture_updates = File.join(fixture_root, "updates")
+    # This fixture signs its own version. A newer committed release's notes must
+    # not leak into the disposable latest-only directory under test.
+    FileUtils.remove_entry(fixture_updates) if File.exist?(fixture_updates)
     FileUtils.mkdir_p(fixture_updates)
     key_path = File.join(dir, "fixture-ed25519-private.pem")
     _stdout, stderr, status = Open3.capture3(openssl3_executable, "genpkey", "-algorithm", "ED25519", "-out", key_path)
