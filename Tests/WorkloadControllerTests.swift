@@ -123,6 +123,36 @@ import LidPilotCore
         #expect(c.phase == .off && p.flag == .off && a.state == .off)
     }
 
+    @Test func concurrentCommandStartsWaitForCombinedProtection() async throws {
+        let (c, p, a, t) = setup()
+        t.replacementDelay = .milliseconds(25)
+        await c.start(mode: .display, duration: .seconds(3600), policy: SafetyPolicy())
+        let lecture = c.manualDeadline
+        t.delayAcquire = true
+        let first = Task {
+            try await c.handleWorkload(event(p, id: "first"), mode: .closed,
+                policy: SafetyPolicy(), options: WorkloadOptions(), explicitStart: true)
+        }
+        while t.gate == nil { await Task.yield() }
+        let second = Task {
+            try await c.handleWorkload(event(p, id: "second"), mode: .display,
+                policy: SafetyPolicy(), options: WorkloadOptions(), explicitStart: true)
+        }
+        while c.workloads.records.count != 2 { await Task.yield() }
+        t.gate?.resume(); t.gate = nil
+        let firstResult = await first.result
+        let secondResult = await second.result
+        try firstResult.get()
+        try secondResult.get()
+        #expect(c.phase == .active && c.effectiveMode == .smart)
+        #expect(p.flag == .on && a.state.display == .on && c.manualDeadline == lecture)
+        try await c.handleWorkload(event(p, id: "first", sequence: 2, state: .finished, exit: 0),
+            mode: .closed, policy: SafetyPolicy(), options: WorkloadOptions())
+        #expect(c.phase == .active && c.effectiveMode == .display && p.flag == .off)
+        #expect(c.manualDeadline == lecture && a.state.display == .on)
+        await c.stop()
+    }
+
     @Test func waitingAndStaleTasksReleaseWithoutInventingCompletion() async throws {
         let (c, p, a, _) = setup()
         try c.armWorkloads()

@@ -30,6 +30,7 @@ import LidPilotCore
     var gate: CheckedContinuation<Void, Never>?
     var delayAcquire = false
     var delayRenew = false
+    var replacementDelay: Duration?
     var failInspect = false
     var requests: [WireRequest] = []
     init(_ platform: TestPlatform) { self.platform = platform; engine = platform.engine() }
@@ -38,6 +39,9 @@ import LidPilotCore
         if failInspect, request.operation == .inspect { throw RuntimeFailure.unavailable("status unavailable") }
         if (delayAcquire && request.operation == .acquire) || (delayRenew && request.operation == .renew) {
             await withCheckedContinuation { gate = $0 }
+        }
+        if request.operation == .replace, let replacementDelay {
+            try await Task.sleep(for: replacementDelay)
         }
         return engine.handle(request, client: client)
     }

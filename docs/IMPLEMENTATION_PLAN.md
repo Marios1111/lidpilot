@@ -4,7 +4,7 @@
 
 The authorized scope is developer tools and workload sessions from the updated
 blueprint, plus modest Settings/menu-bar polish. V2.1/V2.2 rules, schedules,
-Shortcuts and remote control are excluded. Development source is 2.0.0 build 13;
+Shortcuts and remote control are excluded. Development source is 2.0.0 build 14;
 the published V1 artifacts remain unchanged.
 
 - Implemented: opt-in local CLI, JSON diagnostics, global shortcuts and update
@@ -16,9 +16,11 @@ the published V1 artifacts remain unchanged.
 - Final proof: Core/Runtime and hostless app tests, Debug/Release builds, actual
   mock-app CLI/TTY integration, light/dark rendering, and static release checks.
   Consult `VERIFICATION.md` for their final results and exact source revision.
-- No physical power test, privileged helper installation, signed replacement,
-  public update, or live paid agent session is part of this implementation run.
-  Adapter promotion requires G6; the Claude correlation limit stays explicit.
+- The owner subsequently authorized signed installation, bounded physical and
+  recovery checks, and V2 publication. Build 13 continuity passed; a concurrent
+  command admission race was found and fixed. Build 14 must verify that fix
+  before publication. Adapter promotion still requires G6; the Claude
+  correlation limit stays explicit. See the current verification ledger.
 
 The historical V1 plan follows; its old continuation notes do not describe the
 current implementation or supersede the verification ledger.

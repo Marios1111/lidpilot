@@ -7,7 +7,7 @@ on September 27, 2026; earlier RC sections retain their original checkpoint cont
 
 ## 2.0.0
 
-Unreleased development build 13; includes the V1.1 developer tools and V2.0
+Unreleased development build 14; includes the V1.1 developer tools and V2.0
 workload scope. Signing, hardware and live adapter acceptance remain separate.
 
 - Opt-in bundled CLI with versioned JSON status, verified Start/Stop, local
@@ -20,6 +20,8 @@ workload scope. Signing, hardware and live adapter acceptance remain separate.
   uncorrelated Claude main-turn stop/wait events cannot end a newer turn.
 - Refined native panel and Settings layout, compact task status, adaptive
   appearance and a programmatically accessible menu-bar popover.
+- Concurrent command starts wait for their combined protection to settle before
+  launching either workload. Stop and safety still invalidate pending requests.
 - Helper protocol 2 adds same-owner lease replacement for overlapping requests;
   it retains the fixed power commands, identity checks and recovery boundary.
 

@@ -282,6 +282,12 @@ public enum SessionPhase: String, Codable, Sendable {
                 catch { publish(.recovery, error.localizedDescription) }
             }
         }
+        // A concurrent request can supersede this operation while its helper
+        // reply is in flight. Confirm the combined policy before acknowledging
+        // either caller; Stop and safety can still invalidate both requests.
+        while phase == .starting, let pending = operation {
+            await pending.value
+        }
     }
 
     private func assertionTimeout(displayOnly: Bool = false) -> Double {

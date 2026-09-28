@@ -1,38 +1,57 @@
 # LidPilot verification
 
-## V2 publication preparation — September 28, 2026
+## V2 candidate validation — September 29, 2026
 
-The owner authorized GitHub V2 publication and a Homebrew update. Publication
-has **not occurred**. Local candidate **2.0.0-rc.1 (build 13)** was archived and
-exported from **400f0b34b4a2666a68303cfc117d11085e76b29a**. Developer ID signatures,
-team, hardened runtime, timestamps and arm64 slices passed for app, helper and
-CLI. The existing Keychain Sparkle account matches the published public key;
-release tooling now signs through that account without extracting a private key.
+The owner authorized V2 publication, candidate installation, signed-helper and
+upgrade checks, a 60-second closed-lid check, overlapping deadlines and GUI-loss
+cleanup. V2 is **not yet published**. Candidate build 13 came from
+**400f0b34b4a2666a68303cfc117d11085e76b29a**; its app notarization
+**4929c3cc-e057-4707-8b66-75252acb3d1a** was Accepted after unlocking the Mac.
+Stapling, strict signatures and Gatekeeper's Notarized Developer ID assessment
+passed. The prior locked-Keychain failure was superseded without recreating
+credentials. Direct Sparkle Keychain signing independently verified against the
+published public key; no private key was exported.
 
-After the Mac was unlocked, native mock checks passed for Settings opening and
-navigation, hook arming/disarming, shortcut recording/clearing, Homebrew update
-selection and its disabled Sparkle state, diagnostic preview/cancel, manual
-Start/Stop, mode switching with the original deadline, Settings close and normal
-app quit. No real power controls or helper registration were used. A misleading
-Off-state troubleshooting instruction was corrected, and both idle/disarmed and
-idle/armed JSON guidance passed against the rebuilt mock app. An app-menu
-**Open LidPilot** action now provides another route back to the popover.
+V1's build-12 helper was removed normally while Off before replacing the app.
+The signed build-13 app launched Off; its approved helper reported protocol 2,
+build 13, healthy read-back, no lease and SleepDisabled=0. The V1 bundle remains
+in local rollback storage. Homebrew's receipt remains 1.0.0 during candidate
+validation. Launch at login is temporarily Off; local CLI control is temporarily
+On. No real agent hook configuration was installed.
 
-Final source follow-up: Debug build, **124 Core/Runtime tests**, static/release
-fixture checks and the Developer ID archive/export pass. The original 15 app
-tests remain applicable to unchanged coordinator/preferences code. The Mac
-locked again before checking the new app-menu entry and final popover behavior.
-Live global-shortcut delivery, VoiceOver and exact latency remain unmeasured.
+Native Settings navigation, diagnostics, update ownership and shortcut recording
+were checked. The operator confirmed that the registered temporary Command-Shift-K
+shortcut opened the real popover; the panel was visually inspected and its Settings
+button worked. The shortcut was cleared. VoiceOver on new pages and exact latency
+remain unmeasured. Historical native mock checks remain separately applicable.
 
-Candidate app:
-`/private/tmp/lidpilot-v2-candidate-20260928/2.0.0-rc.1-13/export/LidPilot.app`.
-The notarization ZIP was created, but submission exited 69 with
-`No Keychain password item found for profile: lidpilot-notary` while macOS was
-locked. Retry the existing saved profile after unlock; no credentials were
-recreated. The app is **not yet notarized, stapled or installed**. Explicit
-operator permission for the signed-helper/upgrade, overlapping deadlines,
-closed-lid continuity and GUI-loss cleanup checks is pending. Do not mark the
-stable hardware approval gate passed or publish stable/Homebrew artifacts yet.
+On the M4 MacBook Air (Mac16,13, 24 GiB), macOS 27.2 beta 26B5091g, external power,
+80% battery and no external display, the operator closed the lid for approximately
+60 seconds, observed darkness and reopened normally. Twelve five-second samples
+observed closed (25.261–80.194 seconds); the harmless timestamp recorder produced
+121 samples with a maximum gap of **1.006319 seconds**. SleepDisabled remained 1
+through the closed interval, and automatic cleanup returned verified Off/0. This
+is built-in-only continuity and operator observation, not electrical panel proof.
+
+The same live test **failed concurrent command admission**: two `run` calls both
+returned 78 while the combined policy was still Starting. No child command was
+launched; their abandoned requests expired as unknown without ending the manual
+session. A helper-latency regression reproduced the failure. The coordinator now
+waits for the superseding combined transition before replying. **91 Runtime tests
+pass**, including the new regression and delayed Stop/safety cases. A fresh
+signed build 14 candidate is required before accepting the overlap/recovery gates.
+
+[CI at d9165fd passed](https://github.com/Marios1111/lidpilot/actions/runs/36481629740)
+for the pre-fix source: 139 tests, Debug/Release and static/release checks. The fix's
+final build/CI and new signed overlap/GUI-loss checks are pending. Native build-13
+helper removal subsequently confirmed Not installed / Off / override off.
+
+The raw bounded observations are in `/private/tmp/lidpilot-v2-live-20260929/`.
+Codex 0.154.0 and Claude Code 2.1.112 adapters remain **experimental** under G6;
+live agent acceptance is unperformed. External/dock/virtual display coverage,
+independent different-Team testing and new V2 performance measurements are not
+claimed. Stable packaging, public assets, Homebrew and the stable feed remain
+pending; the public release is still V1.
 
 ## V1.1 / V2.0 implementation — September 28, 2026
 
