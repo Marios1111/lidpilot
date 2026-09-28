@@ -1,5 +1,44 @@
 # LidPilot verification
 
+## V2 published artifacts — September 29, 2026
+
+Stable **2.0.0 (build 15)** is published at
+[GitHub](https://github.com/Marios1111/lidpilot/releases/tag/v2.0.0).
+Exact tagged/binary source: **bd611f9e052440915a0e3d34ceca1a5c301c019c**.
+[Final-source CI](https://github.com/Marios1111/lidpilot/actions/runs/36486164082)
+passed all 140 tests, Debug/Release and static/release checks.
+
+Developer ID Team **L69774LN97**, hardened runtime, secure timestamps and arm64
+app/helper/CLI signatures passed. Stable app notarization
+**b5374947-8074-4b5a-92b3-ffebe11e83ee** and DMG notarization
+**fc143235-ca25-4ddc-97c0-67effdd843dc** were Accepted; both staple validations
+passed. Sparkle archive/feed/notes signatures verified, including independent
+archive verification against the app's embedded public key. No private key was
+exported. The bundle embeds the stable `/updates/appcast.xml` feed and build 15.
+
+- DMG: **4,515,775 bytes**, SHA-256
+  `cf3ca1e3052a5947ed2f3627f01b06ae02449440a27d82edba02267cf1f59f60`.
+- Update ZIP SHA-256:
+  `b30d1df0280f0a37164523738ab9879e19c275d5af70a904c2c4c4f3d0b6b34b`.
+- Stable feed SHA-256:
+  `678c0e99bf76740df74b3b423263d6a1531d369996c7afde327485a7c177f2e0`.
+- Manifest SHA-256:
+  `26f9ccf4c3d6261206e10b3170aac4eaf5d01a9d60bee3208ca4acf94cc12489`.
+
+All five public assets were fetched back; the manifest bytes and all four
+artifact hashes matched. `validate_pages_site.rb --publication stable
+--verify-public-assets` passed public-byte and signature validation. The historical
+RC4 feed remains byte-identical. The stable website uses its existing latest-only
+feed/notes contract; V1's immutable GitHub release and notes remain available.
+
+The [Homebrew tap](https://github.com/Marios1111/homebrew-tap/commit/afae1e9)
+now publishes the exact V2 DMG hash. `brew style` passed. `brew audit` was blocked
+before auditing by the host's outdated Command Line Tools; no toolchain change
+or bypass was made. Homebrew's temporary developer setting was restored Off.
+The test helper was removed through native Settings while Off before the
+original V1 bundle/receipt were restored for the actual Homebrew upgrade.
+Stable Pages deployment and final installed-V2 restoration are still in progress.
+
 ## V2 stable package preparation — September 29, 2026
 
 Corrected runtime source **ff9ec43c100fd598734784c72ed28665eb329fc9** passed
