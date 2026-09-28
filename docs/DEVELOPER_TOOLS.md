@@ -1,7 +1,7 @@
 # Developer tools and workload sessions
 
-These features are in the **unreleased 2.0.0 / build 13** source and include the
-blueprint's V1.1 conveniences. The published 1.0.0 download does not contain them.
+**LidPilot 2.0.0** includes the blueprint's V1.1 conveniences and V2 workload
+sessions.
 V2.1 rules/schedules and V2.2 Shortcuts/URL automation are separate roadmap work.
 
 ## Enable the CLI
@@ -158,5 +158,5 @@ Settings → Updates selects **In-app (Sparkle)**, **Homebrew**, or **Manual**.
 Homebrew path/receipt detection is a hint and can be overridden. Homebrew/manual
 ownership disables Sparkle checks and installation; choosing Sparkle restores
 its saved check preference. End sessions before an external Homebrew upgrade:
-the app cannot veto another process replacing its bundle. Signed helper and
-upgrade lifecycle validation for build 13 remains separate from local tests.
+the app cannot veto another process replacing its bundle. See [verification](VERIFICATION.md) for signed-helper, deadline, crash cleanup
+and upgrade evidence.

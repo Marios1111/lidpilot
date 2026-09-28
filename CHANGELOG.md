@@ -7,8 +7,8 @@ on September 27, 2026; earlier RC sections retain their original checkpoint cont
 
 ## 2.0.0
 
-Unreleased development build 14; includes the V1.1 developer tools and V2.0
-workload scope. Signing, hardware and live adapter acceptance remain separate.
+Released September 29, 2026 — build 15, including the V1.1 developer tools
+and V2.0 workload scope. Agent adapters remain experimental.
 
 - Opt-in bundled CLI with versioned JSON status, verified Start/Stop, local
   diagnostics export, reversible installation and supervised command execution.

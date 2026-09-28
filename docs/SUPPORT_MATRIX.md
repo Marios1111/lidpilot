@@ -1,11 +1,18 @@
 # Support matrix
 
-LidPilot 1.0.0 is published. This matrix states the
-V1 support boundary and retained evidence for each area. A
-target platform is not a claim that its physical behavior, signing, recovery,
-or update lifecycle has passed validation.
+LidPilot 2.0.0 adds CLI control, global shortcuts and independent workload
+sessions while retaining the built-in-display support boundary below. Signed
+build-14 testing verifies concurrent command starts, independent deadlines,
+manual-session survival and GUI-loss cleanup. Global shortcut delivery and the
+native panel were checked on build 13; the UI is unchanged in build 14.
+Codex and Claude Code adapters remain experimental; their complete live G6
+acceptance is unperformed. No fresh V2 ten-minute performance or new-page
+VoiceOver result is claimed. See [current verification](VERIFICATION.md).
 
-## Declared target
+The table below preserves **V1 evidence at its recorded builds**. A target
+platform is not a claim of physical validation on every supported Mac or OS.
+
+## Retained V1 target and evidence
 
 | Area | V1 boundary | Current evidence/status |
 | --- | --- | --- |

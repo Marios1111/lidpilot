@@ -1,5 +1,42 @@
 # LidPilot verification
 
+## V2 stable package preparation — September 29, 2026
+
+Corrected runtime source **ff9ec43c100fd598734784c72ed28665eb329fc9** passed
+[CI](https://github.com/Marios1111/lidpilot/actions/runs/36484945346): **140 tests**
+(91 Runtime, 34 Core, 15 app), Debug/Release and static/release checks. The focused
+Sol review found no material issue with the fix's pending-operation wait or its
+Stop/safety behavior. Stable build **15** changes release metadata/documentation
+only after this tested runtime. Public V2 publication is still pending.
+
+Build **14** was Developer ID signed and notarized (Accepted submission
+**158efdd9-a866-4f1a-a411-96b92682aa78**), stapled, Gatekeeper accepted and
+installed with its approved protocol-2 helper. The fresh live overlap check
+passed: a 100-second manual Display session plus two simultaneously started
+Closed commands; the first command ended at 25 seconds, the second's protection
+expired at 60 seconds while its child continued to its normal 75-second exit.
+The helper override stayed on while needed, then returned to 0 while manual
+Display remained on with its original deadline. At 105 seconds all controls were
+Off. Both child commands exited 0. No workload was killed to enforce a deadline.
+
+A subsequent authorized GUI-loss test restored SleepDisabled=0 at the first
+**1.045408-second** sample, with no LidPilot assertion remaining. Build 14
+relaunched Off, hooks disarmed, with healthy helper build 14. Raw evidence:
+`/private/tmp/lidpilot-v2-live-build14/`. The built-in-only closed-lid continuity
+and physical observation from build 13 are retained below; no new electrical
+panel claim is inferred from the corrected command-acknowledgement path.
+
+The owner requested proportionate checks and proceeding when another test was
+unnecessary. No new ten-minute profile was run: a read-only counter probe could
+not read the privileged helper without another administrator handoff. V2
+performance is **unmeasured**, and the V1 baseline below is not relabeled as a
+V2 pass. New-page VoiceOver and exact latency are also unmeasured. G6 adapters
+remain experimental, with manual sessions available as the reliable fallback.
+
+The authorized bounded hardware/helper checks are complete on the recorded
+setup. Stable artifact signatures/notarization, publication, exact downloaded
+bytes and final Homebrew replacement remain the distribution steps.
+
 ## V2 candidate validation — September 29, 2026
 
 The owner authorized V2 publication, candidate installation, signed-helper and

@@ -4,7 +4,7 @@
 
 The authorized scope is developer tools and workload sessions from the updated
 blueprint, plus modest Settings/menu-bar polish. V2.1/V2.2 rules, schedules,
-Shortcuts and remote control are excluded. Development source is 2.0.0 build 14;
+Shortcuts and remote control are excluded. Stable packaging is 2.0.0 build 15;
 the published V1 artifacts remain unchanged.
 
 - Implemented: opt-in local CLI, JSON diagnostics, global shortcuts and update
@@ -18,8 +18,9 @@ the published V1 artifacts remain unchanged.
   Consult `VERIFICATION.md` for their final results and exact source revision.
 - The owner subsequently authorized signed installation, bounded physical and
   recovery checks, and V2 publication. Build 13 continuity passed; a concurrent
-  command admission race was found and fixed. Build 14 must verify that fix
-  before publication. Adapter promotion still requires G6; the Claude
+  command admission race was found and fixed. Build 14 verified that fix, deadline
+  transitions and GUI-loss cleanup. Stable packaging and publication are now in
+  progress. Adapter promotion still requires G6; the Claude
   correlation limit stays explicit. See the current verification ledger.
 
 The historical V1 plan follows; its old continuation notes do not describe the

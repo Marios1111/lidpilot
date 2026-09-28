@@ -1,10 +1,10 @@
 # Homebrew distribution
 
-Homebrew is a V1 installation path for the signed, notarized Apple Silicon
+Homebrew is an installation path for the signed, notarized Apple Silicon
 release. It supports macOS 15 and later. The verified stable cask is published in
 [Marios1111/homebrew-tap](https://github.com/Marios1111/homebrew-tap). Its checksum
-matches the immutable signed/notarized V1 DMG. See
-[V1 release verification](VERIFICATION.md) for evidence and boundaries.
+matches the immutable signed/notarized stable DMG. See
+[Release verification](VERIFICATION.md) for evidence and boundaries.
 
 The cask is generated from the final release manifest and the exact local DMG
 whose SHA-256 is recorded there. The generator accepts only a non-profiled
@@ -55,13 +55,21 @@ the generated file, then verify Gatekeeper accepts the exact signed and
 notarized DMG on a supported Mac. Do not use `--no-quarantine` or ask users to
 bypass Gatekeeper.
 
-Sparkle is the normal in-app update owner. The cask declares `auto_updates
-true`, which tells Homebrew the app can update itself. Homebrew can still
-replace an installed app when its cask version is newer; `brew upgrade
---greedy-auto-updates`, `brew upgrade --greedy`, and `brew reinstall` can also
-request replacement. Complete the native cleanup below before any Homebrew
-operation that will replace or remove the app. A cask version update is not a
-safe substitute for Sparkle's signed update flow.
+V2 detects a Homebrew receipt/path and defaults to **Homebrew** update ownership.
+Settings → Updates allows an explicit choice of Homebrew, Sparkle, or Manual.
+Homebrew/manual ownership disables Sparkle checks and installation. The cask
+retains `auto_updates true` because the app supports optional in-app updates;
+use `--greedy` when upgrading it through Homebrew.
+
+After the native cleanup below, update an existing installation with:
+
+```sh
+brew update
+brew upgrade --cask --greedy Marios1111/tap/lidpilot
+```
+
+Open LidPilot after replacement. It starts Off; enable its helper again for
+closed-lid modes and restore Launch at login if desired.
 
 ## Required cleanup before Homebrew removal or replacement
 
@@ -89,6 +97,7 @@ review the observed state. Homebrew does not remove helper registrations,
 change `pmset`, or repair LidPilot's recovery journal.
 
 The cask intentionally adds no CLI, global shortcut, `sudo` command, launchd
-removal, or `zap` cleanup. Those capabilities are outside this V1 distribution
-addition. See the [Homebrew Cask Cookbook](https://docs.brew.sh/Cask-Cookbook)
+removal, or `zap` cleanup. The app provides opt-in CLI installation and global
+shortcuts separately; the cask does not change shell configuration or system
+permissions. See the [Homebrew Cask Cookbook](https://docs.brew.sh/Cask-Cookbook)
 and [Homebrew FAQ](https://docs.brew.sh/FAQ) for current cask/update behavior.

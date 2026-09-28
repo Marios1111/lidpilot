@@ -1,10 +1,5 @@
 <p align="center"><img src="website/assets/icon-light.png" alt="LidPilot icon" width="112"></p>
 
-> Development source now includes V1.1/V2.0 in unreleased **2.0.0 (14)**:
-> CLI, global shortcuts, independent workload sessions and experimental agent
-> hooks. See [Developer tools](docs/DEVELOPER_TOOLS.md). The public download below
-> remains stable 1.0.0; no V2 release has been published.
-
 # LidPilot
 
 **Your Mac. On your time.**
@@ -21,9 +16,9 @@ Mac menu-bar app.
 
 ## Get LidPilot
 
-Download [**LidPilot 1.0.0**](https://github.com/Marios1111/lidpilot/releases/download/v1.0.0/LidPilot-1.0.0.dmg),
+Download [**LidPilot 2.0.0**](https://github.com/Marios1111/lidpilot/releases/download/v2.0.0/LidPilot-2.0.0.dmg),
 a Developer ID signed, notarized and stapled app for Apple Silicon.
-[Release notes](https://github.com/Marios1111/lidpilot/releases/tag/v1.0.0) ·
+[Release notes](https://github.com/Marios1111/lidpilot/releases/tag/v2.0.0) ·
 [Verification and support boundaries](docs/VERIFICATION.md)
 
 1. Download the DMG from the release page and move **LidPilot.app** to **Applications**.
@@ -52,6 +47,14 @@ brew install --cask lidpilot
 [Homebrew tap](https://github.com/Marios1111/homebrew-tap) ·
 [Setup and required cleanup](docs/HOMEBREW.md)
 
+## New in V2
+
+Keep awake for a command with `lidpilot run`, while independent manual and task
+sessions retain their own deadlines. V2 also adds opt-in CLI/JSON control, global
+shortcuts, clearer diagnostics, explicit update ownership, experimental Codex and
+Claude Code hooks, and refined Settings and menu-bar controls.
+See [Developer tools](docs/DEVELOPER_TOOLS.md) for setup and adapter limits.
+
 ## Three modes. One place to stay in control.
 
 | Mode | What it does |
@@ -74,12 +77,12 @@ to end a session, or **Stop & Sleep** to verify cleanup before requesting sleep.
 - Launch at login, always Off. Signed Sparkle updates check while Off.
 
 No account, cloud service, analytics SDK, or access to your task contents.
-LidPilot keeps the Mac awake; it does not inspect AI agents, detect task completion,
-or automate individual processes.
+Opt-in command supervision uses process exits; agent adapters use limited lifecycle
+events. LidPilot never reads prompts or transcripts to infer completion.
 
 ## Know the boundaries
 
-V1's validated display configuration is the **built-in MacBook display**.
+The validated display configuration is the **built-in MacBook display**.
 External displays, docks, and virtual displays remain unvalidated. Read the
 [support matrix](docs/SUPPORT_MATRIX.md) for the exact tested hardware and OS.
 
@@ -97,8 +100,9 @@ Off does not override them or guarantee the whole Mac is asleep.
 
 ## Updates and uninstalling
 
-Use **Check for Updates** while LidPilot is Off. The app verifies cleanup and
-requires an open lid before installation; an updated app starts Off.
+Choose **In-app (Sparkle)**, **Homebrew**, or **Manual** in Settings → Updates.
+Homebrew installs default to Homebrew ownership, with Sparkle checks disabled.
+In-app installation verifies cleanup and requires an open lid; updates start Off.
 
 Before removing or externally replacing LidPilot:
 
