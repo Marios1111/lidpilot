@@ -8,14 +8,51 @@ before checking whether any update was pending. Native Settings confirmed the
 helper removed, session Off, sleep override off and Launch at login disabled;
 Quit nevertheless displayed the pending-update alert with the lid open.
 
-Candidate **2.0.2 build 17** checks the update barrier before requiring Sparkle
+Released **2.0.2 build 17** checks the update barrier before requiring Sparkle
 ownership. Actual pending updates still require the existing cleanup/open-lid
 checks. All **16 update-coordinator app tests** passed, including normal quit
 for all three update methods and blocked/reconciled interrupted updates.
 The old app quit normally after temporarily selecting Sparkle, without starting
-an update. Its original Homebrew ownership and Launch at login will be restored
-after the signed replacement. Signing, publication and installed acceptance
-are in progress; no new physical-power test is required for this quit-only fix.
+an update. No new physical-power test was run for this quit-only fix.
+
+Exact tagged/binary source: **a68b5b37aa659fe7a178e21706cb0b63a58c24ac**.
+[Final-source CI](https://github.com/Marios1111/lidpilot/actions/runs/36494593689)
+passed the package/app tests, static/release checks and Debug/Release builds.
+[GitHub 2.0.2](https://github.com/Marios1111/lidpilot/releases/tag/v2.0.2)
+contains the verified signed artifacts. App notarization
+**12c4c482-6976-4028-a5f3-15aebd050b9b** and DMG notarization
+**9295d9b5-f412-4ea0-add0-763d93e12bac** were Accepted. Sparkle signatures,
+deep/strict signing, staple validation and Gatekeeper assessment passed.
+The **4,566,336-byte** DMG SHA-256 is
+`e3209bfb9aeb70d2c560ed3dd47b42deae6182bf4c59deba0a44d8d974fabae6`;
+the manifest SHA-256 is
+`0f626e3c8abde4cb22c4eac93c74c2f890fa2476d666807015366925ef7c24ea`.
+
+All five public release assets were downloaded and matched the signed release.
+The public-byte/signature Pages validator passed, followed by
+[Pages deployment](https://github.com/Marios1111/lidpilot/actions/runs/36495208977)
+from **9e3ad797a73c290897e189f98e01b817b8733b51**. The live homepage, stable
+feed, notes and manifest matched; historical RC4 bytes remain unchanged.
+The [Homebrew tap](https://github.com/Marios1111/homebrew-tap/commit/a064e1e)
+publishes the matching DMG checksum. Style passed and temporary Homebrew
+developer mode was restored Off. The unchanged Command Line Tools audit
+blocker from 2.0.1 remains; it was not presented as a passing audit.
+
+After verified native cleanup, `brew update` and `brew upgrade --cask --greedy
+Marios1111/tap/lidpilot` upgraded the actual **2.0.0** installation to
+**2.0.2 build 17**. The installed bundle passed deep/strict signature,
+staple and Gatekeeper validation, and its Homebrew receipt reports 2.0.2.
+Native Settings confirmed the restored **Homebrew** update ownership,
+**Launch at login On**, helper **Approved**, session **Off**, and sleep override
+**off**. The owner's current Follow Lid / **30 min** and notifications On
+preferences were preserved. No hooks or local CLI access were enabled.
+The native tool timed out when delivering the final Quit action. The owner
+then confirmed that **⌘Q quit without a warning with Homebrew selected** and
+that reopening was normal. Installed acceptance is complete.
+
+The two newly generated test/release build-cache directories (approximately
+**0.53 GiB**) and one debug app registration were removed. The installed app,
+signed release archives, rollback copies and validation evidence were preserved.
 
 ## Agent Tasks usability follow-up — September 29, 2026
 
