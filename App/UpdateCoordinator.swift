@@ -381,8 +381,9 @@ extension AppModel: UpdateCoordinatorModel {
     }
 
     var canTerminate: Bool {
-        guard let model, model.updateMethod == .sparkle else { return false }
+        guard let model else { return false }
         guard model.controller.updateBarrier else { return true }
+        guard model.updateMethod == .sparkle else { return false }
         return prepared && !model.controller.hasSession && model.controller.assertions == .off &&
             lidIsOpen() &&
             (model.updateHelper.status == .notRegistered || model.updateHelper.status == .notFound)

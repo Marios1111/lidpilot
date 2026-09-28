@@ -1,5 +1,13 @@
 # LidPilot implementation plan
 
+## Homebrew upgrade follow-up — September 29
+
+The installed upgrade exposed an existing Homebrew/manual normal-quit guard
+bug. The narrow 2.0.2 build 17 correction and update-coordinator regression
+tests are complete. Signed publication, the installed Homebrew upgrade,
+preference restoration and cleanup of newly generated builds are in progress.
+See `VERIFICATION.md` for evidence.
+
 ## Agent Tasks usability follow-up — September 29
 
 Implement the owner's menu-bar toggle, clear active task status, optional hiding

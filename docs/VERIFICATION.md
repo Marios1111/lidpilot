@@ -1,5 +1,22 @@
 # LidPilot verification
 
+## Homebrew upgrade follow-up — September 29, 2026
+
+Preparing the owner's installed upgrade exposed a normal-quit regression in
+2.0.0, also present in 2.0.1: `canTerminate` rejected Homebrew/manual ownership
+before checking whether any update was pending. Native Settings confirmed the
+helper removed, session Off, sleep override off and Launch at login disabled;
+Quit nevertheless displayed the pending-update alert with the lid open.
+
+Candidate **2.0.2 build 17** checks the update barrier before requiring Sparkle
+ownership. Actual pending updates still require the existing cleanup/open-lid
+checks. All **16 update-coordinator app tests** passed, including normal quit
+for all three update methods and blocked/reconciled interrupted updates.
+The old app quit normally after temporarily selecting Sparkle, without starting
+an update. Its original Homebrew ownership and Launch at login will be restored
+after the signed replacement. Signing, publication and installed acceptance
+are in progress; no new physical-power test is required for this quit-only fix.
+
 ## Agent Tasks usability follow-up — September 29, 2026
 
 Stable **2.0.1 (build 16)** is [published on GitHub](https://github.com/Marios1111/lidpilot/releases/tag/v2.0.1).

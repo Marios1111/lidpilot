@@ -41,6 +41,16 @@ import LidPilotRuntime
         XCTAssertTrue(fixture.coordinator.canCheck)
     }
 
+    func testNormalQuitIsAllowedForEveryUpdateMethodWithoutPendingUpdate() throws {
+        for method in [UpdateMethod.sparkle, .homebrew, .manual] {
+            let fixture = try makeFixture(build: "100", updateMethod: method, lidIsOpen: { false })
+            defer { fixture.cleanupDefaults() }
+
+            XCTAssertFalse(fixture.model.controller.updateBarrier)
+            XCTAssertTrue(fixture.coordinator.canTerminate, "Normal quit must work for \(method).")
+        }
+    }
+
     func testInstallationCallbackCannotCommitAfterOwnershipChanges() async throws {
         let fixture = try makeFixture(build: "100", helperStatus: .enabled)
         defer { fixture.cleanupDefaults() }
@@ -65,6 +75,7 @@ import LidPilotRuntime
                                       helperStatus: .notRegistered, updateMethod: .homebrew)
         defer { fixture.cleanupDefaults() }
         XCTAssertTrue(fixture.model.controller.updateBarrier)
+        XCTAssertFalse(fixture.coordinator.canTerminate)
 
         await fixture.coordinator.reconcilePreviousUpdateForTesting()
 
@@ -73,6 +84,7 @@ import LidPilotRuntime
         XCTAssertNil(fixture.defaults.object(forKey: "updateRestoreHelper"))
         XCTAssertFalse(fixture.model.controller.updateBarrier)
         XCTAssertFalse(fixture.coordinator.canCheck)
+        XCTAssertTrue(fixture.coordinator.canTerminate)
     }
 
     func testUpdateOwnershipUsesResolvedHomebrewPathAsAutomaticHint() throws {

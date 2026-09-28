@@ -5,6 +5,12 @@ on September 27, 2026; earlier RC sections retain their original checkpoint cont
 
 ## Unreleased
 
+## 2.0.2
+
+- Fix normal Quit for Homebrew and manually managed installations. An update
+  warning now blocks quitting only when an actual update is pending; the
+  existing update cleanup and open-lid installation safeguards remain in place.
+
 ## 2.0.1
 
 Released September 29, 2026 — build 16.
