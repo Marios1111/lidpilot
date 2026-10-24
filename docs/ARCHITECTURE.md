@@ -89,6 +89,14 @@ hook disarm removes agent requests while preserving manual and command work.
 Launch never restores workloads. The UI distinguishes requested/effective state
 from sampled observations and does not claim physical sleep or panel state.
 
+Off-state helper inspections coalesce while one is pending and share the
+controller's operation queue with acquisition and cleanup. Inspection replies
+and errors must still match the current generation, Off state and update
+barrier before changing visible state. This prevents notification bursts from
+contending for the helper's single admitted payload or overwriting a newer
+Start/Stop result. System sleep and active-user-session changes retain separate
+diagnostic stop reasons. Neither observation is evidence of physical panel power.
+
 ### User-level developer boundary
 
 The opt-in CLI talks to a 0600 Unix socket in an owned 0700 directory. Both ends
@@ -139,10 +147,25 @@ the normal idle display sleep/dimming behavior while held. It is not a separate
 behavior is measured on supported Macs.
 
 Smart arms its helper lease while the lid is open. While open it may hold the
-display assertion; when the lid closes it drops that display assertion while
+display assertion; by default, when the lid closes it drops that assertion while
 retaining system wakefulness. On reopen it re-samples safety, topology, and
 lease state before restoring display behavior. Closed holds only system
 wakefulness and lets display policy follow macOS.
+
+The opt-in **Prevent automatic lock** preference (originally labelled
+**Keep desktop available**) retains the public
+idle-display assertion for all active requests, including Closed requests and
+Smart with the lid closed. It is configured only while sessions and Agent Tasks
+are Off, so concurrent requests share an immutable preference. Closed requests
+then contribute to the display assertion's deadline, still capped at 60 seconds
+and renewed by the existing heartbeat. Stop, expiry, safety and quit retain the
+same cleanup path. The setting itself creates no assertion while Off.
+
+This targets idle display sleep as a cause of automatic locking. It does not
+unlock the Mac, change password/lock preferences, intercept manual Lock, create
+input events or expand helper commands. Apple can still sleep the display for
+other reasons, including lid closure; actual anti-lock and panel behavior need
+hardware validation. The built-in display may remain powered when selected.
 
 The helper's production driver accepts only:
 

@@ -1,5 +1,67 @@
 # LidPilot implementation plan
 
+## Visible lock choice and local commits — October 24, 2026
+
+Complete: the menu-bar popover now exposes **Prevent automatic lock** directly,
+with distinct computer-use/normal-closed-lid-locking copy and an active-session
+guard. Settings and help use the same label. Native light/dark rendering and
+actual mock switch/Start/Stop interaction passed. Signed local build 20 is
+installed with its healthy helper and the owner's prior On choice preserved.
+Only the remaining time of the previous manual session was restored, without
+extending its original deadline. Runtime and UI work are committed locally as
+`d4f64ed` and `3afdc12`; validation documentation is committed separately.
+Nothing pushed or published. See `VERIFICATION.md` for exact source and gates.
+
+## Session-scoped desktop availability — October 24, 2026
+
+The owner explicitly requested preventing automatic locking during active
+closed-lid Codex sessions and accepted the possible powered-display tradeoff.
+Implement an opt-in **Keep desktop available** preference using the existing
+public idle-display assertion across lid closure. Preserve manual Lock,
+password settings, deadlines, safety and helper scope. Default behavior remains
+unchanged. Local tests (103 Runtime, 34 Core, 16 app), focused review, native
+mock interaction/rendering and signed build checks passed. Local build 19 is
+installed with the preference enabled. The approved real-device recorder
+observed 169.507 seconds closed without a lock event during the active session
+and without a continuity gap over 1.054 seconds. Timer cleanup returned verified
+Off/0 and normal macOS automatic locking resumed after expiry. The owner then
+started a normal one-hour session; two more minutes of closed-lid sampling,
+native AX/window capture and Codex tools succeeded without a lock event, and
+the owner confirmed that it worked without locking. The current session and
+enabled preference are preserved. Manual Lock, physical backlight state and
+long-duration/other-display acceptance remain unverified. No publication is
+authorized. See `VERIFICATION.md`.
+
+## Lock/display report and native polish — October 24, 2026
+
+Local implementation and verification are complete on `dev`, starting at
+`f55d6f7fdee4fb29900afde87ee3fad303559dfe`. The owner reports Follow Lid leaving
+the built-in display lit on close and finding the Mac locked on reopening.
+Keep lock security, helper authentication, deadlines and recovery intact.
+The owner explicitly approved a signed local installation and two-minute
+closed-lid/backlight test, including old-helper removal and replacement-helper
+enablement. Publication remains unauthorized.
+
+Local diagnostics show finite sessions expiring and repeated concurrent Off
+helper inspections receiving busy replies. Fix the proven inspection contention
+with focused race tests; separate system-sleep and user-session-change reasons
+for future diagnosis. Design Toolkit routes the native interface work to
+macOS SwiftUI patterns: clarify selected/active modes, session endings and the
+locked-desktop limit while refining the existing Soft Glass appearance.
+
+Package and app tests, Debug/Release builds, static checks, mock native rendering
+and interaction passed. Signed local build 18 is installed with a healthy
+approved build-18 helper, verified Off. The original build-17 app and preferences
+are backed up. The owner could not connect a charger, so the approved physical
+test is pending; no real keep-awake session was started. Final status is Off,
+sleep override 0, both assertions off, no lease/ownership/recovery pending.
+The subsequent live follow-up confirms external power and an active helper
+lease while macOS locks in response to display sleep after lid closure. There
+was no recorded system sleep during that active interval. This identifies the
+lock mechanism; physical backlight behavior and actual Codex continuity remain
+unverified. No password/lock setting was changed. No fresh ten-minute performance
+gate is claimed. See `VERIFICATION.md` for the final evidence.
+
 ## Homebrew upgrade follow-up — September 29
 
 The installed upgrade exposed an existing Homebrew/manual normal-quit guard

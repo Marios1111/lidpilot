@@ -1,5 +1,256 @@
 # LidPilot verification
 
+## Menu-bar automatic-lock choice and local commits — October 24, 2026
+
+Current code revision: **`3afdc12a94c18442de09ecaeea4918a238c1b0ba`** on `dev`.
+Runtime/session work is committed as `d4f64ed`; native UI and the popover choice
+are committed as `3afdc12`. This validation record is committed separately.
+Earlier working-tree hashes and “uncommitted” statements below describe the
+retained pre-commit snapshots, not the current Git state. Nothing was pushed,
+tagged, notarized or published.
+
+The popover now shows **Prevent automatic lock** directly below the mode
+choices. On selects the existing session-only desktop hold for computer use;
+Off allows normal locking with the lid closed. It shares its preference with
+Settings → General, keeps the default Off for a new installation, and preserves
+the owner's current On choice. Configuration remains disabled while requests
+or Agent Tasks are active, with an explicit Turn Off instruction. No power,
+helper, password, manual-lock or session-deadline semantics changed for this
+UI follow-up. **Keep desktop available** in the older evidence refers to this
+same preference's earlier label.
+
+Design Toolkit's native SwiftUI route was used. Final Debug build, static
+checks, light/dark native rendering and mock cleanup passed. Native mock
+interaction verified Off → On, session Start, the disabled active control,
+Stop → Off selection and normal Quit. Runtime/Core tests were rerun and passed
+**103 + 34**; the retained **16 app tests** cover unchanged app-controller
+sources. No new intrusive physical-power test was needed for the view-only
+change; the build-19 closed-lid result below is retained for unchanged runtime.
+
+Signed local **2.0.2 build 20** is installed at `/Applications/LidPilot.app`.
+Developer ID team `L69774LN97`, hardened runtime, secure timestamps and
+deep/strict signatures were verified. The old app/helper were stopped and
+removed through native verified cleanup (Off/SleepDisabled=0); the replacement
+helper is Approved, build 20/protocol 2, healthy, with no recovery pending.
+The owner's prior manual Follow Lid session was restored only for its unexpired
+remaining time. Its new continuous deadline was checked not to exceed the
+original deadline; it was not silently renewed for another hour. The installed
+popover was read back showing the switch On/disabled, active protection and
+approximately 47 minutes remaining. Other preferences were preserved.
+
+Installed executable SHA-256:
+
+- App: `59985ca3bd49b915ccba6d796bfb0545ac46e4287400cdba1f321febae527299`
+- Helper: `c9e1b64b5e5d0bb5965a1049a3c7f582e759352b2a711213d679cca2c4abc45b`
+
+Build 20 is an Xcode override, keeping repository public release metadata at
+2.0.2/build 17. This remains a local signed, unnotarized candidate, with the
+Homebrew receipt/public artifacts untouched. Build 19 and its signed archive
+remain available for rollback; native renders and local logs remain under the
+documented ignored validation/build directories. Manual Lock, physical panel
+power and long-duration/other-display coverage retain the limits below.
+
+## Opt-in desktop availability candidate — October 24, 2026
+
+The owner explicitly requested preventing automatic screen locking during
+active closed-lid Codex sessions, and accepted that the built-in display may
+remain powered. This supersedes the earlier default display-drop behavior
+only for an opt-in session policy. Password settings, manual Lock, helper
+scope and safety limits remain unchanged.
+
+**Keep desktop available**, in Settings → General, defaults Off and is
+configured only while sessions/Agent Tasks are Off. It retains the existing
+public idle-display assertion across lid closure for active manual and task
+requests. Closed requests contribute to its deadline when opted in; the
+60-second renewable lease cap, normal Stop/expiry/safety/update/quit cleanup
+and launch-Off behavior remain. No lock-only private API, input simulation or
+password-preference change was added. It cannot unlock an already locked Mac.
+
+Apple documents that the display assertion prevents idle display sleep, but
+lid closure and other causes can still sleep the display. Therefore native
+closed-lid anti-lock success and physical panel state require observation.
+The option targets the exact display-idle lock path identified below; it is
+not a guarantee against every OS or managed security policy.
+
+Current source is uncommitted on `dev`, base
+`f55d6f7fdee4fb29900afde87ee3fad303559dfe`. Tested code diff SHA-256
+(`git diff --binary -- App Runtime Tests scripts/smoke-ui.sh`):
+`ae4c5fb7ad158e8fbd3fa92ce84c458f6ea09b0830789c6688866311c80af205`.
+**103 Runtime + 34 Core + 16 app tests** pass. Focused read-only review found
+no actionable issues with the new preference, deadlines, cleanup or helper
+boundary. Debug and Developer-ID-signed optimized Release build **19** passed,
+as did static checks and expanded native mock rendering/cleanup. Native mock
+interaction verified the switch, selected/active status, activation, disabled
+configuration during a session and normal Quit cleanup. Mock CLI/app IPC
+integration also passed. No public release is authorized.
+
+Signed build-19 executable SHA-256:
+
+- App: `d5cb4fea772cb895862f153bf67038b4112c541a980ba65ad53ecae32ca20809`
+- Helper: `d9a866a669b4478cfe4c63a515c85cb1ef7038644066871fd418612f60cbd297`
+
+Publisher team `L69774LN97`, secure timestamps, hardened runtime and deep/strict
+signatures verified. This is a local signed, unnotarized candidate. Build 19 is
+an Xcode override; the repository release metadata remains 2.0.2/build 17.
+
+Build 19 is now installed in place, with build 18 preserved for rollback.
+The owner explicitly confirmed enabling **Keep desktop available** and the
+native switch was turned On while Off. The replacement helper is Approved,
+build 19/protocol 2, with healthy journal, power read-back and watchdog status.
+The external-power/open-lid baseline had SleepDisabled=0 and no owned lease
+or recovery pending before the approved bounded test.
+
+On Mac16,13 with 24 GiB RAM, macOS 27.2 (26B118), external power and no external
+display, a four-minute Follow Lid session began at approximately **21:24:16
+Athens time**. Both system/display holds and the owned override were verified.
+Read-only sampling recorded 240 timestamps over 239.754 seconds, with a maximum
+gap of **1.054 seconds**. Lid closure appeared in the macOS log at 21:25:24;
+five-second lid sampling recorded **170 consecutive closed samples spanning
+169.507 seconds**, all with SleepDisabled=1. No display-dim lock request or
+locked-session event appeared during the active test interval. Codex continued
+issuing the read-only sampling/log tools while the lid was closed; no app status
+poll was used to renew protection during that interval.
+
+The timer then expired normally. App/helper status and independent read-back
+confirmed **Off, both assertions off, SleepDisabled=0, no lease/ownership or
+recovery pending**. The preference remains enabled for future sessions; the
+preference alone holds nothing while Off. Subsequent macOS logs show a
+display-dim lock at **21:29:25**, after that test deadline, and reopening at
+21:29:28. This establishes that ordinary automatic locking resumed after the
+hold ended, rather than an in-session failure.
+
+The owner then started a normal one-hour Follow Lid session at **21:29:47**
+and closed the lid at **21:29:50**. A second read-only recorder captured 120
+samples from 21:31:10–21:33:09, spanning **119.385 seconds**, all closed with
+SleepDisabled=1; the largest gap was **1.072 seconds**. No automatic-lock event
+appeared after that session started. Native accessibility reading and native
+window capture both remained available while the lid was observed closed,
+and Codex continued issuing tools. The owner subsequently confirmed:
+**“ok now it worked. it did not locked”**. This is a passing bounded closed-lid
+automatic-lock/desktop-availability check on the recorded setup.
+
+The existing one-hour session is preserved, with the preference enabled,
+healthy helper ownership and no recovery pending. It is not automatically
+extended or converted to indefinite operation. Physical backlight state,
+manual Lock and long-duration/other-display configurations remain unverified;
+no claim of electrical panel shutdown or universal workload compatibility is
+made. No manual Lock path or password preference was changed.
+
+Raw continuity, baseline/started/after-timer status and filtered lock events
+are retained in `release-private/local-validation/2026-10-24/desktop-hold/`.
+The signed candidate and original build-17/build-18 rollback archives remain
+under the same ignored local validation folder. No commit, push, notarization
+or publication was performed.
+
+## Local lock/display investigation and native polish — October 24, 2026
+
+### Live follow-up at 21:09–21:13 Athens time
+
+The owner reports continued locking and confirms a connected power cable.
+Fresh native helper/app status confirms **external power**, charging at 53%,
+Follow Lid active, both assertions on with the lid open, and a healthy owned
+build-18 helper lease with `SleepDisabled=1`. The current one-hour session began
+at 20:49:51; it had not expired or paused when inspected. No power controls or
+settings were changed during this follow-up; the owner's active session was
+preserved.
+
+Read-only macOS login/power logs identify this lock trigger: lid closed at
+20:49:59, then `LWDisplayWillSleepCallback` at 20:51:22, followed by
+`kLWLockFromDisplayDim` and the locked-session notification. An unlock completed
+at 21:09:00. The power log retains LidPilot's system-sleep assertion through
+this interval and shows no new system Sleep entry between the current session's
+start and the inspection. This supports **display sleep triggering macOS lock
+while system keep-awake remained active**, rather than a charger-triggered
+LidPilot safety stop. It does not prove physical backlight behavior or Codex
+workload continuity. The earlier helper-contention fix did not fix or change
+this macOS lock policy. Password/lock settings remain unchanged.
+
+For desktop automation that requires an available unlocked display, the
+supported existing mode is Keep Screen On with the lid open. Closed-lid work
+remains suitable only for workloads that tolerate the locked/unavailable
+desktop. Physical panel-off validation remains pending.
+
+### Earlier local implementation and installation evidence
+
+Local changes are based on `dev` at
+`f55d6f7fdee4fb29900afde87ee3fad303559dfe`, uncommitted and unpushed.
+The tested source diff over `App`, `Runtime`, `Tests` and `scripts/smoke-ui.sh`
+has SHA-256 `38202394b2351804cc60603241167956af17866caf606dc15d99f6093c89b15b`
+(`git diff --binary -- App Runtime Tests scripts/smoke-ui.sh`).
+
+The owner initially reported Follow Lid leaving the built-in display lit when
+closing it, then finding macOS locked when reopening later. At the initial
+inspection the cause was **unconfirmed**. Retained local diagnostics showed several sessions ending at
+their selected 30/60-minute deadlines, but cannot tie one to the reported
+incident. Ordinary lock is not a runtime safety predicate. User-session
+resignation still stops protection; it must not be reinterpreted as proof of
+ordinary screen locking. The app preserves macOS password/lock policy and
+cannot guarantee desktop automation behind a locked or unavailable display.
+No physical panel-off conclusion follows from the helper flag or assertions.
+
+One confirmed defect was concurrent Off-state inspections: the retained
+2,000-entry local log snapshot contained 1,164 unverified entries and 789 Off
+entries, including repeated helper-busy responses milliseconds apart. Off
+inspections now coalesce and use the existing operation queue, preventing
+contention with Start/Stop. Delayed success/error responses cannot overwrite
+newer state. Regression checks cover 30 concurrent refresh calls producing
+one inspection, later refresh admission, Start serialization and Stop races.
+System-sleep and active-user-session-change stops now have distinct reasons.
+
+Design Toolkit selected macOS SwiftUI patterns. The native interface exposes
+Until I stop directly, labels confirmed active modes separately from selection,
+clarifies countdown endings, refines settings/help and documents desktop lock
+limits. Only visible finite sessions create a periodic countdown schedule;
+hidden and indefinite sessions use static text. No fresh energy/CPU reduction
+percentage or ten-minute active performance pass is claimed. A read-only
+20.0008-second sample of the **old installed build 17, app only, Off** measured
+0.00124% inclusive CPU of one core and 61.52 MiB physical footprint. Its
+three-second stack sample was idle; this is not an active app/helper gate or a
+before/after benchmark.
+
+Validation passed with exit 0: **98 Runtime + 34 Core + 16 app tests**,
+Debug and optimized Release builds, static/project/release self-checks,
+expanded native mock captures (including custom/until/indefinite/paused states),
+mock activation/cleanup and CLI/app IPC integration. Actual isolated native
+interaction verified indefinite Start, mode switching with the end condition
+preserved, Off, More → Custom, Return-key Start, a decreasing finite countdown
+and Settings → Agent Tasks. Light/dark rendering was inspected; a duplicated
+menu chevron was corrected. VoiceOver and fresh accessibility-settings
+combinations remain unverified. Preview Quit exited 0 after verified Off;
+its final AX read timed out because the app had exited.
+
+With explicit owner approval, **2.0.2 local build 18** was built using the existing
+Developer ID identity, with build 18 supplied as an Xcode build-setting override;
+the repository's public release version/build remain unchanged. The original
+app and preferences were backed up, the old helper was removed through native
+Settings, and the new app was installed in place at `/Applications/LidPilot.app`.
+The owner separately authorized helper removal/re-enabling after automatic
+approval review required exact authorization. The replacement helper is
+Approved, build 18, protocol 2, with healthy journal/read-back/watchdog status.
+Deep/strict signatures, hardened runtime, signing timestamps and publisher team
+`L69774LN97` were verified. This local candidate was **not notarized or published**;
+the Homebrew receipt and public assets were not changed.
+
+Installed executable SHA-256:
+
+- App: `a08753498e713bf4334f220ac6c1911cebdb8a3b7a2f64baf3f1a6582fe7d93b`
+- Helper: `c04b5a93f2d09d83294820842f91a80e9f4e16a67c3a657ea4c839702edc58f5`
+
+The owner approved a two-minute plugged-in physical check, but could not connect
+a charger at the time. The helper's baseline reported battery power at 55%,
+nominal thermal state, Low Power Mode off, lid open and no external display.
+**No real keep-awake session or closed-lid experiment was started.** Physical
+backlight, locked-desktop behavior, long-session continuity and fresh active
+performance remain pending. Final independent read-back confirmed
+**Off, SleepDisabled=0, both assertions off, no lease, no ownership and no
+recovery pending**.
+
+Rollback archive, preferences and signed candidate are retained under
+`release-private/local-validation/2026-10-24/` (ignored by Git). Build/test logs,
+status snapshots and the live stack/counter sample are under `/private/tmp/`;
+native renders are in `build/native-previews/`. The original installed bundle
+is also retained at `/private/tmp/lidpilot-rollback-20261024/LidPilot.app`.
+
 ## Homebrew upgrade follow-up — September 29, 2026
 
 Preparing the owner's installed upgrade exposed a normal-quit regression in

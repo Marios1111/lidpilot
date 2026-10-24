@@ -83,7 +83,7 @@ does not resume a safety-paused session without an explicit Start.
 Smart and Closed require a known lid state, known Low Power Mode state, and a
 known nonnegative external-display count. Smart and Closed are armed while the
 lid is open; the helper does not wait for a closed event before acquiring its
-lease. The app drops Smart's display assertion on close and rechecks the lid,
+lease. By default the app drops Smart's display assertion on close and rechecks the lid,
 safety snapshot, topology, and helper lease before restoring it on reopen.
 
 When starting Smart or Closed, `requireOpenLid` is true. A closed or unknown lid
@@ -97,6 +97,18 @@ while held. That means the desired “dim normally but never turn off” behavio
 is not delivered by a hidden fallback; it remains G1 validation work. The app
 does not write brightness, disable automatic brightness, fake input, or use a
 black overlay as panel-off evidence.
+
+The owner's October 24 request explicitly authorizes optional session-scoped
+idle-lock prevention, accepting that the built-in display may remain on.
+**Prevent automatic lock** (formerly **Keep desktop available**) defaults Off
+and uses only the existing public
+idle-display assertion. With this option, Smart/Closed retain that assertion
+across lid closure, with every contributing request bounded by its deadline
+and the existing maximum 60-second renewable assertion lease. Configuration is
+blocked during active sessions, armed hooks, stopping and updates. No password
+setting, manual-lock path, helper authentication or safety cutoff is weakened.
+It never unlocks a locked Mac, and manual Lock must still succeed. The feature
+requires native validation rather than claiming a guaranteed lock-only API.
 
 ## Global `SleepDisabled` ownership
 
