@@ -82,6 +82,22 @@ import LidPilotCore
         #expect(a.systemTimeout == 60 && a.screenTimeout == 10)
     }
 
+    @Test func optedInClosedTaskRetainsDisplayAfterShorterDisplayRequestEnds() async throws {
+        let (c, p, a, _) = setup()
+        let options = WorkloadOptions(staleAfter: 60)
+        try c.setKeepsDesktopAvailable(true)
+        await c.start(mode: .display, duration: .seconds(10), policy: SafetyPolicy())
+        try await c.handleWorkload(event(p, id: "build"), mode: .closed, policy: SafetyPolicy(), options: options, explicitStart: true)
+        #expect(a.screenTimeout == 60)
+        p.time += 11; p.lid = .closed
+        await c.reconcile()
+        #expect(c.manualMode == nil && c.effectiveMode == .closed && a.state.display == .on)
+        #expect(a.screenTimeout == 49)
+        try await c.handleWorkload(event(p, id: "build", sequence: 2, state: .finished, exit: 0), mode: .closed,
+            policy: SafetyPolicy(), options: options)
+        #expect(c.phase == .off && a.state == .off && p.flag == .off)
+    }
+
     @Test func disarmingAgentHooksPreservesCommandAndManualRequests() async throws {
         let (c, p, _, _) = setup()
         await c.start(mode: .display, duration: .seconds(300), policy: SafetyPolicy())

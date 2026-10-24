@@ -47,7 +47,7 @@ public extension PowerAssertions {
               displayTimeout.isFinite, displayTimeout > 0, displayTimeout <= 60 else {
             throw RuntimeFailure.unavailable("Invalid assertion lease duration.")
         }
-        // On lid close, drop the display assertion before doing any other work.
+        // Drop an unrequested display hold before doing any other work.
         if !display { try remove(&displayID) }
         if !system { try remove(&systemID) }
         if system { try maintain(&systemID, type: kIOPMAssertionTypePreventUserIdleSystemSleep as CFString, timeout: timeout) }

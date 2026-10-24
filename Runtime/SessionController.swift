@@ -18,6 +18,7 @@ public enum SessionPhase: String, Codable, Sendable {
     public private(set) var generation: UInt64 = 1
     public private(set) var updateBarrier = false
     public var helperAvailable = false
+    public private(set) var keepsDesktopAvailable = false
     public var onEvent: ((SessionPhase, String) -> Void)?
     public var onOwnershipChange: ((Bool) -> Void)?
 
@@ -42,6 +43,7 @@ public enum SessionPhase: String, Codable, Sendable {
     private var policy = SafetyPolicy()
     private var operation: Task<Void, Never>?
     private var reconciling = false
+    private var refreshingWhileOff = false
     private var cleanupVerified = true
 
     public init(clock: any RuntimeClock, sampler: any PowerSampling,
@@ -65,14 +67,31 @@ public enum SessionPhase: String, Codable, Sendable {
     public var canStart: Bool { !updateBarrier && phase != .recovery && phase != .stopping }
     public var hasSession: Bool { requestedMode != nil || phase == .starting || phase == .active }
 
+    /// Configure before admission so every overlapping request has one policy.
+    /// This holds a public idle-display assertion; it never unlocks a session
+    /// or changes the user's password/lock preferences.
+    public func setKeepsDesktopAvailable(_ enabled: Bool) throws {
+        guard !hasSession, !integrationsArmed, !updateBarrier, phase != .stopping else {
+            throw RuntimeFailure.unavailable("Turn off sessions and Agent Tasks before changing desktop availability.")
+        }
+        keepsDesktopAvailable = enabled
+    }
+
     public func refreshWhileOff() async {
-        guard !hasSession, phase != .stopping, !updateBarrier else { return }
+        guard !refreshingWhileOff, !hasSession, phase != .stopping, !updateBarrier else { return }
+        refreshingWhileOff = true
+        defer { refreshingWhileOff = false }
         let token = generation
-        observation = sampler.sample(flag: helperState?.flag ?? .unknown)
-        if helperAvailable {
+        // Notifications and the periodic refresh can overlap. Share the helper
+        // operation queue with Start/Stop so inspection cannot consume its single
+        // admission slot while an acquire or release is being sent.
+        await enqueue { [self] in
+            guard generation == token, !hasSession, phase != .stopping, !updateBarrier else { return }
+            observation = sampler.sample(flag: helperState?.flag ?? .unknown)
+            guard helperAvailable else { return }
             do {
                 let response = try await helper.send(WireRequest(operation: .inspect, sessionID: sessionID, generation: token))
-                guard generation == token, !hasSession else { return }
+                guard generation == token, !hasSession, phase != .stopping, !updateBarrier else { return }
                 helperState = response
                 observation = response.sample ?? observation
                 guard response.success || response.ownsOverride || response.recoveryPending else {
@@ -85,7 +104,7 @@ public enum SessionPhase: String, Codable, Sendable {
                 }
                 onOwnershipChange?(helperMayOwn)
             } catch {
-                guard generation == token else { return }
+                guard generation == token, !hasSession, phase != .stopping, !updateBarrier else { return }
                 if helperMayOwn { publish(.recovery, error.localizedDescription) }
                 else { publish(.unverified, "Helper status is unverified: \(error.localizedDescription) Keep Screen On remains available.") }
             }
@@ -276,10 +295,10 @@ public enum SessionPhase: String, Codable, Sendable {
                     throw RuntimeFailure.unavailable(Self.explanation(reason))
                 }
                 observation = current
-                assertions = try power.apply(system: true, display: Self.displayHeld(mode, lid: current.lid),
+                assertions = try power.apply(system: true, display: displayHeld(mode, lid: current.lid),
                     timeout: assertionTimeout(), displayTimeout: assertionTimeout(displayOnly: true))
                 effectiveMode = mode
-                publish(.active, Self.activeMessage(mode, lid: current.lid))
+                publish(.active, activeMessage(mode, lid: current.lid))
             } catch {
                 guard token == generation else { return }
                 clearRequests()
@@ -298,8 +317,9 @@ public enum SessionPhase: String, Codable, Sendable {
 
     private func assertionTimeout(displayOnly: Bool = false) -> Double {
         // Each capability lasts for its last relevant request, independently.
-        // A long Closed task cannot extend a shorter display request on a stall.
-        let holds = currentHolds().filter { !displayOnly || $0.mode != .closed }
+        // Closed requests contribute to the display lease only when the user
+        // opted into keeping the desktop available for every active request.
+        let holds = currentHolds().filter { !displayOnly || keepsDesktopAvailable || $0.mode != .closed }
         return max(0.1, min(60, holds.map { $0.deadline.remaining(at: clock.now()) ?? 60 }.max() ?? 0.1))
     }
 
@@ -357,7 +377,7 @@ public enum SessionPhase: String, Codable, Sendable {
         }
         guard phase == .active else { return }
         // Drop a Smart display hold immediately on close, before a potentially delayed XPC reply.
-        if mode == .smart, snapshot.lid != .open {
+        if mode == .smart, snapshot.lid != .open, !keepsDesktopAvailable {
             do { assertions = try power.apply(system: true, display: false, timeout: assertionTimeout()) }
             catch { await stop(reason: error.localizedDescription, safety: true); return }
         }
@@ -381,9 +401,9 @@ public enum SessionPhase: String, Codable, Sendable {
                     throw RuntimeFailure.unavailable(Self.explanation(reason))
                 }
                 observation = current
-                assertions = try power.apply(system: true, display: Self.displayHeld(mode, lid: current.lid),
+                assertions = try power.apply(system: true, display: displayHeld(mode, lid: current.lid),
                                              timeout: assertionTimeout(), displayTimeout: assertionTimeout(displayOnly: true))
-                message = Self.activeMessage(mode, lid: current.lid)
+                message = activeMessage(mode, lid: current.lid)
             } catch { reconcileError = error }
         }
         if let reconcileError, token == generation {
@@ -488,10 +508,13 @@ public enum SessionPhase: String, Codable, Sendable {
         message = text
         onEvent?(phase, text)
     }
-    private static func displayHeld(_ mode: Mode, lid: LidState) -> Bool {
-        mode == .display || (mode == .smart && lid == .open)
+    private func displayHeld(_ mode: Mode, lid: LidState) -> Bool {
+        keepsDesktopAvailable || mode == .display || (mode == .smart && lid == .open)
     }
-    private static func activeMessage(_ mode: Mode, lid: LidState) -> String {
+    private func activeMessage(_ mode: Mode, lid: LidState) -> String {
+        if keepsDesktopAvailable {
+            return "Idle display sleep inhibited. Manual Lock still works."
+        }
         if mode == .display { return "Mac and screen kept available. Brightness stays under your control." }
         if mode == .smart, lid == .open { return "Screen available. Ready for the lid to close." }
         return "Mac kept running. Display follows macOS policy."

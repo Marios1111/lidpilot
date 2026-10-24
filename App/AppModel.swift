@@ -58,6 +58,7 @@ enum DurationChoice: String, CaseIterable, Identifiable {
     var changingAgentTasks = false
     private(set) var controlAvailable = false
     var controlError: String?
+    private(set) var desktopAvailabilityError: String?
     var openPanel: (() -> Void)?
     var openAgentSettings: (() -> Void)?
     var onStatusChange: (() -> Void)?
@@ -117,6 +118,7 @@ enum DurationChoice: String, CaseIterable, Identifiable {
                                        recoveryHint: defaults.bool(forKey: "cleanupPending"))
         #endif
         controller.helperAvailable = closedLidReady
+        try? controller.setKeepsDesktopAvailable(defaults.bool(forKey: "keepsDesktopAvailable"))
         controller.onOwnershipChange = { [weak self] owned in self?.defaults.set(owned, forKey: "cleanupPending") }
         controller.onEvent = { [weak self] phase, message in self?.sessionChanged(phase, message) }
         controller.onWorkloadCompletion = { [weak self] message in self?.notifyWorkload(message) }
@@ -131,9 +133,9 @@ enum DurationChoice: String, CaseIterable, Identifiable {
                 else { await self.controller.refreshWhileOff() }
             }
         }
-        observer?.onSleep = { [weak self] in
+        observer?.onStop = { [weak self] reason in
             guard let self, self.controller.hasSession else { return }
-            Task { await self.controller.stop(reason: "Stopped for macOS sleep or a user-session change.", safety: true) }
+            Task { await self.controller.stop(reason: reason, safety: true) }
         }
         updater = UpdateCoordinator(model: self)
         shortcuts = GlobalShortcuts(defaults: defaults, enabled: !isPreview) { [weak self] action in
@@ -152,6 +154,14 @@ enum DurationChoice: String, CaseIterable, Identifiable {
     }
 
     var policy: SafetyPolicy { SafetyPolicy(batteryFloor: batteryFloor, allowBattery: allowBattery, respectLowPowerMode: respectLowPower) }
+    var keepsDesktopAvailable: Bool { controller.keepsDesktopAvailable }
+    func setKeepsDesktopAvailable(_ enabled: Bool) {
+        do {
+            try controller.setKeepsDesktopAvailable(enabled)
+            defaults.set(enabled, forKey: "keepsDesktopAvailable")
+            desktopAvailabilityError = nil
+        } catch { desktopAvailabilityError = error.localizedDescription }
+    }
     var closedLidReady: Bool { isPreview || helper.enabled }
     var sessionDuration: SessionDuration {
         switch duration {
@@ -212,6 +222,7 @@ enum DurationChoice: String, CaseIterable, Identifiable {
             "Thermal (last observation): \(snapshot?.thermal.rawValue ?? "unknown")",
             "System assertion: \(controller.assertions.system.rawValue)",
             "Display assertion: \(controller.assertions.display.rawValue)",
+            "Keep desktop available: \(keepsDesktopAvailable ? "on" : "off")",
             "Sleep override (last read-back): \(controller.helperState?.flag.rawValue ?? "unknown")",
             "Physical panel power: not measured"
         ]

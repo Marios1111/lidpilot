@@ -7,7 +7,7 @@ import LidPilotRuntime
 
 @MainActor final class StateObserver {
     var onChange: (() -> Void)?
-    var onSleep: (() -> Void)?
+    var onStop: ((String) -> Void)?
     private var subscriptions: [(NotificationCenter, NSObjectProtocol)] = []
     private var powerSource: CFRunLoopSource?
     private var notificationPort: IONotificationPortRef?
@@ -19,8 +19,10 @@ import LidPilotRuntime
         observe(workspace, NSWorkspace.didWakeNotification)
         observe(workspace, NSWorkspace.screensDidWakeNotification)
         observe(workspace, NSWorkspace.sessionDidBecomeActiveNotification)
-        observe(workspace, NSWorkspace.sessionDidResignActiveNotification, sleep: true)
-        observe(workspace, NSWorkspace.willSleepNotification, sleep: true)
+        observe(workspace, NSWorkspace.sessionDidResignActiveNotification,
+                stopReason: "Stopped because the active macOS user session changed.")
+        observe(workspace, NSWorkspace.willSleepNotification,
+                stopReason: "Stopped because macOS is going to sleep.")
         observe(.default, NSApplication.didChangeScreenParametersNotification)
         observe(.default, ProcessInfo.thermalStateDidChangeNotification)
         observe(.default, Notification.Name.NSProcessInfoPowerStateDidChange)
@@ -57,13 +59,13 @@ import LidPilotRuntime
         }
     }
 
-    private func observe(_ center: NotificationCenter, _ name: Notification.Name, sleep: Bool = false) {
+    private func observe(_ center: NotificationCenter, _ name: Notification.Name, stopReason: String? = nil) {
         let token = center.addObserver(forName: name, object: nil, queue: .main) { [weak self] _ in
             Task { @MainActor in
                 #if LIDPILOT_PROFILE
-                PerformanceTrace.event("observer", fields: ["source": name.rawValue, "sleep": String(sleep)])
+                PerformanceTrace.event("observer", fields: ["source": name.rawValue, "sleep": String(stopReason != nil)])
                 #endif
-                if sleep { self?.onSleep?() } else { self?.onChange?() }
+                if let stopReason { self?.onStop?(stopReason) } else { self?.onChange?() }
             }
         }
         subscriptions.append((center, token))
