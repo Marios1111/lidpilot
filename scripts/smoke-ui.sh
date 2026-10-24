@@ -37,6 +37,9 @@ except subprocess.TimeoutExpired:
 if result.returncode or 'Native mock views rendered; session ended Off.' not in result.stdout:
     raise SystemExit('Native mock smoke failed; see build/native-previews/smoke.log.')
 names = ['panel-off-light', 'panel-off-dark', 'panel-active', 'keep-screen-on', 'keep-mac-running', 'settings', 'welcome',
+         'panel-duration-indefinite', 'panel-duration-custom', 'panel-duration-until', 'panel-active-indefinite', 'panel-paused',
+         'settings-desktop-availability', 'panel-desktop-availability',
+         'panel-lock-prevention-selected', 'panel-desktop-availability-dark',
          'panel-tasks-light', 'panel-tasks-dark', 'panel-agent-ready', 'panel-agent-visible-while-on', 'panel-agent-hidden',
          'settings-agents', 'settings-agents-dark', 'settings-developer', 'settings-developer-dark', 'settings-shortcuts', 'settings-updates', 'settings-diagnostics',
          'product-off', 'product-follow-lid', 'product-keep-screen-on', 'product-keep-mac-running']

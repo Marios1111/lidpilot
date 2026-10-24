@@ -11,21 +11,48 @@ struct AgentTaskControl: View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
                 Label("Agent Tasks", systemImage: "bolt.circle")
-                    .font(.system(size: 13, weight: .medium))
+                    .font(.subheadline.weight(.semibold))
                 Spacer()
                 Toggle("Keep awake for agent tasks", isOn: Binding(get: { model.controller.integrationsArmed }, set: { model.armTasks($0) }))
                     .labelsHidden().toggleStyle(.switch).controlSize(.small)
                     .disabled(model.changingAgentTasks || (!model.controller.integrationsArmed && !model.canEnableAgentTasks))
+                    .accessibilityLabel("Keep awake for agent tasks")
+                    .accessibilityHint(model.agentTaskHint)
             }
-            Text(model.agentTaskStatus).font(.system(size: 11, weight: .medium))
-                .foregroundStyle(model.controller.protectedWorkloads.contains { $0.source != .command } ? Color.green : .secondary)
-                .fixedSize(horizontal: false, vertical: true)
-            Text(model.agentTaskHint).font(.system(size: 10.5)).foregroundStyle(.secondary)
+            HStack(alignment: .firstTextBaseline, spacing: 7) {
+                Image(systemName: statusSymbol)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(statusColor)
+                    .accessibilityHidden(true)
+                Text(model.agentTaskStatus)
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(statusColor)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .accessibilityElement(children: .combine)
+            Text(model.agentTaskHint).font(.caption).foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
             if let error = model.controlError, model.cliEnabled {
                 Text(error).font(.caption).foregroundStyle(.orange).fixedSize(horizontal: false, vertical: true)
             }
         }
+    }
+
+    private var hasProtectedAgentTask: Bool {
+        model.controller.protectedWorkloads.contains { $0.source != .command }
+    }
+    private var hasUnknownAgentTask: Bool {
+        model.controller.workloads.records.contains { $0.source != .command && $0.state == .unknown }
+    }
+    private var statusSymbol: String {
+        if hasProtectedAgentTask { return "bolt.fill" }
+        if hasUnknownAgentTask { return "questionmark.circle.fill" }
+        return model.controller.integrationsArmed ? "clock" : "circle"
+    }
+    private var statusColor: Color {
+        if hasProtectedAgentTask { return .green }
+        if hasUnknownAgentTask { return .orange }
+        return model.controller.integrationsArmed ? .accentColor : .secondary
     }
 }
 
@@ -44,14 +71,19 @@ struct WorkloadActivityView: View {
     }
     var body: some View {
         ForEach(Array(records.prefix(limit))) { record in
-            HStack(alignment: .firstTextBaseline, spacing: 6) {
+            HStack(alignment: .firstTextBaseline, spacing: 7) {
                 Image(systemName: protectedIDs.contains(record.id) ? "bolt.fill" : (record.state == .unknown ? "questionmark.circle" : "circle"))
-                    .foregroundStyle(record.state == .unknown ? Color.orange : .secondary)
+                    .foregroundStyle(protectedIDs.contains(record.id) ? Color.green : (record.state == .unknown ? Color.orange : Color.secondary))
                     .accessibilityHidden(true)
                 Text(record.source.agentTitle + (record.taskID == nil ? "" : " · subtask"))
+                    .lineLimit(1)
+                    .truncationMode(.middle)
                 Spacer(minLength: 4)
-                Text(stateLabel(record)).foregroundStyle(.secondary).multilineTextAlignment(.trailing)
-            }.font(.system(size: 11)).accessibilityElement(children: .combine)
+                Text(stateLabel(record))
+                    .font(.caption)
+                    .foregroundStyle(record.state == .unknown ? Color.orange : Color.secondary)
+                    .multilineTextAlignment(.trailing)
+            }.font(.caption).accessibilityElement(children: .combine)
         }
         if records.count > limit {
             Text("\(records.count - limit) more · all task details in Diagnostics")
@@ -87,6 +119,8 @@ struct AgentTasksSettings: View {
             connection(.codex)
         }
         Section("Task behavior") {
+            Text("For desktop automation, turn on Prevent automatic lock in the menu bar before starting. The display may stay on; manual Lock still works. It cannot unlock an already locked Mac.")
+                .font(.caption).foregroundStyle(.secondary)
             Picker("While an agent works", selection: $model.workloadMode) {
                 ForEach(Mode.allCases, id: \.self) { Text($0.title).tag($0) }
             }.disabled(configurationLocked)

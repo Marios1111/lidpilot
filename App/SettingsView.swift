@@ -37,34 +37,79 @@ struct SettingsView: View {
 
     var body: some View {
         HStack(spacing: 0) {
-            VStack(alignment: .leading, spacing: 6) {
-                HStack(spacing: 9) { PilotMark(size: 28); Text("LidPilot").font(.system(size: 17, weight: .semibold)) }.padding(.bottom, 18)
+            VStack(alignment: .leading, spacing: 5) {
+                HStack(spacing: 9) {
+                    PilotMark(size: 30)
+                    Text("LidPilot").font(.title3.weight(.semibold))
+                }
+                .padding(.bottom, 14)
                 ForEach(SettingsSection.allCases) { item in
                     Button { section = item } label: {
-                        Label(item.rawValue, systemImage: item.icon).font(.system(size: 12, weight: .medium))
-                            .frame(maxWidth: .infinity, alignment: .leading).padding(.vertical, 10).padding(.horizontal, 10)
-                            .background(section == item ? Color.accentColor.opacity(0.12) : .clear, in: RoundedRectangle(cornerRadius: 8))
-                            .overlay {
-                                if section == item && contrast == .increased {
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .strokeBorder(Color.primary.opacity(0.75), lineWidth: 1.5)
-                                }
+                        HStack(spacing: 10) {
+                            Image(systemName: item.icon)
+                                .font(.system(size: 13, weight: section == item ? .semibold : .regular))
+                                .foregroundStyle(section == item ? Color.accentColor : Color.secondary)
+                                .frame(width: 17)
+                                .accessibilityHidden(true)
+                            Text(item.rawValue)
+                                .font(.body.weight(section == item ? .medium : .regular))
+                            Spacer(minLength: 2)
+                            if section == item {
+                                Image(systemName: "chevron.right")
+                                    .font(.caption2.weight(.semibold))
+                                    .foregroundStyle(Color.accentColor)
+                                    .accessibilityHidden(true)
                             }
-                    }.buttonStyle(.plain).accessibilityAddTraits(section == item ? .isSelected : [])
+                        }
+                        .frame(maxWidth: .infinity, minHeight: 31, alignment: .leading)
+                        .padding(.horizontal, 10)
+                        .background(section == item ? Color.accentColor.opacity(0.11) : .clear, in: RoundedRectangle(cornerRadius: 8))
+                            .overlay {
+                                RoundedRectangle(cornerRadius: 8)
+                                    .strokeBorder(section == item ? Color.accentColor.opacity(contrast == .increased ? 1 : 0.55) : .clear,
+                                                  lineWidth: contrast == .increased ? 1.5 : 1)
+                            }
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(item.rawValue)
+                    .accessibilityAddTraits(section == item ? .isSelected : [])
                 }
                 Spacer()
-                VStack(alignment: .leading, spacing: 6) {
-                    Label(model.controller.phase.title, systemImage: model.controller.hasSession ? "bolt.circle" : "power")
-                        .font(.caption.weight(.medium))
-                    Text("Always starts Off").font(.caption2).foregroundStyle(.secondary)
-                }.padding(.horizontal, 10)
-            }.padding(18).frame(width: 185).background(.regularMaterial)
+                VStack(alignment: .leading, spacing: 5) {
+                    HStack(spacing: 7) {
+                        Circle().fill(model.controller.integrationsArmed && !model.controller.hasSession ? Color.accentColor : model.controller.phase.color)
+                            .frame(width: 7, height: 7)
+                        Text(model.menuBarStatus).font(.caption.weight(.semibold))
+                    }
+                    Text("Launches with sessions Off")
+                        .font(.caption2).foregroundStyle(.secondary)
+                }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 9)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color.primary.opacity(0.04), in: RoundedRectangle(cornerRadius: 9))
+            }
+            .padding(16)
+            .frame(width: 188)
+            .background(.regularMaterial)
             Divider()
             VStack(alignment: .leading, spacing: 0) {
-                VStack(alignment: .leading, spacing: 5) {
-                    Text(section.rawValue).font(.title2.weight(.semibold))
-                    Text(section.detail).font(.subheadline).foregroundStyle(.secondary)
-                }.padding(.horizontal, 24).padding(.top, 24).padding(.bottom, 4)
+                HStack(alignment: .center, spacing: 12) {
+                    Image(systemName: section.icon)
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundStyle(Color.accentColor)
+                        .frame(width: 36, height: 36)
+                        .background(Color.accentColor.opacity(0.1), in: RoundedRectangle(cornerRadius: 11))
+                        .accessibilityHidden(true)
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(section.rawValue).font(.title2.weight(.semibold))
+                        Text(section.detail).font(.subheadline).foregroundStyle(.secondary)
+                    }
+                    Spacer(minLength: 0)
+                }
+                .padding(.horizontal, 24)
+                .padding(.top, 22)
+                .padding(.bottom, 5)
                 Form {
                     switch section {
                     case .general: general
@@ -79,7 +124,7 @@ struct SettingsView: View {
                 }.formStyle(.grouped).scrollContentBackground(.hidden)
             }.frame(width: 520)
         }
-        .frame(height: 590)
+        .frame(height: 600)
         .background(Color(nsColor: .windowBackgroundColor))
         .onAppear {
             if model.controller.phase == .recovery { section = .helper }
@@ -138,6 +183,18 @@ struct SettingsView: View {
                 }))
                 Text("Login and updates always open LidPilot Off.").font(.caption).foregroundStyle(.secondary)
                 if let error = model.loginError { Text(error).font(.caption).foregroundStyle(.orange) }
+            }
+            Section("Desktop automation") {
+                Toggle("Prevent automatic lock", isOn: Binding(
+                    get: { model.keepsDesktopAvailable },
+                    set: { model.setKeepsDesktopAvailable($0) }))
+                    .disabled(model.controller.hasSession || model.controller.integrationsArmed || model.controller.updateBarrier || model.controller.phase == .stopping)
+                    .accessibilityHint("The same choice is available in the menu-bar popover. Manual Lock remains available.")
+                Text("During active sessions, prevent idle display sleep even with the lid closed. This targets automatic locking caused by display sleep; the built-in display may stay on. Manual Lock still works, and password settings stay unchanged.")
+                    .font(.caption).foregroundStyle(.secondary)
+                Text("Turn off sessions and Agent Tasks before changing this option. Start while unlocked. Closed-lid behavior must be checked on your Mac.")
+                    .font(.caption).foregroundStyle(.secondary)
+                if let error = model.desktopAvailabilityError { Text(error).font(.caption).foregroundStyle(.orange) }
             }
         }
     }

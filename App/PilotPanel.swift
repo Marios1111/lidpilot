@@ -17,23 +17,22 @@ struct PilotPanel: View {
     @State private var visible = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 11) {
             HStack(spacing: 10) {
-                PilotMark(size: 32)
+                PilotMark(size: 34)
                 VStack(alignment: .leading, spacing: 2) {
                     Text("LidPilot").font(.system(size: 18, weight: .semibold))
-                    Text("A little more time awake.").font(.system(size: 10)).foregroundStyle(.secondary)
+                    Text("A clear way to stay awake.").font(.caption).foregroundStyle(.secondary)
                 }
                 Spacer()
                 HStack(spacing: 5) {
-                    Circle().fill(model.controller.integrationsArmed && !model.controller.hasSession ? Color.accentColor : model.controller.phase.color).frame(width: 5, height: 5)
-                    Text(model.menuBarStatus).font(.system(size: 10, weight: .medium))
+                    Circle().fill(model.controller.integrationsArmed && !model.controller.hasSession ? Color.accentColor : model.controller.phase.color).frame(width: 6, height: 6)
+                    Text(model.menuBarStatus).font(.caption.weight(.medium))
                 }
-                .padding(.horizontal, 9).padding(.vertical, 5)
-                .background(Color.primary.opacity(0.045), in: Capsule())
+                .padding(.horizontal, 9).padding(.vertical, 6)
+                .background(Color.primary.opacity(0.05), in: Capsule())
                 .accessibilityElement(children: .combine)
             }
-            .padding(.bottom, 2)
 
             #if DEBUG
             if model.isPreview && showsPreviewNotice {
@@ -42,48 +41,107 @@ struct PilotPanel: View {
             }
             #endif
 
-            VStack(spacing: 8) {
+            VStack(spacing: 7) {
                 ForEach(Mode.allCases, id: \.self) { mode in
                     modeCard(mode)
                 }
             }
             .disabled(model.controller.updateBarrier || model.controller.phase == .stopping)
 
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: 5) {
+                Toggle(isOn: Binding(get: { model.keepsDesktopAvailable }, set: { model.setKeepsDesktopAvailable($0) })) {
+                    Label("Prevent automatic lock", systemImage: model.keepsDesktopAvailable ? "lock.open" : "lock")
+                        .font(.subheadline.weight(.medium))
+                }
+                .toggleStyle(.switch).controlSize(.small)
+                .disabled(model.controller.hasSession || model.controller.integrationsArmed || model.controller.updateBarrier || model.controller.phase == .stopping)
+                .accessibilityLabel("Prevent automatic screen lock during sessions")
+                .accessibilityHint("Choose before starting. Off allows normal locking with the lid closed. Manual Lock remains available.")
+                Text(model.keepsDesktopAvailable
+                     ? "For computer use · display may stay on."
+                     : "Allow normal locking with the lid closed.")
+                    .font(.caption).foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                if model.controller.hasSession || model.controller.integrationsArmed {
+                    Text("Turn Off before changing this choice.")
+                        .font(.caption2).foregroundStyle(.secondary)
+                }
+                if let error = model.desktopAvailabilityError {
+                    Text(error).font(.caption).foregroundStyle(.orange)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(11)
+            .background(Color.primary.opacity(0.035), in: RoundedRectangle(cornerRadius: 10))
+
+            VStack(alignment: .leading, spacing: 9) {
                 HStack {
-                    Text("MANUAL SESSION").font(.system(size: 10, weight: .semibold)).tracking(0.8).foregroundStyle(.secondary)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("SESSION LENGTH").font(.caption2.weight(.semibold)).tracking(0.7).foregroundStyle(.secondary)
+                        if model.controller.manualMode != nil {
+                            Text(model.controller.manualRemaining == nil ? "Protection stays on until you turn it off" : "Protection ends when this timer runs out")
+                                .font(.caption2).foregroundStyle(.secondary)
+                        }
+                    }
                     Spacer()
-                    if model.controller.manualMode != nil {
-                        TimelineView(.animation(minimumInterval: 1, paused: !visible)) { _ in
+                    if model.controller.manualMode != nil, model.controller.manualRemaining != nil {
+                        if visible {
+                            TimelineView(.periodic(from: .now, by: 1)) { _ in
+                                #if LIDPILOT_PROFILE
+                                let _ = PerformanceTrace.event("ui_timeline_render", fields: ["visible": String(visible)])
+                                #endif
+                                Text(remainingText).font(.subheadline.weight(.medium).monospacedDigit()).foregroundStyle(.primary)
+                            }
+                        } else {
                             #if LIDPILOT_PROFILE
                             let _ = PerformanceTrace.event("ui_timeline_render", fields: ["visible": String(visible)])
                             #endif
-                            Text(remainingText).font(.subheadline.monospacedDigit()).foregroundStyle(.secondary)
+                            Text(remainingText).font(.subheadline.weight(.medium).monospacedDigit()).foregroundStyle(.primary)
                         }
+                    } else if model.controller.manualMode != nil {
+                        Text("Until you stop").font(.subheadline.weight(.medium)).foregroundStyle(.primary)
                     } else {
-                        Text(model.duration.title).font(.subheadline).foregroundStyle(.secondary)
+                        Text(durationSummary).font(.subheadline.weight(.medium)).foregroundStyle(.primary)
                     }
                 }
-                HStack(spacing: 6) {
-                    ForEach([DurationChoice.halfHour, .hour, .twoHours, .fourHours]) { choice in
+                HStack(spacing: 5) {
+                    ForEach([DurationChoice.halfHour, .hour, .twoHours]) { choice in
                         Button {
                             model.duration = choice
                         } label: {
-                            Text(shortTitle(choice)).font(.system(size: 12, weight: .medium))
+                            Text(shortTitle(choice)).font(.caption.weight(.medium))
                                 .frame(maxWidth: .infinity).padding(.vertical, 7)
-                                .background(model.duration == choice ? Color.accentColor.opacity(0.12) : Color.primary.opacity(0.04), in: RoundedRectangle(cornerRadius: 7))
-                                .overlay(RoundedRectangle(cornerRadius: 7).strokeBorder(model.duration == choice ? Color.accentColor.opacity(0.65) : .clear))
+                                .background(model.duration == choice ? Color.accentColor.opacity(0.13) : Color.primary.opacity(0.045), in: RoundedRectangle(cornerRadius: 8))
+                                .overlay(RoundedRectangle(cornerRadius: 8).strokeBorder(model.duration == choice ? Color.accentColor.opacity(contrast == .increased ? 1 : 0.6) : .clear, lineWidth: 1))
                         }
                         .buttonStyle(.plain)
                         .accessibilityLabel(choice.title)
                         .accessibilityAddTraits(model.duration == choice ? .isSelected : [])
                     }
+                    Button { model.duration = .indefinite } label: {
+                        Text("Until I stop")
+                            .font(.caption.weight(.medium))
+                            .frame(minWidth: 74, minHeight: 28)
+                            .background(model.duration == .indefinite ? Color.accentColor.opacity(0.13) : Color.primary.opacity(0.045), in: RoundedRectangle(cornerRadius: 8))
+                            .overlay(RoundedRectangle(cornerRadius: 8).strokeBorder(model.duration == .indefinite ? Color.accentColor.opacity(contrast == .increased ? 1 : 0.6) : .clear, lineWidth: 1))
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Until I stop")
+                    .accessibilityAddTraits(model.duration == .indefinite ? .isSelected : [])
                     Menu {
-                        ForEach([DurationChoice.custom, .until, .indefinite]) { choice in
-                            Button(choice.title) { model.duration = choice }
+                        ForEach([DurationChoice.fourHours, .custom, .until]) { choice in
+                            Button {
+                                model.duration = choice
+                            } label: {
+                                if model.duration == choice {
+                                    Label(choice.title, systemImage: "checkmark")
+                                } else {
+                                    Text(choice.title)
+                                }
+                            }
                         }
-                    } label: { Image(systemName: "ellipsis").frame(width: 22, height: 27) }
-                        .menuStyle(.borderlessButton).fixedSize().accessibilityLabel("More session durations")
+                    } label: { Text("More").font(.caption.weight(.medium)).frame(minWidth: 43, minHeight: 28) }
+                        .menuStyle(.borderlessButton).fixedSize().accessibilityLabel("More session durations: four hours, custom, or until a time")
                 }
                 .disabled(model.controller.manualMode != nil)
                 if model.controller.manualMode == nil, model.duration == .custom {
@@ -97,6 +155,10 @@ struct PilotPanel: View {
                 if model.controller.manualMode == nil, model.duration == .until {
                     DatePicker("End at", selection: $model.untilDate, in: Date()..., displayedComponents: [.date, .hourAndMinute])
                         .datePickerStyle(.field).font(.subheadline)
+                }
+                if model.controller.manualMode == nil, model.duration == .indefinite {
+                    Text("This session stays on until you turn it off.")
+                        .font(.caption).foregroundStyle(.secondary)
                 }
                 if model.controller.hasSession || model.controller.integrationsArmed, model.controller.manualMode == nil {
                     Button("Add a manual session") { model.start() }
@@ -127,15 +189,15 @@ struct PilotPanel: View {
             }
 
             HStack(alignment: .top, spacing: 9) {
-                Image(systemName: statusSymbol).font(.system(size: 12)).foregroundStyle(model.controller.phase.color)
+                Image(systemName: statusSymbol).font(.system(size: 12, weight: .semibold)).foregroundStyle(model.controller.phase.color)
                     .frame(width: 16).padding(.top, 2).accessibilityHidden(true)
-                Text(model.controller.message).font(.system(size: 11)).foregroundStyle(.secondary)
+                Text(model.controller.message).font(.caption).foregroundStyle(.secondary)
                     .lineSpacing(2).fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .padding(12)
-            .frame(maxWidth: .infinity, minHeight: 48, alignment: .leading)
-            .background(Color.primary.opacity(0.035), in: RoundedRectangle(cornerRadius: 10))
+            .padding(11)
+            .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+            .background(Color.primary.opacity(0.04), in: RoundedRectangle(cornerRadius: 10))
             .accessibilityElement(children: .combine)
 
             VStack(spacing: 10) {
@@ -147,7 +209,7 @@ struct PilotPanel: View {
                 } label: {
                     HStack(spacing: 7) {
                         Image(systemName: model.controller.hasSession || model.controller.integrationsArmed ? "stop.fill" : primarySymbol).font(.system(size: 10, weight: .semibold))
-                        Text(primaryTitle).font(.system(size: 13, weight: .semibold))
+                        Text(primaryTitle).font(.body.weight(.semibold))
                     }.frame(maxWidth: .infinity).padding(.vertical, 5)
                 }
                 .buttonStyle(.borderedProminent).controlSize(.large)
@@ -199,6 +261,7 @@ struct PilotPanel: View {
 
     private func modeCard(_ mode: Mode) -> some View {
         let selected = model.selectedMode == mode
+        let active = model.controller.phase == .active && model.controller.effectiveMode == mode
         return Button { model.chooseMode(mode) } label: {
             HStack(spacing: 12) {
                 Image(systemName: mode.symbol).font(.system(size: 18, weight: .medium))
@@ -206,19 +269,34 @@ struct PilotPanel: View {
                     .frame(width: 34, height: 34)
                     .background(selected ? Color.accentColor.opacity(0.10) : Color.primary.opacity(0.035), in: RoundedRectangle(cornerRadius: 9))
                 VStack(alignment: .leading, spacing: 3) {
-                    Text(mode.title).font(.system(size: 13, weight: .medium))
-                    Text(mode.detail).font(.system(size: 10.5)).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
+                    HStack(spacing: 6) {
+                        Text(mode.title).font(.subheadline.weight(.medium))
+                        if active {
+                            Text("ACTIVE")
+                                .font(.caption2.weight(.bold))
+                                .tracking(0.35)
+                                .foregroundStyle(.green)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 3)
+                                .background(Color.green.opacity(0.1), in: Capsule())
+                        }
+                    }
+                    Text(mode.detail).font(.caption).foregroundStyle(.secondary).fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer(minLength: 0)
                 Image(systemName: selected ? "checkmark.circle.fill" : "circle")
-                    .font(.system(size: 14)).foregroundStyle(selected ? Color.accentColor : Color.secondary.opacity(0.5))
+                    .font(.system(size: 15)).foregroundStyle(selected ? Color.accentColor : Color.secondary.opacity(0.5))
             }
-            .padding(.horizontal, 12).padding(.vertical, 10).frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 11).padding(.vertical, 9).frame(maxWidth: .infinity, alignment: .leading)
             .background(selected ? Color.accentColor.opacity(0.045) : Color(nsColor: .controlBackgroundColor).opacity(0.82), in: RoundedRectangle(cornerRadius: 12))
-            .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(selected ? Color.accentColor.opacity(0.55) : Color.primary.opacity(contrast == .increased ? 0.45 : 0.08), lineWidth: 1))
+            .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(selected ? Color.accentColor.opacity(contrast == .increased ? 1 : 0.65) : Color.primary.opacity(contrast == .increased ? 0.45 : 0.08), lineWidth: selected ? 1.5 : 1))
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(mode.title).accessibilityHint(mode.detail)
+        .accessibilityLabel("\(mode.title)\(selected ? ", selected" : "")\(active ? ", active mode" : "")")
+        .accessibilityHint(mode.detail + (mode.needsHelper ? ". macOS may still lock. Desktop automation may need you to unlock it." : ""))
+        .help(mode.needsHelper ? (model.keepsDesktopAvailable
+            ? "Idle display sleep is inhibited during sessions. The display may stay on; manual Lock still works."
+            : "macOS may still lock. Desktop automation may need you to unlock it.") : mode.detail)
         .accessibilityAddTraits(selected ? .isSelected : [])
     }
     private var statusSymbol: String {
@@ -253,7 +331,19 @@ struct PilotPanel: View {
     private var remainingText: String {
         guard let seconds = model.controller.manualRemaining else { return "Until you stop" }
         let value = max(0, Int(seconds.rounded(.up)))
-        return value >= 3600 ? String(format: "%d:%02d:%02d", value / 3600, value / 60 % 60, value % 60) : String(format: "%d:%02d", value / 60, value % 60)
+        let countdown = value >= 3600 ? String(format: "%d:%02d:%02d", value / 3600, value / 60 % 60, value % 60) : String(format: "%d:%02d", value / 60, value % 60)
+        return "Ends in \(countdown)"
+    }
+    private var durationSummary: String {
+        switch model.duration {
+        case .halfHour: "30 min"
+        case .hour: "1 hour"
+        case .twoHours: "2 hours"
+        case .fourHours: "4 hours"
+        case .custom: "\(model.customMinutes) min"
+        case .until: model.untilDate.formatted(date: .abbreviated, time: .shortened)
+        case .indefinite: "Until I stop"
+        }
     }
     private func shortTitle(_ choice: DurationChoice) -> String {
         switch choice { case .halfHour: "30m"; case .hour: "1h"; case .twoHours: "2h"; default: "4h" }

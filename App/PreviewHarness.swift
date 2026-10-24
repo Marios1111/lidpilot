@@ -74,6 +74,7 @@ final class PreviewMachine: RuntimeClock, PowerSampling, SleepFlagControlling, R
         try data.write(to: folder.appendingPathComponent(name + ".png"), options: .atomic)
     }
     model.onboardingComplete = true
+    model.setKeepsDesktopAvailable(false)
     model.cliEnabled = false
     model.showAgentControls = true
     model.selectedMode = .smart
@@ -82,6 +83,20 @@ final class PreviewMachine: RuntimeClock, PowerSampling, SleepFlagControlling, R
     try render(PilotPanel(model: model), name: "panel-off-light", width: 370)
     try render(PilotPanel(model: model), name: "panel-off-dark", width: 370, scheme: .dark)
     try render(PilotPanel(model: model, showsPreviewNotice: false), name: "product-off", width: 370)
+    for (choice, name) in [(DurationChoice.indefinite, "indefinite"), (.custom, "custom"), (.until, "until")] {
+        model.duration = choice
+        try render(PilotPanel(model: model), name: "panel-duration-" + name, width: 370)
+    }
+    model.duration = .indefinite
+    await model.controller.start(mode: .smart, duration: .indefinite, policy: model.policy)
+    guard model.controller.phase == .active, model.controller.manualRemaining == nil else {
+        throw RuntimeFailure.unavailable("Mock indefinite session activation failed.")
+    }
+    try render(PilotPanel(model: model), name: "panel-active-indefinite", width: 370)
+    await model.controller.stop(reason: "Paused after switching to battery power.", safety: true)
+    try render(PilotPanel(model: model), name: "panel-paused", width: 370)
+    await model.controller.stop()
+    model.duration = .hour
     await model.controller.start(mode: .smart, duration: .seconds(3600), policy: model.policy)
     guard model.controller.phase == .active, model.controller.effectiveMode == .smart else {
         throw RuntimeFailure.unavailable("Mock session activation failed.")
@@ -143,12 +158,24 @@ final class PreviewMachine: RuntimeClock, PowerSampling, SleepFlagControlling, R
     try render(PilotPanel(model: model), name: "panel-agent-hidden", width: 370)
     model.showAgentControls = true
     model.cliEnabled = true
-    try render(SettingsView(model: model), name: "settings", width: 706)
-    for section in [SettingsSection.agents, .developer, .shortcuts, .updates, .diagnostics] {
-        try render(SettingsView(model: model, initialSection: section), name: "settings-" + String(describing: section), width: 706)
+    model.setKeepsDesktopAvailable(true)
+    try render(PilotPanel(model: model), name: "panel-lock-prevention-selected", width: 370)
+    try render(SettingsView(model: model), name: "settings-desktop-availability", width: 709)
+    model.selectedMode = .closed
+    await model.controller.start(mode: .closed, duration: .seconds(120), policy: model.policy)
+    guard model.controller.assertions.display == .on else {
+        throw RuntimeFailure.unavailable("Mock desktop-availability assertion was not held.")
     }
-    try render(SettingsView(model: model, initialSection: .developer), name: "settings-developer-dark", width: 706, scheme: .dark)
-    try render(SettingsView(model: model, initialSection: .agents), name: "settings-agents-dark", width: 706, scheme: .dark)
+    try render(PilotPanel(model: model), name: "panel-desktop-availability", width: 370)
+    try render(PilotPanel(model: model), name: "panel-desktop-availability-dark", width: 370, scheme: .dark)
+    await model.controller.stop()
+    model.setKeepsDesktopAvailable(false)
+    try render(SettingsView(model: model), name: "settings", width: 709)
+    for section in [SettingsSection.agents, .developer, .shortcuts, .updates, .diagnostics] {
+        try render(SettingsView(model: model, initialSection: section), name: "settings-" + String(describing: section), width: 709)
+    }
+    try render(SettingsView(model: model, initialSection: .developer), name: "settings-developer-dark", width: 709, scheme: .dark)
+    try render(SettingsView(model: model, initialSection: .agents), name: "settings-agents-dark", width: 709, scheme: .dark)
     model.cliEnabled = false
     try render(WelcomeView(model: model), name: "welcome", width: 520)
     FileHandle.standardOutput.write(Data("Native mock views rendered; session ended Off.\n".utf8))
