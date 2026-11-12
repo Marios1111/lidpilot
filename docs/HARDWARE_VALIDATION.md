@@ -69,9 +69,10 @@ Before a real-machine run:
 - Keep evidence separate for sampled flags, assertion properties, observed
   display/backlight behavior, workload continuity, and recovery timing.
 
-The current native code deliberately avoids fake input, private brightness
-writes, black overlays presented as panel-off, blanket external-display
-blanking, and unlocking the Mac. A test that needs one of those shortcuts is a
+The native code deliberately avoids fake input, black overlays presented as
+panel-off, blanket external-display blanking, and unlocking the Mac. The owner
+approved a narrow built-in brightness dim/restore exception for 2.0.3 after
+public control failed; see `validation/2026-11-12-follow-lid-brightness.md`. A test that needs one of those shortcuts is a
 failed test design, not a passed gate.
 
 ## G1 - native inactivity dimming and display sleep

@@ -110,12 +110,14 @@ enum DurationChoice: String, CaseIterable, Identifiable {
         } else {
             controller = SessionController(clock: clock, sampler: SystemPowerSampler(clock: clock),
                                            power: NativeAssertions(), helper: XPCTransport(build: build),
-                                           recoveryHint: defaults.bool(forKey: "cleanupPending"))
+                                           recoveryHint: defaults.bool(forKey: "cleanupPending"),
+                                       brightness: NativeDisplayBrightness())
         }
         #else
         controller = SessionController(clock: clock, sampler: SystemPowerSampler(clock: clock),
                                        power: NativeAssertions(), helper: XPCTransport(build: build),
-                                       recoveryHint: defaults.bool(forKey: "cleanupPending"))
+                                       recoveryHint: defaults.bool(forKey: "cleanupPending"),
+                                       brightness: NativeDisplayBrightness())
         #endif
         controller.helperAvailable = closedLidReady
         try? controller.setKeepsDesktopAvailable(defaults.bool(forKey: "keepsDesktopAvailable"))

@@ -1,5 +1,20 @@
 # LidPilot verification
 
+## Follow Lid brightness — November 12, 2026
+
+2.0.3/build 21 implements built-in dim/restore using the owner-approved narrow
+private brightness API exception. 122 Runtime + 34 Core + 16 app tests, static
+checks, Debug/signed Release builds and native mock rendering/cleanup pass.
+The owner completed two close/reopen checks; independent native sampling on the
+second captured zero while closed and exact restoration to the original
+brightness on reopen, with the session still active. See the
+[dated record](validation/2026-11-12-follow-lid-brightness.md) for exact hashes,
+short observation interval, recovery behavior and remaining limitations.
+
+Source commit, notarization, final immutable assets, public feed/tap and deployed
+bytes are pending completion below. The installed candidate is signed and
+locally tested, with build 20 retained for rollback. Low Power Mode is unchanged.
+
 ## Menu-bar automatic-lock choice and local commits — October 24, 2026
 
 Current code revision: **`3afdc12a94c18442de09ecaeea4918a238c1b0ba`** on `dev`.

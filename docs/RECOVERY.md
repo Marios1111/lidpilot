@@ -31,6 +31,13 @@ launch checks cleanup before allowing new activation.
 
 ## App disconnect or crash
 
+Built-in brightness restoration has its own bounded same-user record, saved
+before Follow Lid dims the display. Normal reopen/Stop/expiry/safety/update/Quit
+restores the saved brightness unless a newer nonzero adjustment is observed.
+Failed restoration remains Recovery and is retried on launch or explicit
+recovery. An app crash can leave zero brightness until relaunch/recovery or a
+manual brightness adjustment; the privileged helper does not control brightness.
+
 The helper does not depend on a live UI countdown. Its maximum renewable lease
 is 60 seconds, the intended app heartbeat is 15 seconds, and an independent
 watchdog schedules a check every 10 seconds. Serialized command work and OS

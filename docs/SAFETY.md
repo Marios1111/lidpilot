@@ -95,7 +95,7 @@ The display assertion is app-scoped and does not claim control over another
 application's assertions. Its native type prevents idle display sleep/dimming
 while held. That means the desired “dim normally but never turn off” behavior
 is not delivered by a hidden fallback; it remains G1 validation work. The app
-does not write brightness, disable automatic brightness, fake input, or use a
+does not disable automatic brightness, fake input, or use a
 black overlay as panel-off evidence.
 
 The owner's October 24 request explicitly authorizes optional session-scoped
@@ -111,6 +111,17 @@ It never unlocks a locked Mac, and manual Lock must still succeed. The feature
 requires native validation rather than claiming a guaranteed lock-only API.
 
 ## Global `SleepDisabled` ownership
+
+### Built-in brightness exception
+
+Follow Lid's 2.0.3 dim/restore path is the owner's explicitly approved exception
+to the earlier no-private-brightness baseline. It changes only the built-in
+display's brightness, preserves automatic brightness preferences, and never
+claims that zero brightness powers the panel off. Saved brightness is restored
+on reopen and cleanup unless a newer nonzero adjustment is observed. A failed
+restore keeps a durable record and visible Recovery state while power controls
+are released independently. See `ARCHITECTURE.md` for the compatibility and crash
+recovery boundary. Low Power Mode remains entirely user-controlled.
 
 The helper reads the global setting before acquisition. If it is already on and
 LidPilot has no durable evidence that it owns the override, it refuses to

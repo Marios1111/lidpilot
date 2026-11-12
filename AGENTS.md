@@ -7,6 +7,14 @@ Read "/Users/marios/.codex/AGENTS.md" before working in this repository.
 - Use `docs/ARCHITECTURE.md`, `docs/SAFETY.md`, `docs/RECOVERY.md`, and `docs/HARDWARE_VALIDATION.md` for the design, invariants, and test procedures. Keep product and power-state details there, rather than duplicating them in this agent guidance.
 - Treat native UI, mock tests, real hardware observations, signed helper behavior, and release lifecycle as distinct evidence. Never infer physical panel state from a sleep flag or display assertion. Do not run intrusive global-power or closed-lid tests without the user's explicit opt-in for that test; verify an unowned sleep override is off before LidPilot takes ownership.
 - Keep closed-lid control narrow: the signed app and authenticated privileged helper may use only the fixed `pmset` sleep override path. Preserve identity checks, leases, read-back, recovery, and fail-closed behavior. Do not add arbitrary privileged commands, synthetic input, private brightness APIs, or blanket external-display blanking.
+- Owner-approved exception (2026-11-12): Follow Lid may use only the private
+  DisplayServices brightness getter/setter, with public read-only display identity
+  to dim the built-in display on closure and restore its saved brightness.
+  Public IODisplay brightness control was probed and is unsupported on the
+  owner's Apple Silicon Mac. Preserve automatic brightness settings and newer
+  manual changes, keep durable restoration/recovery, and leave the privileged
+  helper and external displays unchanged. This is not permission for other
+  private APIs or a physical panel-off claim. See `AGENT_NOTES.md` for continuity.
 - Keep credentials, certificates, Sparkle private keys, and notarization access outside Git. Public release claims require the evidence in `docs/VERIFICATION.md`; record unresolved gates honestly. Follow `docs/RELEASING.md` for packaging and publication.
 - Work on `dev` or an appropriate task branch. Inspect each diff and make small, coherent commits with relevant checks. Serialize Git operations with workers. Never force-push. Push, merge, tag, publish, or release only within the user's explicit authority and applicable global rules.
 - Keep the Codex progress tracker current throughout active work: update it when a step starts, completes, becomes blocked, or changes direction, and avoid leaving stale in-progress status during long validation or release work. Use `docs/VERIFICATION.md` for the latest gate status and `docs/IMPLEMENTATION_PLAN.md` for implementation context. Before finishing, report exact tested revision, checks, commit/push state, real hardware observations, release gates, and remaining limitations.

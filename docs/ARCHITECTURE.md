@@ -180,6 +180,30 @@ output to 16 KiB, kills and reaps a command after five seconds, and reads back
 after mutation. A sampled `on` flag proves only the sampled global setting; it
 does not prove physical panel shutdown or exclusive ownership.
 
+## Follow Lid brightness (2.0.3)
+
+The app injects `NativeDisplayBrightness` into the session controller; previews
+and ordinary policy tests use no native brightness control. Confirmed Follow Lid
+requests dim only the identified built-in display on a closed-lid sample.
+Reopening restores brightness before helper renewal, and mode changes, Stop,
+expiry, safety, update preparation and Quit use the same restoration boundary.
+Brightness cleanup failure does not prevent assertion/helper release; it leaves
+Recovery visible and prevents a successful Stop & Sleep or update.
+
+On 2026-11-12 the owner approved a narrow exception to the private-API policy
+after public IODisplay brightness control returned unsupported on the development
+Apple Silicon Mac. The app dynamically resolves only the required brightness
+getter/setter; display UUID identity uses public ColorSync. This does not expand the
+privileged helper, alter external displays, disable automatic brightness,
+change True Tone or write Low Power Mode preferences. Zero brightness is not
+physical panel-off evidence. Missing APIs or failed read-back are visible errors.
+
+A bounded per-app recovery record is saved before dimming. Restoration targets
+the same built-in display and restores the saved value only while brightness is
+still zero; a newer nonzero adjustment wins. Repeated heartbeats do not force
+zero again. Interrupted restoration is retried at launch; a crash can leave the
+display dimmed until recovery or the user's brightness controls restore it.
+
 ## Helper protocol and authentication
 
 The XPC payload is a bounded JSON encoding of `WireRequest`/`WireReply`. Requests

@@ -224,7 +224,7 @@ extension Mode {
     }
     var detail: String {
         switch self {
-        case .smart: "Screen ready when open. Work on when closed."
+        case .smart: "Screen ready when open. Dims when closed."
         case .display: "For lectures, notes, and reading along."
         case .closed: "For long tasks, with the lid open or closed."
         }

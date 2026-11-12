@@ -5,6 +5,22 @@ on September 27, 2026; earlier RC sections retain their original checkpoint cont
 
 ## Unreleased
 
+## 2.0.3
+
+Released November 12, 2026 — build 21.
+
+- Follow Lid dims only the built-in display to zero brightness while closed,
+  then restores the previous brightness on reopening, Stop, expiry or safety
+  cleanup. Automatic brightness, True Tone and external displays stay under
+  their existing controls. A newer manual brightness change is respected.
+- Saved brightness restoration survives app restart. Failed restoration remains
+  visible as Recovery; wakefulness controls are still released independently.
+- Includes the opt-in Prevent automatic lock choice in the menu bar and
+  Settings, plus serialized helper status inspection to avoid Start/Stop races.
+- Low Power Mode remains user-controlled. Zero brightness is not a claim that
+  the panel is powered off. Built-in dimming uses a narrowly scoped private
+  macOS API and may become unavailable on future macOS versions.
+
 ## 2.0.2
 
 Released September 29, 2026 — build 17.

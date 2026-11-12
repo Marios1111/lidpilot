@@ -37,6 +37,7 @@ public enum SessionPhase: String, Codable, Sendable {
     private let sampler: any PowerSampling
     private let power: any PowerAssertions
     private let helper: any HelperTransport
+    private let brightness: (any DisplayBrightnessControlling)?
     private var sessionID = UUID()
     private var helperSessionID: UUID?
     private var helperMayOwn = false
@@ -47,10 +48,15 @@ public enum SessionPhase: String, Codable, Sendable {
     private var cleanupVerified = true
 
     public init(clock: any RuntimeClock, sampler: any PowerSampling,
-                power: any PowerAssertions, helper: any HelperTransport, recoveryHint: Bool = false) {
+                power: any PowerAssertions, helper: any HelperTransport, recoveryHint: Bool = false,
+                brightness: (any DisplayBrightnessControlling)? = nil) {
         self.clock = clock; self.sampler = sampler; self.power = power; self.helper = helper
+        self.brightness = brightness
         helperMayOwn = recoveryHint
         if recoveryHint { phase = .recovery; message = "Checking cleanup from the previous run." }
+        // A crash can leave a saved brightness restoration independent of the helper.
+        do { try brightness?.setDimmed(false) }
+        catch { cleanupVerified = false; phase = .recovery; message = error.localizedDescription }
     }
 
     public var remaining: Double? { deadline?.remaining(at: clock.now()) }
@@ -297,6 +303,7 @@ public enum SessionPhase: String, Codable, Sendable {
                 observation = current
                 assertions = try power.apply(system: true, display: displayHeld(mode, lid: current.lid),
                     timeout: assertionTimeout(), displayTimeout: assertionTimeout(displayOnly: true))
+                try updateBrightness(mode: mode, lid: current.lid)
                 effectiveMode = mode
                 publish(.active, activeMessage(mode, lid: current.lid))
             } catch {
@@ -361,6 +368,11 @@ public enum SessionPhase: String, Codable, Sendable {
         if let mode = requestedMode {
             let sample = sampler.sample(flag: helperState?.flag ?? .unknown)
             observation = sample
+            // Reopening must restore before any potentially delayed helper operation.
+            if sample.lid == .open {
+                do { try brightness?.setDimmed(false) }
+                catch { await stop(reason: error.localizedDescription, safety: true); return }
+            }
             if let reason = policy.evaluate(snapshot: sample, mode: mode, clock: clock.now()) {
                 await stop(reason: Self.explanation(reason), safety: true)
                 return
@@ -381,6 +393,8 @@ public enum SessionPhase: String, Codable, Sendable {
             do { assertions = try power.apply(system: true, display: false, timeout: assertionTimeout()) }
             catch { await stop(reason: error.localizedDescription, safety: true); return }
         }
+        do { try updateBrightness(mode: mode, lid: snapshot.lid) }
+        catch { await stop(reason: error.localizedDescription, safety: true); return }
         var reconcileError: (any Error)?
         await enqueue { [self] in
             guard token == generation else { return }
@@ -403,6 +417,7 @@ public enum SessionPhase: String, Codable, Sendable {
                 observation = current
                 assertions = try power.apply(system: true, display: displayHeld(mode, lid: current.lid),
                                              timeout: assertionTimeout(), displayTimeout: assertionTimeout(displayOnly: true))
+                try updateBrightness(mode: mode, lid: current.lid)
                 message = activeMessage(mode, lid: current.lid)
             } catch { reconcileError = error }
         }
@@ -412,21 +427,28 @@ public enum SessionPhase: String, Codable, Sendable {
     }
 
     public func recoverAfterConfirmation() async {
-        guard !hasSession, !updateBarrier, helperAvailable else { return }
+        guard !hasSession, !updateBarrier, helperAvailable || !helperMayOwn else { return }
         let token = advance()
         publish(.stopping, "Checking recovery…")
         await enqueue { [self] in
             do {
-                assertions = try power.release()
-                let response = try await helper.send(WireRequest(operation: .recover, sessionID: sessionID, generation: token))
-                guard token == generation else { return }
-                helperState = response
-                guard response.success, response.flag == .off, !response.ownsOverride, !response.recoveryPending else {
-                    throw RuntimeFailure.unavailable(response.message)
+                var releaseError: (any Error)?
+                do { try brightness?.setDimmed(false) } catch { releaseError = error }
+                do { assertions = try power.release() } catch { assertions = power.observed(); releaseError = error }
+                if helperAvailable {
+                    let response = try await helper.send(WireRequest(operation: .recover, sessionID: sessionID, generation: token))
+                    guard token == generation else { return }
+                    helperState = response
+                    guard response.success, response.flag == .off, !response.ownsOverride, !response.recoveryPending else {
+                        throw RuntimeFailure.unavailable(response.message)
+                    }
+                    helperMayOwn = false
+                    onOwnershipChange?(false)
                 }
-                helperMayOwn = false
-                onOwnershipChange?(false)
-                publish(.off, "Recovery verified. Normal sleep policy restored.")
+                if let releaseError { throw releaseError }
+                guard assertions == .off else { throw RuntimeFailure.unavailable("Assertion cleanup is unverified.") }
+                cleanupVerified = true
+                publish(.off, "Recovery verified. Normal sleep policy and brightness restored.")
             } catch { if token == generation { publish(.recovery, error.localizedDescription) } }
         }
     }
@@ -472,6 +494,7 @@ public enum SessionPhase: String, Codable, Sendable {
     private func cleanup(token: UInt64) async throws {
         cleanupVerified = false
         var releaseError: (any Error)?
+        do { try brightness?.setDimmed(false) } catch { releaseError = error }
         do { assertions = try power.release() } catch { assertions = power.observed(); releaseError = error }
         if helperMayOwn {
             guard helperAvailable else { throw RuntimeFailure.unavailable("Helper cleanup is unverified. Reconnect the helper to recover.") }
@@ -508,10 +531,17 @@ public enum SessionPhase: String, Codable, Sendable {
         message = text
         onEvent?(phase, text)
     }
+    private func updateBrightness(mode: Mode, lid: LidState) throws {
+        try brightness?.setDimmed(mode == .smart && lid == .closed)
+    }
+
     private func displayHeld(_ mode: Mode, lid: LidState) -> Bool {
         keepsDesktopAvailable || mode == .display || (mode == .smart && lid == .open)
     }
     private func activeMessage(_ mode: Mode, lid: LidState) -> String {
+        if mode == .smart, lid == .closed, brightness != nil {
+            return "Mac kept running. Built-in brightness reduced until reopening."
+        }
         if keepsDesktopAvailable {
             return "Idle display sleep inhibited. Manual Lock still works."
         }

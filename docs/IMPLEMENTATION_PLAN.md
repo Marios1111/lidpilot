@@ -1,5 +1,15 @@
 # LidPilot implementation plan
 
+## Follow Lid brightness — November 12, 2026
+
+Implemented and locally accepted: built-in-only zero brightness while closed,
+restoration on reopen/cleanup, preserved auto-brightness settings and newer
+manual adjustments, durable recovery, and unchanged privileged helper/Low Power
+Mode. Private DisplayServices brightness Get/Set are an owner-approved exception
+after the public path failed. All targeted/required checks and signed native
+close/reopen acceptance pass; 2.0.3/build 21 notarization/publication is next.
+See `VERIFICATION.md` and the dated hardware record for evidence and limits.
+
 ## Visible lock choice and local commits — October 24, 2026
 
 Complete: the menu-bar popover now exposes **Prevent automatic lock** directly,

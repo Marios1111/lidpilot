@@ -190,7 +190,7 @@ struct SettingsView: View {
                     set: { model.setKeepsDesktopAvailable($0) }))
                     .disabled(model.controller.hasSession || model.controller.integrationsArmed || model.controller.updateBarrier || model.controller.phase == .stopping)
                     .accessibilityHint("The same choice is available in the menu-bar popover. Manual Lock remains available.")
-                Text("During active sessions, prevent idle display sleep even with the lid closed. This targets automatic locking caused by display sleep; the built-in display may stay on. Manual Lock still works, and password settings stay unchanged.")
+                Text("During active sessions, prevent idle display sleep even with the lid closed. This targets automatic locking caused by display sleep. Follow Lid dims the built-in display when closed and restores its brightness on reopening. Manual Lock still works, and password settings stay unchanged.")
                     .font(.caption).foregroundStyle(.secondary)
                 Text("Turn off sessions and Agent Tasks before changing this option. Start while unlocked. Closed-lid behavior must be checked on your Mac.")
                     .font(.caption).foregroundStyle(.secondary)
