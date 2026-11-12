@@ -8,7 +8,7 @@ manual adjustments, durable recovery, and unchanged privileged helper/Low Power
 Mode. Private DisplayServices brightness Get/Set are an owner-approved exception
 after the public path failed. All targeted/required checks and signed native
 close/reopen acceptance pass. 2.0.3/build 21 is notarized and published on GitHub;
-the stable feed/website and tap are in the publication step.
+the stable feed/website and Homebrew tap are also published and verified.
 See `VERIFICATION.md` and the dated hardware record for evidence and limits.
 
 ## Visible lock choice and local commits — October 24, 2026

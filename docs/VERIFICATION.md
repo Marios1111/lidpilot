@@ -34,8 +34,15 @@ Its signing/build bytes differ from the newly archived, notarized public app;
 source and behavior are the same. It is not claimed to be the public artifact.
 Both bounded tests expired to Off/override off. Low Power Mode is unchanged.
 Homebrew tap commit `cea48b0` is pushed; its cask style check passed with no
-offenses. The installed Homebrew receipt remains unchanged. Stable Pages
-deployment is the remaining distribution action.
+offenses. The installed Homebrew receipt remains unchanged.
+[Stable Pages deployment](https://github.com/Marios1111/lidpilot/actions/runs/43292674416)
+passed at metadata revision `734022d`. Canonical public homepage, stable feed,
+notes and manifest were fetched after deployment: the homepage advertises 2.0.3
+and every signed/manifest file matches the tracked bytes exactly. The historical
+RC4 appcast also remains byte-identical. No release gate remains for this narrow
+owner-approved brightness scope; the dated record retains untested hardware and
+compatibility boundaries. The source CI above is green; automatic publication/
+documentation CI runs are distinct and were still running at that checkpoint.
 
 ## Menu-bar automatic-lock choice and local commits — October 24, 2026
 
