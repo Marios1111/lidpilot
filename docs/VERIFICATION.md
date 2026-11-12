@@ -11,9 +11,31 @@ brightness on reopen, with the session still active. See the
 [dated record](validation/2026-11-12-follow-lid-brightness.md) for exact hashes,
 short observation interval, recovery behavior and remaining limitations.
 
-Source commit, notarization, final immutable assets, public feed/tap and deployed
-bytes are pending completion below. The installed candidate is signed and
-locally tested, with build 20 retained for rollback. Low Power Mode is unchanged.
+Source/tag: **`6894d351d0b07bdbefef64932c225b550b1fcee4`**, `v2.0.3`.
+[Source CI](https://github.com/Marios1111/lidpilot/actions/runs/43291110566)
+passed all required checks. The
+[GitHub release](https://github.com/Marios1111/lidpilot/releases/tag/v2.0.3)
+is published. Its five uploaded files were downloaded and matched the local
+manifest exactly. The stable Pages validator independently fetched and verified
+public artifact hashes/signatures while preserving the legacy RC4 bytes.
+
+Apple accepted the app (`47491d98-4ea9-414e-9ea7-c6253bf356dc`) and DMG
+(`1eb7aca7-1945-46c5-a9f2-a8c2b01976ad`). Stapler validation passed for both.
+Sparkle archive, notes and feed signatures were verified against the configured
+public key. DMG SHA-256:
+`f8b607bf3016f5f9dd12ab067703b327093c6f054e4e01bdd472246a48f06349`;
+update ZIP SHA-256:
+`5f7683c97f844cbe26b609182255a96b3325a413c127bcd8b3214f4e6a7488fd`.
+Exact hashes are in `website/updates/manifest.json`.
+
+The locally installed, signed test candidate is also 2.0.3/build 21, with its
+original app/helper hashes in the dated record and build 20 retained for rollback.
+Its signing/build bytes differ from the newly archived, notarized public app;
+source and behavior are the same. It is not claimed to be the public artifact.
+Both bounded tests expired to Off/override off. Low Power Mode is unchanged.
+Homebrew tap commit `cea48b0` is pushed; its cask style check passed with no
+offenses. The installed Homebrew receipt remains unchanged. Stable Pages
+deployment is the remaining distribution action.
 
 ## Menu-bar automatic-lock choice and local commits — October 24, 2026
 

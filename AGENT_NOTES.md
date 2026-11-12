@@ -52,3 +52,23 @@
   existing protected stores. Final notarization/publication still in progress.
   The earlier active build20 deadline was saved locally before upgrade; never
   restart it beyond its original remaining duration. Test sessions are bounded.
+
+### Distribution checkpoint
+
+- Source/tag `6894d351d0b07bdbefef64932c225b550b1fcee4` / `v2.0.3` is pushed;
+  source CI run `43291110566` passed. App and DMG notarization accepted;
+  signatures/staples verified. GitHub release published; all five downloaded
+  files match the local manifest. Public-assets Pages validation passes.
+- Stable metadata replaces the prior single-release feed/notes; historical RC4
+  signed bytes and all prior immutable GitHub assets are preserved.
+- The installed signed native-test candidate has the same source/build21 but
+  differs from final archive/notarization bytes; do not describe it as the exact
+  public artifact. Tests expired Off; no prior deadline was extended.
+- Homebrew path-only style invocation was rejected because a cask must be in a
+  recognized tap. The existing `/opt/homebrew/Library/Taps/marios1111/homebrew-tap`
+  was verified clean at `a064e1e`; apply/check/push there. The temporary clone
+  remains disposable. No Homebrew global configuration was changed.
+
+- Homebrew cask style passed (one file/no offenses). Tap commit `cea48b0`
+  updates only version/URL/DMG hash plus its local continuity note and is pushed.
+  Stable Pages publication is the remaining distribution action.

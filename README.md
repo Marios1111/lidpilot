@@ -16,9 +16,9 @@ Mac menu-bar app.
 
 ## Get LidPilot
 
-Download [**LidPilot 2.0.2**](https://github.com/Marios1111/lidpilot/releases/download/v2.0.2/LidPilot-2.0.2.dmg),
+Download [**LidPilot 2.0.3**](https://github.com/Marios1111/lidpilot/releases/download/v2.0.3/LidPilot-2.0.3.dmg),
 a Developer ID signed, notarized and stapled app for Apple Silicon.
-[Release notes](https://github.com/Marios1111/lidpilot/releases/tag/v2.0.2) ·
+[Release notes](https://github.com/Marios1111/lidpilot/releases/tag/v2.0.3) ·
 [Verification and support boundaries](docs/VERIFICATION.md)
 
 1. Download the DMG from the release page and move **LidPilot.app** to **Applications**.
@@ -87,9 +87,12 @@ External displays, docks, and virtual displays remain unvalidated. Read the
 [support matrix](docs/SUPPORT_MATRIX.md) for the exact tested hardware and OS.
 
 Keeping the display awake also suppresses macOS's native idle dimming. Manual
-brightness remains available. After closing the lid, the built-in screen may
-take time to go dark—about a minute in recorded tests. LidPilot does not promise
-instant electrical panel shutdown.
+brightness remains available. Follow Lid now reduces built-in brightness to zero
+while closed, then restores the previous value on reopening or cleanup while
+preserving automatic brightness settings and newer adjustments. This uses a
+narrowly scoped private macOS brightness API; availability can change. Zero
+brightness does not prove electrical panel shutdown. See the
+[brightness validation record](docs/validation/2026-11-12-follow-lid-brightness.md).
 
 Keep a running Mac on a stable, ventilated surface. Battery and thermal
 safeguards are a backstop, not permission to run it inside a bag. A safety pause
