@@ -1,5 +1,38 @@
 # LidPilot verification
 
+## Published 2.0.3 installed on the owner's Mac — November 12, 2026
+
+The actual notarized public release now replaces the local test candidate.
+Homebrew upgraded its installed receipt from 2.0.2 to 2.0.3. The published DMG
+checksum matched the stable manifest; all **71 installed files/symlinks** match
+the published update ZIP exactly. `codesign --verify --deep --strict`, Gatekeeper
+assessment (**accepted, Notarized Developer ID**) and stapled-ticket validation
+passed, including after cleanup. Shipped source/tag remains `6894d35` / `v2.0.3`;
+no product code was changed for this installation.
+
+Installed executable SHA-256:
+
+- App: `650984c69afc008ced667b2c37e4dfe194e413d3f5adcb8de3da7aaf28e27941`
+- Helper: `5197c81c410d1a7e181de1640ae729b06ae5fd6642c6d78194fc3f0f5c1aca2b`
+
+The owner removed the old helper and disabled Launch at login before quitting.
+After replacement, the owner restored **Approved** helper status and **Launch
+at login On**. CLI read-back confirmed app/helper build21, healthy journal,
+power-state and watchdog checks, Off, both assertions off, override 0 and no
+lease/ownership/recovery. Other preferences remain in place. No extra physical
+power test or automatic session restart was performed.
+
+Authorized cleanup removed **60** inactive LidPilot test/build/cache/temp items
+(**2,126,163,968 allocated bytes**, approximately 2.13 GB), including redundant
+local app copies and test ZIPs. Ownership, active build processes and open files
+were checked first. Finder recreated a `.DS_Store` during the first pass; a
+focused metadata-only correction completed removal. All original cleanup targets
+are absent. Source, preferences, signing stores, runtime sockets, the current
+Homebrew download cache and the existing official 2.0.2 rollback ZIP were kept.
+A compact ~504 KB evidence set and exact cleanup receipt remain under
+`release-private/validation/2026-11-12/`. Installation/cleanup documentation is
+pushed on `dev`; no release/tag/feed bytes changed for this follow-up.
+
 ## Follow Lid brightness — November 12, 2026
 
 2.0.3/build 21 implements built-in dim/restore using the owner-approved narrow
@@ -28,10 +61,10 @@ update ZIP SHA-256:
 `5f7683c97f844cbe26b609182255a96b3325a413c127bcd8b3214f4e6a7488fd`.
 Exact hashes are in `website/updates/manifest.json`.
 
-The locally installed, signed test candidate is also 2.0.3/build 21, with its
-original app/helper hashes in the dated record and build 20 retained for rollback.
-Its signing/build bytes differ from the newly archived, notarized public app;
-source and behavior are the same. It is not claimed to be the public artifact.
+At the publication checkpoint, the locally installed signed test candidate was
+also 2.0.3/build 21, with its hashes in the dated record and build 20 retained
+for rollback. Its bytes differed from the notarized public app. That historical
+installation is superseded by the exact public-bundle installation recorded above.
 Both bounded tests expired to Off/override off. Low Power Mode is unchanged.
 Homebrew tap commit `cea48b0` is pushed; its cask style check passed with no
 offenses. The installed Homebrew receipt remains unchanged.

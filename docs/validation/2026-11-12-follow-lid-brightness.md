@@ -74,3 +74,14 @@ agent-adapter and physical panel-off limitations remain. Private API availabilit
 can change; unsupported control fails visibly and releases wakefulness controls.
 Final notarization, immutable artifacts, feed/tap publication and deployed-byte
 verification are recorded separately in `../VERIFICATION.md` after completion.
+
+## Subsequent installation and cleanup
+
+The actual notarized 2.0.3 public bundle was subsequently installed through
+Homebrew and matched the published ZIP's 71 files/symlinks exactly. The compact
+native evidence, screenshots, probe source and new installation/cleanup receipts
+now reside under `release-private/validation/2026-11-12/`. Bulky temporary build
+and test workspaces, native preview output and redundant candidate apps/ZIPs
+were removed with the owner's authorization. The earlier temporary paths above
+identify where the checks originally ran, not files promised to remain present.
+See `../VERIFICATION.md` for installed public hashes and final helper state.
